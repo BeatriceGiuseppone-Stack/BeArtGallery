@@ -1,73 +1,192 @@
 @model BeArtGallery.Models.Artwork
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Title;
 }
 
-<h1>Details</h1>
+<div class="container py-5">
 
-<div>
-    <h4>Artwork</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Year)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Year)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Technique)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Technique)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsOnDisplay)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsOnDisplay)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ArtistId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ArtistId)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Artist)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Artist)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div class="mb-4">
+        <a asp-action="Index"
+           class="text-decoration-none text-dark">
+            ← Torna al catalogo
+        </a>
+    </div>
+
+    <div class="row g-5">
+
+        <!-- IMMAGINE -->
+        <div class="col-lg-6">
+
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl"
+                     alt="@Model.Title"
+                     class="img-fluid rounded shadow-sm w-100"
+                     style="max-height: 650px; object-fit: contain;" />
+            }
+            else
+            {
+                <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted"
+                     style="height: 500px;">
+                    Nessuna immagine disponibile
+                </div>
+            }
+
+        </div>
+
+
+        <!-- INFORMAZIONI -->
+        <div class="col-lg-6">
+
+            <span class="text-uppercase text-muted small">
+                Opera
+            </span>
+
+            <h1 class="display-5 fw-semibold mt-2 mb-3">
+                @Model.Title
+            </h1>
+
+
+            @if (Model.Artist != null)
+            {
+                <h4 class="fw-normal mb-4">
+                    @Model.Artist.FirstName @Model.Artist.LastName
+                </h4>
+            }
+
+
+            <hr />
+
+
+            <dl class="row mt-4">
+
+                @if (Model.Year.HasValue)
+                {
+                    <dt class="col-sm-4">
+                        Anno
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.Year
+                    </dd>
+                }
+
+
+                @if (!string.IsNullOrWhiteSpace(Model.Technique))
+                {
+                    <dt class="col-sm-4">
+                        Tecnica
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.Technique
+                    </dd>
+                }
+
+
+                <dt class="col-sm-4">
+                    Esposizione
+                </dt>
+
+                <dd class="col-sm-8">
+
+                    @if (Model.IsOnDisplay)
+                    {
+                        <span class="badge bg-success">
+                            Attualmente esposta
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">
+                            Non in esposizione
+                        </span>
+                    }
+
+                </dd>
+
+            </dl>
+
+
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <div class="mt-4">
+
+                    <h5>
+                        Descrizione
+                    </h5>
+
+                    <p class="text-muted"
+                       style="line-height: 1.8;">
+                        @Model.Description
+                    </p>
+
+                </div>
+            }
+
+
+            @if (Model.Artist != null)
+            {
+                <div class="mt-5 p-4 bg-light rounded">
+
+                    <h5>
+                        L'artista
+                    </h5>
+
+                    <h6 class="mb-2">
+                        @Model.Artist.FirstName @Model.Artist.LastName
+                    </h6>
+
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Artist.Nationality))
+                    {
+                        <p class="mb-1">
+                            <strong>Nazionalità:</strong>
+                            @Model.Artist.Nationality
+                        </p>
+                    }
+
+
+                    @if (Model.Artist.BirthDate.HasValue)
+                    {
+                        <p class="mb-1">
+                            <strong>Nascita:</strong>
+                            @Model.Artist.BirthDate.Value.ToString("dd/MM/yyyy")
+                        </p>
+                    }
+
+
+                    @if (Model.Artist.DeathDate.HasValue)
+                    {
+                        <p class="mb-0">
+                            <strong>Morte:</strong>
+                            @Model.Artist.DeathDate.Value.ToString("dd/MM/yyyy")
+                        </p>
+                    }
+
+                </div>
+            }
+
+
+            <div class="mt-4 d-flex gap-2 flex-wrap">
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-outline-primary">
+                    Modifica
+                </a>
+
+                <a asp-action="Delete"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-outline-danger">
+                    Elimina
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>

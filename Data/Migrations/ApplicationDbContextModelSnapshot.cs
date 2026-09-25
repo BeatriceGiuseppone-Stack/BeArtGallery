@@ -98,6 +98,80 @@ namespace BeArtGallery.Data.Migrations
                     b.ToTable("Artworks");
                 });
 
+            modelBuilder.Entity("BeArtGallery.Models.Booking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GalleryActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfParticipants")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GalleryActivityId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.GalleryActivity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("DurationMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("MaxParticipants")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GalleryActivities");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -311,6 +385,25 @@ namespace BeArtGallery.Data.Migrations
                     b.Navigation("Artist");
                 });
 
+            modelBuilder.Entity("BeArtGallery.Models.Booking", b =>
+                {
+                    b.HasOne("BeArtGallery.Models.GalleryActivity", "GalleryActivity")
+                        .WithMany("Bookings")
+                        .HasForeignKey("GalleryActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GalleryActivity");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -365,6 +458,11 @@ namespace BeArtGallery.Data.Migrations
             modelBuilder.Entity("BeArtGallery.Models.Artist", b =>
                 {
                     b.Navigation("Artworks");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.GalleryActivity", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618
         }
