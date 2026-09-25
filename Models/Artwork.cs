@@ -25,6 +25,6 @@ namespace BeArtGallery.Models
         [Required]
         public int ArtistId { get; set; }
 
-        public Artist Artist { get; set; } = null!;
+        public Artist? Artist { get; set; }
     }
 }

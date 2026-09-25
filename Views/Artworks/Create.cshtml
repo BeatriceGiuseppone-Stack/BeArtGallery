@@ -1,0 +1,120 @@
+@model BeArtGallery.Models.Artwork
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Artwork</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create"
+              method="post"
+              enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Year" class="control-label"></label>
+                <input asp-for="Year" class="form-control" />
+                <span asp-validation-for="Year" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Technique" class="control-label"></label>
+                <input asp-for="Technique" class="form-control" />
+                <span asp-validation-for="Technique" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="imageFile" class="control-label">
+                    Immagine dell'opera
+                </label>
+
+                <input type="file"
+                       id="imageFile"
+                       name="imageFile"
+                       class="form-control"
+                       accept="image/jpeg,image/png,image/webp" />
+
+                @Html.ValidationMessage(
+                    "imageFile",
+                    "",
+                    new { @class = "text-danger" })
+
+                <div class="form-text">
+                    Formati supportati: JPG, PNG e WEBP. Dimensione massima 5 MB.
+                </div>
+            </div>
+            <div class="mb-3">
+                <img id="imagePreview"
+                     src=""
+                     alt="Anteprima dell'opera selezionata"
+                     class="img-fluid rounded d-none"
+                     style="max-height: 350px;" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="IsOnDisplay" class="control-label"></label>
+                <input asp-for="IsOnDisplay" class="form-check-input" />
+                <span asp-validation-for="IsOnDisplay" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ArtistId" class="control-label">Artist</label>
+
+                <select asp-for="ArtistId"
+                        class="form-control"
+                        asp-items="ViewBag.ArtistId">
+                    <option value="">-- Select artist --</option>
+                </select>
+
+                <span asp-validation-for="ArtistId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const imageInput = document.getElementById("imageFile");
+        const imagePreview = document.getElementById("imagePreview");
+
+        imageInput.addEventListener("change", function () {
+
+            const file = this.files[0];
+
+            if (!file) {
+                imagePreview.src = "";
+                imagePreview.classList.add("d-none");
+                return;
+            }
+
+            imagePreview.src = URL.createObjectURL(file);
+            imagePreview.classList.remove("d-none");
+        });
+    </script>
+}
