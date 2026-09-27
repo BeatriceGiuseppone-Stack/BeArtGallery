@@ -1,0 +1,200 @@
+@using BeArtGallery.Models.Enums
+@model BeArtGallery.Models.GalleryActivity
+
+@{
+    ViewData["Title"] = "Crea attività";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <a asp-action="Index"
+           class="text-decoration-none text-dark">
+            ← Torna a visite ed eventi
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <h1 class="h3 mb-2">
+                        Crea visita o evento
+                    </h1>
+
+                    <p class="text-muted mb-4">
+                        Inserisci le informazioni dell'attività che sarà pubblicata nella galleria.
+                    </p>
+
+                    <form asp-action="Create" method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Title"
+                                   class="form-label">
+                                Titolo
+                            </label>
+
+                            <input asp-for="Title"
+                                   class="form-control"
+                                   placeholder="Es. Visita guidata - Van Gogh e il Post-Impressionismo" />
+
+                            <span asp-validation-for="Title"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description"
+                                   class="form-label">
+                                Descrizione
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Descrivi brevemente la visita o l'evento...">
+                            </textarea>
+
+                            <span asp-validation-for="Description"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ActivityType"
+                                   class="form-label">
+                                Tipo di attività
+                            </label>
+
+                            <select asp-for="ActivityType"
+                                    asp-items="Html.GetEnumSelectList<ActivityType>()"
+                                    class="form-select">
+
+                                <option value="">
+                                    -- Seleziona il tipo --
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="ActivityType"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="StartDateTime"
+                                   class="form-label">
+                                Data e ora
+                            </label>
+
+                            <input asp-for="StartDateTime"
+                                   type="datetime-local"
+                                   class="form-control" />
+
+                            <span asp-validation-for="StartDateTime"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DurationMinutes"
+                                       class="form-label">
+                                    Durata in minuti
+                                </label>
+
+                                <input asp-for="DurationMinutes"
+                                       type="number"
+                                       min="15"
+                                       max="480"
+                                       class="form-control" />
+
+                                <span asp-validation-for="DurationMinutes"
+                                      class="text-danger">
+                                </span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MaxParticipants"
+                                       class="form-label">
+                                    Numero massimo partecipanti
+                                </label>
+
+                                <input asp-for="MaxParticipants"
+                                       type="number"
+                                       min="1"
+                                       max="500"
+                                       class="form-control" />
+
+                                <span asp-validation-for="MaxParticipants"
+                                      class="text-danger">
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Location"
+                                   class="form-label">
+                                Luogo
+                            </label>
+
+                            <input asp-for="Location"
+                                   class="form-control"
+                                   placeholder="Es. Sala 1" />
+
+                            <span asp-validation-for="Location"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+                        <div class="form-check mb-4">
+
+                            <input asp-for="IsActive"
+                                   class="form-check-input" />
+
+                            <label asp-for="IsActive"
+                                   class="form-check-label">
+                                Attività attiva
+                            </label>
+
+                            <span asp-validation-for="IsActive"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <div class="d-flex gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-dark">
+                                Crea attività
+                            </button>
+
+                            <a asp-action="Index"
+                               class="btn btn-outline-secondary">
+                                Annulla
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -2,7 +2,7 @@
 {
     public enum ActivityType
     {
-        Visit = 1,
-        Event = 2
+        Visita = 1,
+        Evento = 2
     }
 }
