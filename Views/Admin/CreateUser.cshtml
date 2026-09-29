@@ -1,0 +1,158 @@
+﻿@model BeArtGallery.ViewModels.CreateUserViewModel
+@using BeArtGallery.Authorization
+
+@{
+    ViewData["Title"] = "Crea utente";
+}
+
+<div class="container py-5">
+
+    <div class="mb-4">
+
+        <a asp-action="Users"
+           class="text-decoration-none text-dark">
+            ← Torna alla gestione utenti
+        </a>
+
+    </div>
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6 col-md-8">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h1 class="h3 mb-2">
+                        Crea nuovo utente
+                    </h1>
+
+                    <p class="text-muted mb-4">
+                        Crea un account e assegna il ruolo iniziale.
+                    </p>
+
+
+                    <form asp-action="CreateUser"
+                          method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label asp-for="Email"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="Email"
+                                   class="form-control"
+                                   placeholder="utente@email.it" />
+
+                            <span asp-validation-for="Email"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label asp-for="Password"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="Password"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Password"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label asp-for="ConfirmPassword"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="ConfirmPassword"
+                                   class="form-control" />
+
+                            <span asp-validation-for="ConfirmPassword"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="Role"
+                                   class="form-label">
+                                Ruolo
+                            </label>
+
+                            <select asp-for="Role"
+                                    class="form-select">
+
+                                <option value="">
+                                    -- Seleziona il ruolo --
+                                </option>
+
+                                <option value="@RoleNames.Visitore">
+                                    Visitore
+                                </option>
+
+                                <option value="@RoleNames.Staff">
+                                    Staff
+                                </option>
+
+                                <option value="@RoleNames.Admin">
+                                    Admin
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="Role"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="d-flex gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-dark">
+                                Crea utente
+                            </button>
+
+                            <a asp-action="Users"
+                               class="btn btn-outline-secondary">
+                                Annulla
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

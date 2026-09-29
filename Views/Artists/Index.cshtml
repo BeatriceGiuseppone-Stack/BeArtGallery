@@ -1,71 +1,122 @@
 @model IEnumerable<BeArtGallery.Models.Artist>
+@using BeArtGallery.Authorization
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Artisti";
 }
 
-<h1>Index</h1>
+<div class="container py-4">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nationality)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BirthDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeathDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Biography)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Artworks)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Nationality)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.BirthDate)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.DeathDate)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Biography)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Artworks)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="mb-1">Artisti</h1>
+
+            <p class="text-muted mb-0">
+                Artisti presenti nel catalogo di BeArtGallery.
+            </p>
+        </div>
+
+        @if (User.IsInRole(RoleNames.Staff) ||
+             User.IsInRole(RoleNames.Admin))
+        {
+            <a asp-action="Create"
+               class="btn btn-dark">
+                Aggiungi artista
+            </a>
+        }
+
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-light border">
+            Non sono ancora presenti artisti.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+
+            <table class="table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>Nazionalità</th>
+                        <th>Nascita</th>
+                        <th>Morte</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                @item.FirstName
+                            </td>
+
+                            <td>
+                                @item.LastName
+                            </td>
+
+                            <td>
+                                @item.Nationality
+                            </td>
+
+                            <td>
+                                @if (item.BirthDate.HasValue)
+                                {
+                                    @item.BirthDate.Value.ToString("dd/MM/yyyy")
+                                }
+                            </td>
+
+                            <td>
+                                @if (item.DeathDate.HasValue)
+                                {
+                                    @item.DeathDate.Value.ToString("dd/MM/yyyy")
+                                }
+                            </td>
+
+                            <td class="text-end">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-outline-dark btn-sm">
+                                    Dettagli
+                                </a>
+
+                                @if (User.IsInRole(RoleNames.Staff) ||
+                                     User.IsInRole(RoleNames.Admin))
+                                {
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-outline-primary btn-sm">
+                                        Modifica
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-outline-danger btn-sm">
+                                        Elimina
+                                    </a>
+                                }
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>

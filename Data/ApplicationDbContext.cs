@@ -6,7 +6,7 @@ namespace BeArtGallery.Data
 {
     public class ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options)
-        : IdentityDbContext(options)
+        : IdentityDbContext<ApplicationUser>(options)
     {
         public DbSet<Artist> Artists { get; set; }
 

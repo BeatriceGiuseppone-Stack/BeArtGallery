@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeArtGallery.Models;
 using BeArtGallery.Data;
+using Microsoft.AspNetCore.Authorization;
+using BeArtGallery.Authorization;
 
 public class ArtworksController : Controller
 {
@@ -62,6 +64,7 @@ public class ArtworksController : Controller
 
 
     // GET: Artworks/Create
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Create()
     {
         await LoadArtistsAsync();
@@ -73,6 +76,7 @@ public class ArtworksController : Controller
     // POST: Artworks/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Create(
         [Bind("Id,Title,Year,Technique,Description,IsOnDisplay,ArtistId")]
         Artwork artwork,
@@ -109,6 +113,7 @@ public class ArtworksController : Controller
 
 
     // GET: Artworks/Edit/5
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -132,6 +137,7 @@ public class ArtworksController : Controller
     // POST: Artworks/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Edit(
         int? id,
         [Bind("Id,Title,Year,Technique,Description,IsOnDisplay,ArtistId")]
@@ -211,6 +217,7 @@ public class ArtworksController : Controller
 
 
     // GET: Artworks/Delete/5
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -234,6 +241,7 @@ public class ArtworksController : Controller
     // POST: Artworks/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> DeleteConfirmed(int? id)
     {
         var artwork = await _context.Artworks.FindAsync(id);

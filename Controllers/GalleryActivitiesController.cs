@@ -1,9 +1,11 @@
+using BeArtGallery.Authorization;
+using BeArtGallery.Data;
+using BeArtGallery.Models;
+using BeArtGallery.Models.Enums;
+using BeArtGallery.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BeArtGallery.Models;
-using BeArtGallery.Data;
-using BeArtGallery.ViewModels;
-using BeArtGallery.Models.Enums;
 
 public class GalleryActivitiesController : Controller
 {
@@ -77,6 +79,7 @@ public class GalleryActivitiesController : Controller
         return View(activity);
     }
     // GET: GalleryActivities/Create
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public IActionResult Create()
     {
         return View();
@@ -85,6 +88,7 @@ public class GalleryActivitiesController : Controller
     // POST: GalleryActivities/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Create(
         [Bind(
             "Id," +
@@ -111,6 +115,7 @@ public class GalleryActivitiesController : Controller
     }
 
     // GET: GalleryActivities/Edit/5
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -132,6 +137,7 @@ public class GalleryActivitiesController : Controller
     // POST: GalleryActivities/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Edit(
         int? id,
         [Bind(
@@ -176,6 +182,7 @@ public class GalleryActivitiesController : Controller
     }
 
     // GET: GalleryActivities/Delete/5
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -198,6 +205,7 @@ public class GalleryActivitiesController : Controller
     // POST: GalleryActivities/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> DeleteConfirmed(int? id)
     {
         var galleryActivity =

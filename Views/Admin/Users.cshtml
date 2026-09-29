@@ -1,0 +1,218 @@
+﻿@model IEnumerable<BeArtGallery.ViewModels.UserManagementViewModel>
+@using BeArtGallery.Authorization
+
+@{
+    ViewData["Title"] = "Gestione utenti";
+}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-start mb-4">
+
+        <div>
+            <h1 class="display-6 fw-semibold mb-2">
+                Gestione utenti
+            </h1>
+
+            <p class="text-muted mb-0">
+                Visualizza gli utenti registrati, gestisci i ruoli
+                e reimposta le password.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="CreateUser"
+           class="btn btn-dark">
+            Nuovo utente
+        </a>
+
+    </div>
+
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-light border">
+            Non sono presenti utenti registrati.
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table align-middle mb-0">
+
+                        <thead class="table-light">
+
+                            <tr>
+                                <th class="ps-4">
+                                    Email
+                                </th>
+
+                                <th>
+                                    Ruolo attuale
+                                </th>
+
+                                <th>
+                                    Azioni
+                                </th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var user in Model)
+                            {
+                                <tr>
+
+                                    <!-- EMAIL -->
+                                    <td class="ps-4">
+                                        @user.Email
+                                    </td>
+
+
+                                    <!-- RUOLO ATTUALE -->
+                                    <td>
+
+                                        @if (user.Role == RoleNames.Admin)
+                                        {
+                                            <span class="badge bg-danger">
+                                                Admin
+                                            </span>
+                                        }
+                                        else if (user.Role == RoleNames.Staff)
+                                        {
+                                            <span class="badge bg-primary">
+                                                Staff
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                Visitore
+                                            </span>
+                                        }
+
+                                    </td>
+
+
+                                    <!-- AZIONI -->
+                                    <td>
+
+                                        <div class="d-flex flex-wrap gap-2 align-items-center">
+
+                                            <!-- MODIFICA RUOLO -->
+                                            <form asp-controller="Admin"
+                                                  asp-action="ChangeRole"
+                                                  method="post"
+                                                  class="d-flex gap-2">
+
+                                                <input type="hidden"
+                                                       name="userId"
+                                                       value="@user.Id" />
+
+                                                <select name="role"
+                                                        class="form-select"
+                                                        style="min-width: 140px;">
+
+                                                    @if (user.Role == RoleNames.Visitore)
+                                                    {
+                                                        <option value="@RoleNames.Visitore"
+                                                                selected>
+                                                            Visitore
+                                                        </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@RoleNames.Visitore">
+                                                            Visitore
+                                                        </option>
+                                                    }
+
+
+                                                    @if (user.Role == RoleNames.Staff)
+                                                    {
+                                                        <option value="@RoleNames.Staff"
+                                                                selected>
+                                                            Staff
+                                                        </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@RoleNames.Staff">
+                                                            Staff
+                                                        </option>
+                                                    }
+
+
+                                                    @if (user.Role == RoleNames.Admin)
+                                                    {
+                                                        <option value="@RoleNames.Admin"
+                                                                selected>
+                                                            Admin
+                                                        </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@RoleNames.Admin">
+                                                            Admin
+                                                        </option>
+                                                    }
+
+                                                </select>
+
+                                                <button type="submit"
+                                                        class="btn btn-dark">
+                                                    Aggiorna
+                                                </button>
+
+                                            </form>
+
+
+                                            <!-- RESET PASSWORD -->
+                                            <a asp-controller="Admin"
+                                               asp-action="ResetPassword"
+                                               asp-route-userId="@user.Id"
+                                               class="btn btn-outline-secondary">
+                                                Reimposta password
+                                            </a>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

@@ -1,8 +1,10 @@
 
+using BeArtGallery.Authorization;
+using BeArtGallery.Data;
+using BeArtGallery.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BeArtGallery.Models;
-using BeArtGallery.Data;
 
 public class ArtistsController : Controller
 {
@@ -38,6 +40,7 @@ public class ArtistsController : Controller
     }
 
     // GET: ARTISTS/Create
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public IActionResult Create()
     {
         return View();
@@ -48,6 +51,7 @@ public class ArtistsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Nationality,BirthDate,DeathDate,Biography,Artworks")] Artist artist)
     {
         if (ModelState.IsValid)
@@ -60,6 +64,7 @@ public class ArtistsController : Controller
     }
 
     // GET: ARTISTS/Edit/5
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -80,6 +85,7 @@ public class ArtistsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Edit(int? id, [Bind("Id,FirstName,LastName,Nationality,BirthDate,DeathDate,Biography,Artworks")] Artist artist)
     {
         if (id != artist.Id)
@@ -111,6 +117,7 @@ public class ArtistsController : Controller
     }
 
     // GET: ARTISTS/Delete/5
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
@@ -131,6 +138,7 @@ public class ArtistsController : Controller
     // POST: ARTISTS/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> DeleteConfirmed(int? id)
     {
         var artist = await _context.Artists.FindAsync(id);

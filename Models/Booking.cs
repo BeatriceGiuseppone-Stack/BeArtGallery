@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BeArtGallery.Models.Enums;
 using Microsoft.AspNetCore.Identity;
+using BeArtGallery.Data;
 
 namespace BeArtGallery.Models
 {
@@ -16,7 +17,7 @@ namespace BeArtGallery.Models
         [Required]
         public string UserId { get; set; } = string.Empty;
 
-        public IdentityUser? User { get; set; }
+        public ApplicationUser? User { get; set; }
 
         [Range(1, 10)]
         public int NumberOfParticipants { get; set; } = 1;

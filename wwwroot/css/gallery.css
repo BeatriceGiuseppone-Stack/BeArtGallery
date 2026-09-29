@@ -1,0 +1,232 @@
+﻿/* BeArtGallery – tema "parete da galleria"
+   Si carica DOPO site.css: sovrascrive solo l'aspetto, non la struttura. */
+
+:root {
+    --wall: #fbfbfa; /* parete */
+    --ink: #1c1e22; /* testo */
+    --stone: #6a6e75; /* testo secondario */
+    --hairline: #e3e4e6; /* filetti */
+    --verdigris: #2c4a45; /* accento: link, focus, pulsanti */
+    --verdigris-dark: #1f3632;
+    --font-display: "Bodoni Moda", "Didot", Georgia, serif;
+    --font-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-body-bg: var(--wall);
+    --bs-body-color: var(--ink);
+    --bs-body-font-family: var(--font-body);
+    --bs-link-color: var(--verdigris);
+    --bs-link-hover-color: var(--verdigris-dark);
+    --bs-border-color: var(--hairline);
+    --bs-primary: var(--verdigris);
+    --bs-primary-rgb: 44, 74, 69;
+}
+
+html {
+    font-size: 16px;
+    scroll-padding-top: 5rem;
+}
+
+.gallery-body {
+    background: var(--wall);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+.gallery-container {
+    max-width: 1180px;
+}
+
+/* Titoli */
+h1, h2, h3, .display-4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+}
+
+h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 1.25rem;
+}
+
+h2 {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+
+h3 {
+    font-size: 1.35rem;
+}
+
+h4, h5, h6 {
+    font-family: var(--font-body);
+    font-weight: 600;
+}
+
+p, li, td, dd {
+    max-width: 70ch;
+}
+
+table p, table li, table td {
+    max-width: none;
+}
+
+a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+}
+
+/* Navbar */
+.gallery-header .navbar {
+    background: var(--wall) !important;
+    border-bottom: 1px solid var(--hairline) !important;
+    box-shadow: none !important;
+    padding: 1.1rem 0;
+}
+
+.navbar-brand {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+}
+
+.navbar .nav-link {
+    color: var(--stone) !important;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.4rem 0.9rem;
+    border-bottom: 1px solid transparent;
+    transition: color .15s ease, border-color .15s ease;
+}
+
+    .navbar .nav-link:hover,
+    .navbar .nav-link:focus-visible {
+        color: var(--ink) !important;
+        border-bottom-color: var(--ink);
+    }
+
+.navbar-toggler {
+    border-color: var(--hairline);
+}
+
+/* Bottoni e form */
+.btn {
+    border-radius: 0;
+    font-weight: 500;
+    padding: 0.55rem 1.25rem;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--verdigris);
+    --bs-btn-border-color: var(--verdigris);
+    --bs-btn-hover-bg: var(--verdigris-dark);
+    --bs-btn-hover-border-color: var(--verdigris-dark);
+    --bs-btn-active-bg: var(--verdigris-dark);
+    --bs-btn-active-border-color: var(--verdigris-dark);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--verdigris);
+    --bs-btn-border-color: var(--verdigris);
+    --bs-btn-hover-bg: var(--verdigris);
+    --bs-btn-hover-border-color: var(--verdigris);
+}
+
+.form-control, .form-select {
+    border-radius: 0;
+    border-color: #c9cbcf;
+    background-color: #fff;
+}
+
+.form-label {
+    font-weight: 500;
+    font-size: 0.92rem;
+}
+
+:focus-visible,
+.btn:focus-visible,
+.form-control:focus,
+.form-select:focus,
+.navbar-toggler:focus {
+    outline: 2px solid var(--verdigris);
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+/* Card e tabelle: cornice da opera, niente ombre */
+.card {
+    border: 1px solid var(--hairline);
+    border-radius: 0;
+    background: #fff;
+    box-shadow: none;
+}
+
+.card-img-top {
+    border-radius: 0;
+}
+
+.card-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+}
+
+.table {
+    --bs-table-bg: transparent;
+}
+
+    .table > :not(caption) > * > * {
+        padding: 0.85rem 0.75rem;
+        border-bottom-color: var(--hairline);
+    }
+
+    .table thead th {
+        font-weight: 600;
+        border-bottom: 1px solid var(--ink);
+    }
+
+.alert {
+    border-radius: 0;
+}
+
+/* Footer */
+.footer {
+    position: static;
+    line-height: 1.6;
+    padding: 2rem 0;
+    margin-top: 3rem;
+    white-space: normal;
+    border-top: 1px solid var(--hairline) !important;
+    color: var(--stone) !important;
+    font-size: 0.9rem;
+}
+
+/* Salta al contenuto */
+.skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    background: var(--ink);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    z-index: 2000;
+}
+
+    .skip-link:focus {
+        top: 1rem;
+    }
+
+@media (max-width: 575.98px) {
+    .navbar .nav-link {
+        padding: 0.6rem 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
