@@ -1,0 +1,97 @@
+﻿@model BeArtGallery.ViewModels.CancelActivityViewModel
+
+@{
+    ViewData["Title"] = "Annulla attività";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h1 class="h3 mb-3">
+                        Annulla attività
+                    </h1>
+
+                    <div class="alert alert-warning">
+
+                        <strong>@Model.Title</strong>
+
+                        <div class="mt-2">
+                            @Model.StartDateTime.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+
+                        <div class="mt-3">
+                            Prenotazioni confermate:
+                            <strong>@Model.ConfirmedBookings</strong>
+                        </div>
+
+                        <div>
+                            Partecipanti coinvolti:
+                            <strong>@Model.ConfirmedParticipants</strong>
+                        </div>
+
+                    </div>
+
+                    @if (Model.ConfirmedBookings > 0)
+                    {
+                        <p class="text-muted">
+                            Confermando l'annullamento, tutte le prenotazioni
+                            confermate verranno annullate automaticamente.
+                        </p>
+                    }
+
+                    <form asp-action="Cancel"
+                          method="post">
+
+                        <input asp-for="ActivityId"
+                               type="hidden" />
+
+                        <div class="mb-4">
+
+                            <label asp-for="CancellationReason"
+                                   class="form-label">
+                            </label>
+
+                            <textarea asp-for="CancellationReason"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Es. indisponibilità della guida">
+                            </textarea>
+
+                            <span asp-validation-for="CancellationReason"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-danger">
+                            Annulla attività
+                        </button>
+
+                        <a asp-action="Index"
+                           class="btn btn-outline-secondary">
+                            Torna indietro
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

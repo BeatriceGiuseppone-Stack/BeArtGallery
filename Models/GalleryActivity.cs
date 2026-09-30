@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BeArtGallery.Data;
 using BeArtGallery.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BeArtGallery.Models
 {
@@ -33,5 +34,16 @@ namespace BeArtGallery.Models
 
         public ICollection<Booking> Bookings { get; set; }
             = new List<Booking>();
+
+        public GalleryActivityStatus Status { get; set; } = GalleryActivityStatus.Scheduled;
+
+        public DateTime? CancelledAt { get; set; }
+
+        public string? CancelledByUserId { get; set; }
+
+        public ApplicationUser? CancelledByUser { get; set; }
+
+        [MaxLength(500)]
+        public string? CancellationReason { get; set; }
     }
 }

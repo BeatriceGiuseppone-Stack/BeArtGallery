@@ -92,6 +92,17 @@
 
                         </li>
 
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"
+                                   asp-controller="Bookings"
+                                   asp-action="Index">
+                                    Le mie prenotazioni
+                                </a>
+                            </li>
+                        }
+
                         @if (User.IsInRole(RoleNames.Staff) ||
                              User.IsInRole(RoleNames.Admin))
                         {
@@ -104,6 +115,14 @@
                                 </a>
 
                             </li>
+
+                             <li class="nav-item">
+                                 <a class="nav-link text-dark"
+                                    asp-controller="Bookings"
+                                    asp-action="Manage">
+                                     Gestione prenotazioni
+                                 </a>
+                             </li>
                         }
 
                         @if (User.IsInRole(RoleNames.Admin))

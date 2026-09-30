@@ -1,0 +1,368 @@
+﻿@model BeArtGallery.ViewModels.BookingManagementPageViewModel
+@using BeArtGallery.Models.Enums
+
+@{
+    ViewData["Title"] = "Gestione prenotazioni";
+}
+
+<div class="container py-5">
+
+    <!-- INTESTAZIONE -->
+    <div class="mb-4">
+
+        <h1 class="display-6 fw-semibold mb-2">
+            Gestione prenotazioni
+        </h1>
+
+        <p class="text-muted mb-0">
+            Visualizza e filtra le prenotazioni ricevute
+            per visite ed eventi.
+        </p>
+
+    </div>
+
+    <!-- MESSAGGI -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- FILTRI -->
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form asp-controller="Bookings"
+                  asp-action="Manage"
+                  method="get">
+
+                <div class="row g-3 align-items-end">
+
+                    <!-- ATTIVITÀ -->
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="form-label">
+                            Attività
+                        </label>
+
+                        <select name="activityId"
+                                class="form-select">
+
+                            <option value="">
+                                Tutte le attività
+                            </option>
+
+                            @foreach (var activity in Model.Activities)
+                            {
+                                if (Model.ActivityId == activity.Id)
+                                {
+                                    <option value="@activity.Id"
+                                            selected>
+                                        @activity.Title
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option value="@activity.Id">
+                                        @activity.Title
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <!-- STATO -->
+                    <div class="col-lg-2 col-md-6">
+
+                        <label class="form-label">
+                            Stato
+                        </label>
+
+                        <select name="status"
+                                class="form-select">
+
+                            <option value="">
+                                Tutti
+                            </option>
+
+                            @if (Model.Status == BookingStatus.Confirmed)
+                            {
+                                <option value="@BookingStatus.Confirmed"
+                                        selected>
+                                    Confermata
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@BookingStatus.Confirmed">
+                                    Confermata
+                                </option>
+                            }
+
+                            @if (Model.Status == BookingStatus.Cancelled)
+                            {
+                                <option value="@BookingStatus.Cancelled"
+                                        selected>
+                                    Annullata
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@BookingStatus.Cancelled">
+                                    Annullata
+                                </option>
+                            }
+
+                        </select>
+
+                    </div>
+
+                    <!-- DATA DA -->
+                    <div class="col-lg-2 col-md-6">
+
+                        <label class="form-label">
+                            Dal
+                        </label>
+
+                        <input type="date" name="fromDate" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+
+                    </div>
+
+                    <!-- DATA A -->
+                    <div class="col-lg-2 col-md-6">
+
+                        <label class="form-label">
+                            Al
+                        </label>
+
+                        <input type="date" name="toDate" value="@(Model.ToDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+
+                    </div>
+
+                    <!-- EMAIL VISITATORE -->
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="form-label">
+                            Email visitatore
+                        </label>
+
+                        <input type="text" name="userEmail" value="@Model.UserEmail" class="form-control" placeholder="Cerca per email..." />
+
+                    </div>
+
+                    <!-- PULSANTI FILTRI -->
+                    <div class="col-12">
+
+                        <div class="d-flex flex-wrap gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-dark">
+                                Filtra
+                            </button>
+
+                            <a asp-controller="Bookings"
+                               asp-action="Manage"
+                               class="btn btn-outline-secondary">
+                                Azzera filtri
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- RISULTATI -->
+    @if (!Model.Bookings.Any())
+    {
+        <div class="alert alert-light border">
+
+            <strong>
+                Nessuna prenotazione trovata.
+            </strong>
+
+            <div class="text-muted mt-1">
+                Non ci sono prenotazioni che corrispondono
+                ai filtri selezionati.
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table align-middle mb-0">
+
+                        <thead class="table-light">
+
+                            <tr>
+                                <th class="ps-4">
+                                    Utente
+                                </th>
+
+                                <th>
+                                    Attività
+                                </th>
+
+                                <th>
+                                    Data attività
+                                </th>
+
+                                <th class="text-center">
+                                    Partecipanti
+                                </th>
+
+                                <th>
+                                    Prenotata il
+                                </th>
+
+                                <th>
+                                    Stato
+                                </th>
+
+                                <th class="pe-4">
+                                    Azioni
+                                </th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            @foreach (var booking in Model.Bookings)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+
+                                        <div class="fw-semibold">
+                                            @booking.UserEmail
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+
+                                        <div class="fw-semibold">
+                                            @booking.ActivityTitle
+                                        </div>
+
+                                        <small class="text-muted">
+                                            @if (booking.ActivityType == ActivityType.Visita)
+                                            {
+                                                <span>Visita</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Evento</span>
+                                            }
+                                        </small>
+
+                                        @if (!string.IsNullOrWhiteSpace(
+                                            booking.Location))
+                                        {
+                                            <div>
+                                                <small class="text-muted">
+                                                    @booking.Location
+                                                </small>
+                                            </div>
+                                        }
+
+                                    </td>
+
+                                    <td>
+
+                                        <div>
+                                            @booking.StartDateTime.ToString("dd/MM/yyyy")
+                                        </div>
+
+                                        <small class="text-muted">
+                                            @booking.StartDateTime.ToString("HH:mm")
+                                        </small>
+
+                                    </td>
+
+                                    <td class="text-center">
+                                        @booking.NumberOfParticipants
+                                    </td>
+
+                                    <td>
+                                        @booking.BookingDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+
+                                    <td>
+                                        @if (booking.Status == BookingStatus.Confirmed)
+                                        {
+                                            <span class="badge bg-success">
+                                                Confermata
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">
+                                                Annullata
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="pe-4">
+
+                                        @if (booking.Status == BookingStatus.Confirmed &&
+                                             booking.StartDateTime > DateTime.Now)
+                                        {
+                                            <a asp-controller="Bookings"
+                                               asp-action="CancelByStaff"
+                                               asp-route-id="@booking.BookingId"
+                                               class="btn btn-sm btn-outline-danger">
+                                                Annulla
+                                            </a>
+                                        }
+                                        else if (booking.Status == BookingStatus.Cancelled)
+                                        {
+                                            <span class="text-muted small">
+                                                Nessuna azione
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">
+                                                Attività conclusa
+                                            </span>
+                                        }
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

@@ -4,13 +4,20 @@
 
 @{
     ViewData["Title"] = "Visite ed eventi";
+
+    var showCancelled = ViewBag.ShowCancelled != null && (bool)ViewBag.ShowCancelled;
+
+    var cancelledCount = ViewBag.CancelledCount != null ? (int)ViewBag.CancelledCount : 0;
 }
 
 <div class="container py-5">
 
+    @* Intestazione della pagina *@
+
     <div class="d-flex justify-content-between align-items-start mb-5">
 
         <div>
+
             <h1 class="display-5 fw-semibold mb-2">
                 Visite ed eventi
             </h1>
@@ -18,23 +25,107 @@
             <p class="text-muted mb-0">
                 Scopri le attività in programma presso BeArtGallery.
             </p>
+
         </div>
 
-        @if (User.IsInRole(RoleNames.Staff) ||
-             User.IsInRole(RoleNames.Admin))
-        {
-            <a asp-action="Create"
-               class="btn btn-dark">
-                Nuova attività
-            </a>
-        }
+        <div class="d-flex gap-2 flex-wrap justify-content-end">
+
+            @* Pulsante per mostrare o nascondere le attività annullate *@
+
+            @if (cancelledCount > 0)
+            {
+                @if (!showCancelled)
+                {
+                    <a asp-controller="GalleryActivities"
+                       asp-action="Index"
+                       asp-route-showCancelled="true"
+                       class="btn btn-outline-secondary">
+
+                        Visualizza anche annullati (@cancelledCount)
+
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="GalleryActivities"
+                       asp-action="Index"
+                       asp-route-showCancelled="false"
+                       class="btn btn-outline-secondary">
+
+                        Nascondi annullati
+
+                    </a>
+                }
+            }
+
+            @* Creazione di una nuova attività disponibile solo per Staff e Admin *@
+
+            @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
+            {
+                <a asp-controller="GalleryActivities"
+                   asp-action="Create"
+                   class="btn btn-dark">
+
+                    Nuova attività
+
+                </a>
+            }
+
+        </div>
 
     </div>
+
+    @* Messaggi di conferma o errore *@
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mb-4">
+
+            @TempData["SuccessMessage"]
+
+        </div>
+    }
+
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mb-4">
+
+            @TempData["ErrorMessage"]
+
+        </div>
+    }
+
+    @* Avviso visualizzato quando sono incluse anche le attività annullate *@
+
+    @if (showCancelled)
+    {
+        <div class="alert alert-light border mb-4">
+
+            Stai visualizzando anche le attività annullate.
+
+        </div>
+    }
+
+    @* Nessuna attività disponibile *@
 
     @if (!Model.Any())
     {
         <div class="alert alert-light border">
-            Non ci sono visite o eventi in programma.
+
+            @if (showCancelled)
+            {
+                <span>
+                    Non ci sono visite o eventi in programma.
+                </span>
+            }
+            else
+            {
+                <span>
+                    Non ci sono visite o eventi disponibili in programma.
+                </span>
+            }
+
         </div>
     }
     else
@@ -49,77 +140,179 @@
 
                         <div class="card-body p-4">
 
+                            @* Tipo di attività e stato *@
+
                             <div class="mb-3">
 
                                 @if (item.ActivityType == ActivityType.Visita)
                                 {
                                     <span class="badge bg-dark">
+
                                         Visita
+
                                     </span>
                                 }
                                 else
                                 {
                                     <span class="badge bg-primary">
+
                                         Evento
+
+                                    </span>
+                                }
+
+
+                                @if (item.Status == GalleryActivityStatus.Cancelled)
+                                {
+                                    <span class="badge bg-danger ms-1">
+
+                                        Annullata
+
                                     </span>
                                 }
 
                             </div>
 
-                            <h2 class="h4 card-title">
+                            @* Titolo *@
+
+                            <h2 class="h4 card-title mb-3">
+
                                 @item.Title
+
                             </h2>
+
+                            @* Informazioni sull'annullamento *@
+
+                            @if (item.Status == GalleryActivityStatus.Cancelled)
+                            {
+                                <div class="alert alert-danger mb-3">
+
+                                    <div class="fw-semibold">
+
+                                        Attività annullata
+
+                                    </div>
+
+                                    @if (!string.IsNullOrWhiteSpace(item.CancellationReason))
+                                    {
+                                        <div class="mt-1">
+
+                                            <strong>
+                                                Motivo:
+                                            </strong>
+
+                                            @item.CancellationReason
+
+                                        </div>
+                                    }
+
+                                </div>
+                            }
+
+                            @* Descrizione *@
 
                             @if (!string.IsNullOrWhiteSpace(item.Description))
                             {
                                 <p class="text-muted">
+
                                     @item.Description
+
                                 </p>
                             }
 
                             <hr />
 
-                            <p class="mb-2">
-                                <strong>Data:</strong>
-                                @item.StartDateTime.ToString("dd/MM/yyyy")
-                            </p>
+                            @* Data *@
 
                             <p class="mb-2">
-                                <strong>Ora:</strong>
-                                @item.StartDateTime.ToString("HH:mm")
+
+                                <strong>
+                                    Data:
+                                </strong>
+
+                                @(item.StartDateTime.ToString("dd/MM/yyyy"))
+
                             </p>
 
+                            @* Ora *@
+
                             <p class="mb-2">
-                                <strong>Durata:</strong>
+
+                                <strong>
+                                    Ora:
+                                </strong>
+
+                                @(item.StartDateTime.ToString("HH:mm"))
+
+                            </p>
+
+                            @* Durata *@
+
+                            <p class="mb-2">
+
+                                <strong>
+                                    Durata:
+                                </strong>
+
                                 @item.DurationMinutes minuti
+
                             </p>
+
+                            @* Luogo *@
 
                             @if (!string.IsNullOrWhiteSpace(item.Location))
                             {
                                 <p class="mb-2">
-                                    <strong>Luogo:</strong>
+
+                                    <strong>
+                                        Luogo:
+                                    </strong>
+
                                     @item.Location
+
                                 </p>
                             }
 
-                            <p class="mb-3">
-                                <strong>Posti disponibili:</strong>
+                            @* Disponibilità dei posti *@
 
-                                @if (item.AvailablePlaces > 0)
-                                {
-                                    <span>
-                                        @item.AvailablePlaces
-                                        su
-                                        @item.MaxParticipants
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="text-danger fw-semibold">
-                                        Esaurito
-                                    </span>
-                                }
-                            </p>
+                            @if (item.Status == GalleryActivityStatus.Scheduled)
+                            {
+                                <p class="mb-0">
+
+                                    <strong>
+                                        Posti disponibili:
+                                    </strong>
+
+
+                                    @if (item.AvailablePlaces > 0)
+                                    {
+                                        <span>
+
+                                            @item.AvailablePlaces
+                                            su
+                                            @item.MaxParticipants
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger fw-semibold">
+
+                                            Esaurito
+
+                                        </span>
+                                    }
+
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="mb-0 text-danger fw-semibold">
+
+                                    Prenotazioni chiuse
+
+                                </p>
+                            }
 
                         </div>
 
@@ -127,26 +320,79 @@
 
                             <div class="d-flex gap-2 flex-wrap">
 
-                                <a asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-dark">
-                                    Scopri e prenota
-                                </a>
+                                @* Pulsante principale per il visitatore *@
 
-                                @if (User.IsInRole(RoleNames.Staff) ||
-                                     User.IsInRole(RoleNames.Admin))
+                                @if (item.Status == GalleryActivityStatus.Scheduled)
                                 {
-                                    <a asp-action="Edit"
+                                    <a asp-controller="GalleryActivities"
+                                       asp-action="Details"
                                        asp-route-id="@item.Id"
-                                       class="btn btn-outline-primary">
-                                        Modifica
-                                    </a>
+                                       class="btn btn-dark">
 
-                                    <a asp-action="Delete"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-outline-danger">
-                                        Elimina
+                                        Scopri e prenota
+
                                     </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="GalleryActivities"
+                                       asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-outline-dark">
+
+                                        Dettagli
+
+                                    </a>
+                                }
+
+                                @* Azioni riservate a Staff e Admin *@
+
+                                @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
+                                {
+
+                                    @* Modifica disponibile solo per attività future e programmate *@
+
+                                    @if (item.Status == GalleryActivityStatus.Scheduled && item.StartDateTime > DateTime.Now)
+                                    {
+                                        <a asp-controller="GalleryActivities"
+                                           asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary">
+
+                                            Modifica
+
+                                        </a>
+                                    }
+
+                                    @* Annullamento disponibile solo per attività future e programmate *@
+
+                                    @if (item.Status == GalleryActivityStatus.Scheduled && item.StartDateTime > DateTime.Now)
+                                    {
+                                        <a asp-controller="GalleryActivities"
+                                           asp-action="Cancel"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger">
+
+                                            Annulla attività
+
+                                        </a>
+                                    }
+
+                                    @* Eliminazione consentita solo se non esistono prenotazioni
+                                       e l'attività non è stata annullata *@
+
+                                    @if (!item.HasBookings && item.Status == GalleryActivityStatus.Scheduled)
+                                    {
+                                        <a asp-controller="GalleryActivities"
+                                           asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger">
+
+                                            Elimina
+
+                                        </a>
+                                    }
+
                                 }
 
                             </div>

@@ -26,5 +26,16 @@ namespace BeArtGallery.Models
 
         public BookingStatus Status { get; set; }
             = BookingStatus.Confirmed;
+
+        public DateTime? CancelledAt { get; set; }
+
+        public string? CancelledByUserId { get; set; }
+
+        public ApplicationUser? CancelledByUser { get; set; }
+
+        public BookingCancellationType? CancellationType { get; set; }
+
+        [MaxLength(500)]
+        public string? CancellationReason { get; set; }
     }
 }

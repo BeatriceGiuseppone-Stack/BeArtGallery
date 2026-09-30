@@ -3,6 +3,14 @@
 
 @{
     ViewData["Title"] = Model.Title;
+
+    var isCancelled = Model.Status == GalleryActivityStatus.Cancelled;
+
+    var isPast = Model.StartDateTime <= DateTime.Now;
+
+    var isSoldOut = Model.AvailablePlaces <= 0;
+
+    var canBook = !isCancelled && !isPast && !isSoldOut;
 }
 
 <div class="container py-5">
@@ -16,10 +24,8 @@
 
     <div class="row justify-content-center">
         <div class="col-lg-8">
-
             <div class="card shadow-sm border-0">
                 <div class="card-body p-5">
-
                     <div class="mb-3">
 
                         @if (Model.ActivityType == ActivityType.Visita)
@@ -35,11 +41,53 @@
                             </span>
                         }
 
+                        @if (isCancelled)
+                        {
+                            <span class="badge bg-danger ms-1">
+                                Annullata
+                            </span>
+                        }
+                        else if (isPast)
+                        {
+                            <span class="badge bg-secondary ms-1">
+                                Conclusa
+                            </span>
+                        }
+
                     </div>
 
                     <h1 class="display-6 fw-semibold mb-3">
                         @Model.Title
                     </h1>
+
+                    @if (isCancelled)
+                    {
+                        <div class="alert alert-danger mb-4">
+
+                            <h2 class="h5 mb-2">
+                                Attività annullata
+                            </h2>
+
+                            <p class="mb-0">
+                                Questa attività non è più disponibile
+                                e non è possibile effettuare nuove prenotazioni.
+                            </p>
+
+                            @if (!string.IsNullOrWhiteSpace(Model.CancellationReason))
+                            {
+                                <div class="mt-3">
+                                    <strong>
+                                        Motivo dell'annullamento:
+                                    </strong>
+
+                                    <div>
+                                        @Model.CancellationReason
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    }
 
                     @if (!string.IsNullOrWhiteSpace(Model.Description))
                     {
@@ -51,35 +99,57 @@
                     <hr class="my-4" />
 
                     <div class="row g-3">
-
                         <div class="col-md-6">
-                            <strong>Data</strong>
+                            <strong>
+                                Data
+                            </strong>
+
                             <div>
-                                @Model.StartDateTime.ToString("dd/MM/yyyy")
+                                @(Model.StartDateTime.ToString("dd/MM/yyyy"))
                             </div>
                         </div>
 
                         <div class="col-md-6">
-                            <strong>Ora</strong>
+                            <strong>
+                                Ora
+                            </strong>
+
                             <div>
-                                @Model.StartDateTime.ToString("HH:mm")
+                                @(Model.StartDateTime.ToString("HH:mm"))
                             </div>
                         </div>
 
                         <div class="col-md-6">
-                            <strong>Durata</strong>
+                            <strong>
+                                Durata
+                            </strong>
+
                             <div>
                                 @Model.DurationMinutes minuti
                             </div>
                         </div>
 
                         <div class="col-md-6">
-                            <strong>Luogo</strong>
+
+                            <strong>
+                                Luogo
+                            </strong>
+
                             <div>
-                                @Model.Location
+
+                                @if (!string.IsNullOrWhiteSpace(Model.Location))
+                                {
+                                    @Model.Location
+                                }
+                                else
+                                {
+                                    <span class="text-muted">
+                                        Non specificato
+                                    </span>
+                                }
+
                             </div>
                         </div>
-
                     </div>
 
                     <hr class="my-4" />
@@ -88,165 +158,227 @@
                         Prenotazione
                     </h2>
 
-                    <p>
-                        Posti disponibili:
-                        <strong id="availablePlaces">
-                            @Model.AvailablePlaces
-                        </strong>
-                        su @Model.MaxParticipants
-                    </p>
-
-                    @if (Model.AvailablePlaces <= 0)
+                    @if (isCancelled)
                     {
-                        <div class="alert alert-warning">
-                            Non ci sono più posti disponibili.
+                        <div class="alert alert-danger mb-0">
+                            Le prenotazioni per questa attività
+                            sono chiuse perché l'attività è stata annullata.
                         </div>
                     }
-                    else if (!(User.Identity?.IsAuthenticated ?? false))
+                    else if (isPast)
                     {
-                        <div class="alert alert-light border">
+                        <div class="alert alert-secondary mb-0">
+                            Questa attività è già conclusa
+                            e non è più possibile prenotare.
+                        </div>
+                    }
+                    else if (isSoldOut)
+                    {
+                        <p>
+                            Posti disponibili:
+                            <strong>0</strong>
+                            su @Model.MaxParticipants
+                        </p>
 
-                            Per effettuare una prenotazione devi accedere al tuo account.
+                        <div class="alert alert-warning mb-0">
+
+                            Non ci sono più posti disponibili.
 
                         </div>
-
-                        <a asp-area="Identity"
-                           asp-page="/Account/Login"
-                           asp-route-returnUrl="@Context.Request.Path"
-                           class="btn btn-dark">
-                            Accedi per prenotare
-                        </a>
                     }
                     else
                     {
-                        @Html.AntiForgeryToken()
+                        <p>
+                            Posti disponibili:
 
-                        <div class="mb-3">
-                            <label for="numberOfParticipants"
-                                   class="form-label">
-                                Numero partecipanti
-                            </label>
+                            <strong id="availablePlaces">
+                                @Model.AvailablePlaces
+                            </strong>
 
-                            <input type="number"
-                                   id="numberOfParticipants"
-                                   class="form-control"
-                                   value="1"
-                                   min="1"
-                                   max="10"
-                                   style="max-width: 150px;" />
-                        </div>
+                            su @Model.MaxParticipants
+                        </p>
 
-                        <button type="button"
-                                id="bookingButton"
-                                class="btn btn-dark">
-                            Prenota
-                        </button>
+                        @if (!(User.Identity?.IsAuthenticated ?? false))
+                        {
+                            <div class="alert alert-light border">
 
-                        <div id="bookingMessage"
-                             class="mt-3">
-                        </div>
+                                Per effettuare una prenotazione
+                                devi accedere al tuo account.
+
+                            </div>
+
+                            <a asp-area="Identity"
+                               asp-page="/Account/Login"
+                               asp-route-returnUrl="@Context.Request.Path"
+                               class="btn btn-dark">
+
+                                Accedi per prenotare
+                            </a>
+                        }
+
+                        else
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="mb-3">
+
+                                <label for="numberOfParticipants"
+                                       class="form-label">
+
+                                    Numero partecipanti
+                                </label>
+
+                                <input type="number" id="numberOfParticipants" class="form-control"
+                                       value="1" min="1" max="10" style="max-width: 150px;" />
+                            </div>
+
+                            <button type="button"
+                                    id="bookingButton"
+                                    class="btn btn-dark">
+
+                                Prenota
+                            </button>
+
+                            <div id="bookingMessage"
+                                 class="mt-3">
+                            </div>
+                        }
                     }
 
                 </div>
             </div>
-
         </div>
     </div>
-
 </div>
 
-@if (User.Identity?.IsAuthenticated ?? false)
+@if ((User.Identity?.IsAuthenticated ?? false) && canBook)
 {
     @section Scripts {
 
         <script>
+            const bookingButton = document.getElementById("bookingButton");
 
-            const bookingButton =
-                document.getElementById("bookingButton");
+            bookingButton?.addEventListener( "click",  async function () {
 
-            bookingButton?.addEventListener(
-                "click",
-                async function () {
+                    const participantsInput = document.getElementById("numberOfParticipants");
 
-                    const participants =
+                    const participants = parseInt(participantsInput.value);
+
+                    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+
+                    const message = document.getElementById("bookingMessage");
+
+                    if (isNaN(participants) ||  participants < 1 || participants > 10)
+                    {
+                        message.innerHTML = `<div class="alert alert-danger">
+                                Inserisci un numero di partecipanti
+                                compreso tra 1 e 10.
+                             </div>`;
+
+                        return;
+                    }
+
+                    const availablePlaces =
                         parseInt(
                             document.getElementById(
-                                "numberOfParticipants"
-                            ).value
+                                "availablePlaces"
+                            ).textContent
                         );
 
-                    const token =
-                        document.querySelector(
-                            'input[name="__RequestVerificationToken"]'
-                        ).value;
+                    if (participants > availablePlaces)
+                    {
+                        message.innerHTML =
+                            `<div class="alert alert-danger">
+                                I posti richiesti superano
+                                quelli disponibili.
+                             </div>`;
 
-                    const message =
-                        document.getElementById(
-                            "bookingMessage"
-                        );
+                        return;
+                    }
+
+                    if (!tokenInput)
+                    {
+                        message.innerHTML =
+                            `<div class="alert alert-danger">
+                                Impossibile completare
+                                la prenotazione.
+                             </div>`;
+
+                        return;
+                    }
+
+                    const token =  tokenInput.value;
 
                     bookingButton.disabled = true;
+                    bookingButton.textContent = "Prenotazione in corso...";
 
                     try {
 
-                        const response = await fetch(
-                            "/api/bookings",
-                            {
-                                method: "POST",
+                        const response = await fetch( "/api/bookings",
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json",
+                                        "RequestVerificationToken":  token
+                                    },
 
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    "RequestVerificationToken": token
-                                },
-
-                                body: JSON.stringify({
-                                    galleryActivityId: @Model.Id,
-                                    numberOfParticipants: participants
-                                })
-                            }
-                        );
+                                    body: JSON.stringify({
+                                        galleryActivityId: @Model.Id,
+                                        numberOfParticipants:
+                                            participants
+                                    })
+                                }
+                            );
 
                         const result = await response.json();
 
-                        if (response.ok) {
+                        if (response.ok)
+                        {
+                            message.innerHTML = `<div class="alert alert-success">${result.message} </div>`;
 
-                            message.innerHTML =
-                                `<div class="alert alert-success">
-                                    ${result.message}
-                                 </div>`;
+                            const available = document.getElementById("availablePlaces");
 
-                            const available =
-                                document.getElementById(
-                                    "availablePlaces"
-                                );
+                            const newAvailablePlaces = parseInt(available.textContent) - participants;
 
-                            available.textContent =
-                                parseInt(available.textContent)
-                                - participants;
+                            available.textContent = newAvailablePlaces;
+
+                            // Dopo una prenotazione riuscita
+                            // non permettiamo un secondo click.
+                            bookingButton.textContent = "Prenotazione effettuata";
+
+                            // Se non ci sono più posti,
+                            // disabilitiamo anche l'input.
+                            if (newAvailablePlaces <= 0)
+                            {
+                                participantsInput.disabled = true;
+                            }
                         }
-                        else {
-
-                            message.innerHTML =
-                                `<div class="alert alert-danger">
-                                    ${result.message}
-                                 </div>`;
+                        else
+                        {
+                            message.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
 
                             bookingButton.disabled = false;
-                        }
 
+                            bookingButton.textContent = "Prenota";
+                        }
                     }
-                    catch {
+                    catch (error)
+                    {
+                        console.error("Errore durante la prenotazione:", error);
 
                         message.innerHTML =
                             `<div class="alert alert-danger">
-                                Si è verificato un errore durante la prenotazione.
+                                Si è verificato un errore
+                                durante la prenotazione.
                              </div>`;
 
                         bookingButton.disabled = false;
+
+                        bookingButton.textContent = "Prenota";
                     }
+
                 });
-
         </script>
-
     }
 }

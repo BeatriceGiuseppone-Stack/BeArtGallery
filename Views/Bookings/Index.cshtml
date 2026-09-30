@@ -1,0 +1,342 @@
+﻿@model IEnumerable<BeArtGallery.ViewModels.MyBookingViewModel>
+@using BeArtGallery.Models.Enums
+
+@{
+    ViewData["Title"] = "Le mie prenotazioni";
+}
+
+@Html.AntiForgeryToken()
+
+<div class="container py-5">
+
+    <div class="mb-4">
+
+        <h1 class="display-6 fw-semibold mb-2">
+            Le mie prenotazioni
+        </h1>
+
+        <p class="text-muted">
+            Consulta le visite e gli eventi che hai prenotato.
+        </p>
+
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body p-5 text-center">
+
+                <h2 class="h5 mb-3">
+                    Non hai ancora effettuato prenotazioni
+                </h2>
+
+                <p class="text-muted mb-4">
+                    Consulta le visite e gli eventi disponibili
+                    e scegli quello a cui vuoi partecipare.
+                </p>
+
+                <a asp-controller="GalleryActivities"
+                   asp-action="Index"
+                   class="btn btn-dark">
+                    Scopri visite ed eventi
+                </a>
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+
+            @foreach (var booking in Model)
+            {
+                <div class="col-lg-6">
+
+                    <div class="card h-100 border-0 shadow-sm">
+
+                        <div class="card-body p-4">
+
+                            <div class="d-flex justify-content-between
+                                        align-items-start gap-3 mb-3">
+
+                                <div>
+
+                                    @if (booking.ActivityType == ActivityType.Visita)
+                                    {
+                                        <span class="badge bg-dark mb-2">
+                                            Visita
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-primary mb-2">
+                                            Evento
+                                        </span>
+                                    }
+
+                                    <h2 class="h4 mb-0">
+                                        @booking.ActivityTitle
+                                    </h2>
+
+                                </div>
+
+
+                                @if (booking.Status == BookingStatus.Confirmed)
+                                {
+                                    <span class="badge bg-success">
+                                        Confermata
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        Annullata
+                                    </span>
+                                }
+
+                            </div>
+
+                            <div class="mb-2">
+                                <strong>Data:</strong>
+                                @(booking.StartDateTime.ToString("dd/MM/yyyy"))
+                            </div>
+
+                            <div class="mb-2">
+                                <strong>Ora:</strong>
+                                @(booking.StartDateTime.ToString("HH:mm"))
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(booking.Location))
+                            {
+                                <div class="mb-2">
+                                    <strong>Luogo:</strong>
+                                    @booking.Location
+                                </div>
+                            }
+
+                            <div class="mb-2">
+                                <strong>Partecipanti:</strong>
+                                @booking.NumberOfParticipants
+                            </div>
+
+                            <div class="mb-3">
+
+                                <strong>
+                                    Prenotata il:
+                                </strong>
+
+                                @(booking.BookingDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))
+
+                            </div>
+
+                            @if (booking.Status == BookingStatus.Cancelled)
+                            {
+                               
+                                @if (booking.CancellationType == BookingCancellationType.User)
+                                {
+                                    <div class="alert alert-secondary mb-3">
+
+                                        <div class="fw-semibold">
+                                            Prenotazione annullata da te
+                                        </div>
+
+                                        @if (booking.CancelledAt.HasValue)
+                                        {
+                                            <div class="small mt-1">
+
+                                                Annullata il:
+
+                                                @(booking.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))
+
+                                            </div>
+                                        }
+
+                                    </div>
+                                }else if (booking.CancellationType == BookingCancellationType.StaffOrAdmin)
+                                {
+                                    <div class="alert alert-warning mb-3">
+
+                                        <div class="fw-semibold">
+                                            Prenotazione annullata dalla galleria
+                                        </div>
+
+                                        @if (!string.IsNullOrWhiteSpace(booking.CancellationReason))
+                                        {
+                                            <div class="mt-2">
+
+                                                <strong>Motivo:</strong>
+
+                                                @booking.CancellationReason
+
+                                            </div>
+                                        }
+
+                                        @if (booking.CancelledAt.HasValue)
+                                        {
+                                            <div class="small mt-2">
+
+                                                Annullata il:
+
+                                                @(booking.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))
+
+                                            </div>
+                                        }
+
+                                    </div>
+                                }
+                                else if (booking.CancellationType == BookingCancellationType.ActivityCancelled)
+                                {
+                                    <div class="alert alert-danger mb-3">
+
+                                        <div class="fw-semibold">
+                                            Attività annullata dalla galleria
+                                        </div>
+
+                                        <div class="mt-1">
+                                            La tua prenotazione è stata
+                                            annullata automaticamente perché
+                                            la visita o l'evento non avrà luogo.
+                                        </div>
+
+                                        @if (!string.IsNullOrWhiteSpace(booking.CancellationReason))
+                                        {
+                                            <div class="mt-2">
+
+                                                <strong>Motivo:</strong>
+
+                                                @booking.CancellationReason
+
+                                            </div>
+                                        }
+
+                                        @if (booking.CancelledAt.HasValue)
+                                        {
+                                            <div class="small mt-2">
+
+                                                Annullata il:
+
+                                                @(booking.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))
+
+                                            </div>
+                                        }
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-secondary mb-3">
+
+                                        <div class="fw-semibold">
+                                            Prenotazione annullata
+                                        </div>
+
+                                    </div>
+                                }
+                            }
+
+                            @if (booking.CanCancel)
+                            {
+                                <button type="button"
+                                        class="btn btn-outline-danger
+                                               cancel-booking-btn"
+                                        data-booking-id="@booking.BookingId">
+
+                                    Annulla prenotazione
+
+                                </button>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const buttons = document.querySelectorAll(".cancel-booking-btn");
+
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+
+                if (!tokenInput) {
+                    return;
+                }
+
+                const token = tokenInput.value;
+
+                buttons.forEach(function (button) {
+
+                    button.addEventListener( "click", async function () {
+
+                            const bookingId = button.dataset.bookingId;
+
+                            const confirmed = confirm("Sei sicuro di voler annullare questa prenotazione?");
+
+                            if (!confirmed) {
+                                return;
+                            }
+
+                            button.disabled = true;
+
+                            button.textContent =
+                                "Annullamento...";
+
+                            try {
+
+                                const response = await fetch( `/api/bookings/${bookingId}/cancel`,
+                                        {
+                                            method: "POST",
+                                            headers: { "RequestVerificationToken": token}
+                                        }
+                                    );
+
+                                const data = await response.json();
+
+                                if (!response.ok)
+                                {
+                                    alert(data.message ?? "Non è stato possibile annullare la prenotazione.");
+
+                                    button.disabled = false;
+
+                                    button.textContent = "Annulla prenotazione";
+
+                                    return;
+                                }
+
+                                window.location.reload();
+
+                            }
+                            catch (error)
+                            {
+                                console.error("Errore durante l'annullamento:", error);
+
+                                alert("Si è verificato un errore durante l'annullamento della prenotazione.");
+
+                                button.disabled = false;
+
+                                button.textContent = "Annulla prenotazione";
+                            }
+
+                        });
+
+                });
+
+            });
+
+    </script>
+
+}
