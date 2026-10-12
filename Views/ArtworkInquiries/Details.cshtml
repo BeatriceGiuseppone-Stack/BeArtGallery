@@ -1,0 +1,445 @@
+﻿@model BeArtGallery.ViewModels.ArtworkInquiryDetailsViewModel
+@using BeArtGallery.Models.Enums
+
+@{
+    ViewData["Title"] = "Dettaglio richiesta";
+}
+
+<div class="container py-5">
+
+    <div class="mb-5">
+
+        <a asp-action="Index"
+           class="gallery-back-link">
+
+            ← Torna alle richieste
+
+        </a>
+
+    </div>
+
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="gallery-management-note mb-5">
+
+            <div class="gallery-management-note-title">
+                Operazione completata
+            </div>
+
+            <p class="mb-0">
+                @TempData["SuccessMessage"]
+            </p>
+
+        </div>
+    }
+
+
+    <div class="row g-5">
+
+        <div class="col-lg-8">
+
+            <div class="gallery-eyebrow mb-3">
+                Richiesta #@Model.Id
+            </div>
+
+
+            <div class="d-flex
+                        align-items-start
+                        justify-content-between
+                        flex-wrap
+                        gap-3">
+
+                <div>
+
+                    <h1 class="inquiry-details-title">
+                        @Model.ArtworkTitle
+                    </h1>
+
+                    @if (!string.IsNullOrWhiteSpace(
+                        Model.ArtistName))
+                    {
+                        <p class="inquiry-details-artist">
+                            @Model.ArtistName
+                        </p>
+                    }
+
+                </div>
+
+
+                @switch (Model.Status)
+                {
+                    case ArtworkInquiryStatus.New:
+
+                        <span class="inquiry-status inquiry-status-new">
+                            Nuova
+                        </span>
+
+                        break;
+
+
+                    case ArtworkInquiryStatus.InProgress:
+
+                        <span class="inquiry-status inquiry-status-progress">
+                            In lavorazione
+                        </span>
+
+                        break;
+
+
+                    case ArtworkInquiryStatus.Closed:
+
+                        <span class="inquiry-status inquiry-status-closed">
+                            Chiusa
+                        </span>
+
+                        break;
+                }
+
+            </div>
+
+
+            <div class="inquiry-details-section">
+
+                <div class="gallery-eyebrow mb-3">
+                    Richiedente
+                </div>
+
+
+                <div class="inquiry-details-data">
+
+                    <div>
+
+                        <span>
+                            Nome
+                        </span>
+
+                        <strong>
+                            @Model.Name
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Email
+                        </span>
+
+                        <a href="mailto:@Model.Email">
+                            @Model.Email
+                        </a>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Tipo
+                        </span>
+
+                        <strong>
+
+                            @if (Model.IsRegisteredUser)
+                            {
+                                <text>
+                                    Utente registrato
+                                </text>
+                            }
+                            else
+                            {
+                                <text>
+                                    Visitatore
+                                </text>
+                            }
+
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Data richiesta
+                        </span>
+
+                        <strong>
+                            @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+           <div class="inquiry-details-section">
+
+    <div class="gallery-eyebrow mb-3">
+        Conversazione
+    </div>
+
+
+    <div class="inquiry-conversation">
+
+        @* Messaggio iniziale *@
+
+        <div class="inquiry-conversation-row inquiry-conversation-user">
+
+            <div class="inquiry-conversation-bubble">
+
+                <div class="inquiry-conversation-author">
+                    @Model.Name
+                </div>
+
+                <p>
+                    @Model.Message
+                </p>
+
+                <span>
+                    @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                </span>
+
+            </div>
+
+        </div>
+
+
+        @foreach (var message in Model.Messages)
+        {
+            var isOperator =
+                message.SenderType ==
+                ArtworkInquiryMessageSenderType.Operator;
+
+
+            <div class="inquiry-conversation-row
+                        @(isOperator
+                            ? "inquiry-conversation-operator"
+                            : "inquiry-conversation-user")">
+
+                <div class="inquiry-conversation-bubble">
+
+                    <div class="inquiry-conversation-author">
+
+                        @if (isOperator)
+                        {
+                            <text>
+                                BeArtGallery
+                            </text>
+                        }
+                        else
+                        {
+                            @Model.Name
+                        }
+
+                    </div>
+
+
+                    <p>
+                        @message.Message
+                    </p>
+
+
+                    <span>
+                        @message.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                    </span>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+
+    <form asp-action="Reply"
+          method="post"
+          class="inquiry-reply-form">
+
+        <input type="hidden"
+               name="InquiryId"
+               value="@Model.Id" />
+
+
+        <label for="replyMessage"
+               class="form-label gallery-form-label">
+
+            Rispondi al visitatore
+
+        </label>
+
+
+        <textarea id="replyMessage"
+                  name="Message"
+                  class="form-control gallery-form-control"
+                  rows="4"
+                  maxlength="2000"
+                  required
+                  placeholder="Scrivi la risposta della galleria..."></textarea>
+
+
+        <div class="mt-3">
+
+            <button type="submit"
+                    class="btn gallery-btn-primary">
+
+                Invia risposta
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+            <div class="inquiry-details-section">
+
+                <div class="gallery-eyebrow mb-3">
+                    Stato richiesta
+                </div>
+
+
+                <form asp-action="UpdateStatus"
+                      method="post"
+                      class="inquiry-status-form">
+
+                    <input type="hidden"
+                           name="id"
+                           value="@Model.Id" />
+
+
+                    <div>
+
+                        <label for="status"
+                               class="form-label gallery-form-label">
+
+                            Aggiorna stato
+
+                        </label>
+
+                        <select id="status"
+        name="status"
+        class="form-select gallery-form-control">
+
+    @if (Model.Status == ArtworkInquiryStatus.New)
+    {
+        <option value="@ArtworkInquiryStatus.New"
+                selected>
+            Nuova
+        </option>
+    }
+    else
+    {
+        <option value="@ArtworkInquiryStatus.New">
+            Nuova
+        </option>
+    }
+
+
+    @if (Model.Status == ArtworkInquiryStatus.InProgress)
+    {
+        <option value="@ArtworkInquiryStatus.InProgress"
+                selected>
+            In lavorazione
+        </option>
+    }
+    else
+    {
+        <option value="@ArtworkInquiryStatus.InProgress">
+            In lavorazione
+        </option>
+    }
+
+
+    @if (Model.Status == ArtworkInquiryStatus.Closed)
+    {
+        <option value="@ArtworkInquiryStatus.Closed"
+                selected>
+            Chiusa
+        </option>
+    }
+    else
+    {
+        <option value="@ArtworkInquiryStatus.Closed">
+            Chiusa
+        </option>
+    }
+
+</select>
+
+                    </div>
+
+
+                    <button type="submit"
+                            class="btn gallery-btn-primary">
+
+                        Salva stato
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-4">
+
+            <aside class="inquiry-artwork-card">
+
+                @if (!string.IsNullOrWhiteSpace(
+                    Model.ArtworkImageUrl))
+                {
+                    <div class="inquiry-artwork-image">
+
+                        <img src="@Model.ArtworkImageUrl"
+                             alt="@Model.ArtworkTitle" />
+
+                    </div>
+                }
+
+
+                <div class="inquiry-artwork-content">
+
+                    <div class="gallery-eyebrow mb-2">
+                        Opera collegata
+                    </div>
+
+                    <h2>
+                        @Model.ArtworkTitle
+                    </h2>
+
+                    @if (!string.IsNullOrWhiteSpace(
+                        Model.ArtistName))
+                    {
+                        <p>
+                            @Model.ArtistName
+                        </p>
+                    }
+
+
+                    <a asp-controller="Artworks"
+                       asp-action="Details"
+                       asp-route-id="@Model.ArtworkId"
+                       class="artwork-artist-link">
+
+                        Apri la scheda dell'opera →
+
+                    </a>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</div>

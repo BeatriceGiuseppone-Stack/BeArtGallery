@@ -34,124 +34,212 @@
 
     <header>
 
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg gallery-navbar">
 
-            <div class="container-fluid">
+            <div class="container">
 
-                <a class="navbar-brand"
-                   asp-area=""
-                   asp-controller="Home"
-                   asp-action="Index">
-                    BeArtGallery
-                </a>
+                <a class="navbar-brand gallery-brand"
+   asp-area=""
+   asp-controller="Home"
+   asp-action="Index"
+   aria-label="BeArtGallery - Home">
+
+    <img src="~/images/beartgallery-logo-horizontal.png"
+         alt="BeArtGallery"
+         class="gallery-brand-logo" />
+
+</a>
+
 
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent"
+                        data-bs-target="#mainNavigation"
+                        aria-controls="mainNavigation"
                         aria-expanded="false"
-                        aria-label="Apri navigazione">
+                        aria-label="Apri il menu di navigazione">
 
                     <span class="navbar-toggler-icon"></span>
 
                 </button>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse"
+                     id="mainNavigation">
+
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-area=""
                                asp-controller="Home"
                                asp-action="Index">
+
                                 Home
+
                             </a>
 
                         </li>
 
+
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="Artworks"
                                asp-action="Index">
+
                                 Opere
+
                             </a>
 
                         </li>
+
 
                         <li class="nav-item">
 
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-controller="GalleryActivities"
                                asp-action="Index">
+
                                 Visite ed eventi
+
                             </a>
 
                         </li>
 
-                        @if (User.Identity?.IsAuthenticated == true)
+
+                        @if (User.Identity?.IsAuthenticated == true && User.IsInRole(RoleNames.Visitore))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark"
+
+                                <a class="nav-link"
                                    asp-controller="Bookings"
                                    asp-action="Index">
+
                                     Le mie prenotazioni
+
                                 </a>
+
+                            </li>
+                            <li class="nav-item">
+                            
+                                <a class="nav-link"
+                                   asp-controller="Artworks"
+                                   asp-action="Favorites">
+                            
+                                    I miei preferiti
+                            
+                                </a>
+                            
+                            </li>
+
+                            <li class="nav-item">
+                            
+                                <a class="nav-link gallery-nav-notification"
+                                   asp-controller="MyInquiries"
+                                   asp-action="Index">
+                            
+                                    Le mie richieste
+                            
+                                    @await Component.InvokeAsync(
+                                        "InquiryNotificationCount")
+                            
+                                </a>
+                            
                             </li>
                         }
+
 
                         @if (User.IsInRole(RoleNames.Staff) ||
                              User.IsInRole(RoleNames.Admin))
                         {
-                            <li class="nav-item">
+                            <li class="nav-item dropdown">
 
-                                <a class="nav-link text-dark"
-                                   asp-controller="Artists"
-                                   asp-action="Index">
-                                    Gestione artisti
+                                <a class="nav-link dropdown-toggle"
+                                   href="#"
+                                   role="button"
+                                   data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+
+                                    Gestione
+
                                 </a>
 
+
+                                <ul class="dropdown-menu gallery-dropdown">
+
+                                    <li>
+
+                                        <a class="dropdown-item"
+                                           asp-controller="Artists"
+                                           asp-action="Index">
+
+                                            Artisti
+
+                                        </a>
+
+                                    </li>
+
+
+                                    <li>
+
+                                        <a class="dropdown-item"
+                                           asp-controller="Bookings"
+                                           asp-action="Manage">
+
+                                            Prenotazioni
+
+                                        </a>
+
+                                    </li>
+
+                                    <li>
+                                    
+                                        <a class="dropdown-item"
+                                           asp-controller="ArtworkInquiries"
+                                           asp-action="Index">
+                                    
+                                            Richieste informazioni
+                                    
+                                        </a>
+                                    
+                                    </li>
+
+                                    @if (User.IsInRole(RoleNames.Admin))
+                                    {
+                                        <li>
+
+                                            <hr class="dropdown-divider" />
+
+                                        </li>
+
+                                        <li>
+
+                                            <a class="dropdown-item"
+                                               asp-controller="Admin"
+                                               asp-action="Users">
+
+                                                Utenti
+
+                                            </a>
+
+                                        </li>
+                                    }
+
+                                </ul>
+
                             </li>
-
-                             <li class="nav-item">
-                                 <a class="nav-link text-dark"
-                                    asp-controller="Bookings"
-                                    asp-action="Manage">
-                                     Gestione prenotazioni
-                                 </a>
-                             </li>
                         }
-
-                        @if (User.IsInRole(RoleNames.Admin))
-{
-    <li class="nav-item">
-
-        <a class="nav-link text-dark"
-           asp-controller="Admin"
-           asp-action="Users">
-            Gestione utenti
-        </a>
-
-    </li>
-}
-
-                        <li class="nav-item">
-
-                            <a class="nav-link text-dark"
-                               asp-area=""
-                               asp-controller="Home"
-                               asp-action="Privacy">
-                                Privacy
-                            </a>
-
-                        </li>
 
                     </ul>
 
-                    <partial name="_LoginPartial" />
+
+                    <div class="gallery-account">
+
+                        <partial name="_LoginPartial" />
+
+                    </div>
 
                 </div>
 
@@ -162,29 +250,73 @@
     </header>
 
 
-    <div class="container">
+    <main role="main">
 
-        <main role="main"
-              class="pb-3">
+        @RenderBody()
 
-            @RenderBody()
-
-        </main>
-
-    </div>
+    </main>
 
 
-    <footer class="border-top footer text-muted">
+    <footer class="gallery-footer">
 
         <div class="container">
 
-            &copy; 2026 - BeArtGallery -
+            <div class="row gy-4 align-items-start">
 
-            <a asp-area=""
-               asp-controller="Home"
-               asp-action="Privacy">
-                Privacy
-            </a>
+                <div class="col-md-5">
+
+                    <div class="gallery-footer-brand">
+                        BeArtGallery
+                    </div>
+
+                    <p class="gallery-footer-text">
+                        Arte, visite ed esperienze culturali
+                        in un unico spazio digitale.
+                    </p>
+
+                </div>
+
+
+                <div class="col-md-3">
+
+                    <div class="gallery-footer-title">
+                        Esplora
+                    </div>
+
+                    <a asp-controller="Artworks"
+                       asp-action="Index">
+                        Opere
+                    </a>
+
+                    <a asp-controller="GalleryActivities"
+                       asp-action="Index">
+                        Visite ed eventi
+                    </a>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="gallery-footer-title">
+                        Informazioni
+                    </div>
+
+                    <a asp-controller="Home"
+                       asp-action="Privacy">
+                        Privacy
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="gallery-footer-bottom">
+
+                © 2026 BeArtGallery
+
+            </div>
 
         </div>
 

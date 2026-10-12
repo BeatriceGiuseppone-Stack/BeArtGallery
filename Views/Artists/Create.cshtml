@@ -1,66 +1,246 @@
 @model BeArtGallery.Models.Artist
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nuovo artista";
 }
 
-<h1>Create</h1>
+<div class="container py-5">
 
-<h4>Artist</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-5">
 
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
+        <a asp-controller="Artists"
+           asp-action="Index"
+           class="gallery-back-link">
 
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
+            ← Torna agli artisti
 
-            <div class="form-group">
-                <label asp-for="Nationality" class="control-label"></label>
-                <input asp-for="Nationality" class="form-control" />
-                <span asp-validation-for="Nationality" class="text-danger"></span>
-            </div>
+        </a>
 
-            <div class="form-group">
-                <label asp-for="BirthDate" class="control-label"></label>
-                <input asp-for="BirthDate" class="form-control" />
-                <span asp-validation-for="BirthDate" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="DeathDate" class="control-label"></label>
-                <input asp-for="DeathDate" class="form-control" />
-                <span asp-validation-for="DeathDate" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Biography" class="control-label"></label>
-                <input asp-for="Biography" class="form-control" />
-                <span asp-validation-for="Biography" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Artworks" class="control-label"></label>
-                <input asp-for="Artworks" class="form-control" />
-                <span asp-validation-for="Artworks" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
     </div>
+
+
+    <div class="row">
+
+        <div class="col-lg-8">
+
+            <div class="gallery-eyebrow mb-3">
+                Gestione artisti
+            </div>
+
+            <h1 class="gallery-form-title">
+                Nuovo artista
+            </h1>
+
+            <p class="gallery-form-intro">
+                Inserisci le informazioni anagrafiche e
+                biografiche dell'artista da aggiungere
+                al catalogo di BeArtGallery.
+            </p>
+
+
+            <form asp-action="Create"
+                  method="post"
+                  class="gallery-form">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label asp-for="FirstName"
+                               class="form-label gallery-form-label">
+
+                            Nome
+
+                        </label>
+
+                        <input asp-for="FirstName"
+                               class="form-control gallery-form-control"
+                               placeholder="Es. Vincent" />
+
+                        <span asp-validation-for="FirstName"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label asp-for="LastName"
+                               class="form-label gallery-form-label">
+
+                            Cognome
+
+                        </label>
+
+                        <input asp-for="LastName"
+                               class="form-control gallery-form-control"
+                               placeholder="Es. Van Gogh" />
+
+                        <span asp-validation-for="LastName"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label asp-for="BirthDate"
+                               class="form-label gallery-form-label">
+
+                            Data di nascita
+
+                        </label>
+
+                        <input asp-for="BirthDate"
+                               type="date"
+                               class="form-control gallery-form-control" />
+
+                        <span asp-validation-for="BirthDate"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <label asp-for="DeathDate"
+                               class="form-label gallery-form-label">
+
+                            Data di morte
+
+                        </label>
+
+                        <input asp-for="DeathDate"
+                               type="date"
+                               class="form-control gallery-form-control" />
+
+                        <span asp-validation-for="DeathDate"
+                              class="text-danger small">
+                        </span>
+
+                        <div class="form-text">
+                            Lascia vuoto per artisti viventi.
+                        </div>
+
+                    </div>
+
+                    
+                    <div class="col-md-6">
+
+                        <label asp-for="Nationality"
+                               class="form-label gallery-form-label">
+
+                            Nazionalità
+
+                        </label>
+
+                        <input asp-for="Nationality"
+                               class="form-control gallery-form-control"
+                               placeholder="Es. Olandese" />
+
+                        <span asp-validation-for="Nationality"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+                    </div>
+
+
+                    <div class="col-12">
+
+                        <label asp-for="Biography"
+                               class="form-label gallery-form-label">
+
+                            Biografia
+
+                        </label>
+
+                        <textarea asp-for="Biography"
+                                  class="form-control gallery-form-control"
+                                  rows="7"
+                                  placeholder="Inserisci una breve biografia dell'artista...">
+                        </textarea>
+
+                        <span asp-validation-for="Biography"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="gallery-form-actions">
+
+                    <button type="submit"
+                            class="btn gallery-btn-primary">
+
+                        Salva artista
+
+                    </button>
+
+                    <a asp-controller="Artists"
+                       asp-action="Index"
+                       class="btn gallery-btn-outline">
+
+                        Annulla
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <div class="col-lg-4 d-none d-lg-block">
+
+            <div class="gallery-form-side">
+
+                <div class="gallery-form-side-number">
+                    A
+                </div>
+
+                <div>
+
+                    <div class="gallery-eyebrow mb-2">
+                        Catalogo
+                    </div>
+
+                    <h2>
+                        L'artista al centro dell'opera.
+                    </h2>
+
+                    <p>
+                        I dati inseriti saranno utilizzati
+                        nelle schede delle opere e nella
+                        sezione pubblica dedicata agli artisti.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

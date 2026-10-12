@@ -1,5 +1,6 @@
 @{
-    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) &&
+        parentLayout != null)
     {
         Layout = parentLayout.ToString();
     }
@@ -9,21 +10,50 @@
     }
 }
 
-<h1>Manage your account</h1>
+<div class="container py-5">
 
-<div>
-    <h2>Change your account settings</h2>
-    <hr />
-    <div class="row">
-        <div class="col-md-3">
-            <partial name="_ManageNav" />
+    <div class="account-header">
+
+        <div class="gallery-eyebrow mb-3">
+            Il tuo account
         </div>
-        <div class="col-md-9">
-            @RenderBody()
-        </div>
+
+        <h1 class="account-page-title">
+            Gestisci il tuo profilo
+        </h1>
+
+        <p class="account-page-intro">
+            Consulta e aggiorna le informazioni
+            e le impostazioni associate al tuo account BeArtGallery.
+        </p>
+
     </div>
+
+
+    <div class="row g-5">
+
+        <div class="col-lg-3">
+
+            <partial name="_ManageNav" />
+
+        </div>
+
+
+        <div class="col-lg-9">
+
+            @RenderBody()
+
+        </div>
+
+    </div>
+
 </div>
 
+
 @section Scripts {
-    @RenderSection("Scripts", required: false)
+
+    @RenderSection(
+        "Scripts",
+        required: false)
+
 }

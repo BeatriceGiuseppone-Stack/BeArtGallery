@@ -1,8 +1,281 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<section class="gallery-hero">
+
+    <div class="container">
+
+        <div class="row align-items-center min-vh-75">
+
+            <div class="col-lg-7">
+
+                <div class="gallery-eyebrow mb-3">
+                    Arte · Cultura · Esperienze
+                </div>
+
+                <h1 class="gallery-hero-title">
+
+                    L'arte da scoprire,
+                    <br />
+                    vivere e condividere.
+
+                </h1>
+
+                <p class="gallery-hero-text">
+
+                    Esplora le opere di BeArtGallery,
+    conosci gli artisti e prenota visite
+    ed eventi dedicati al mondo dell'arte.
+
+
+                </p>
+
+
+                <div class="d-flex flex-wrap gap-3 mt-4">
+
+    <a asp-controller="Artworks"
+       asp-action="Index"
+       class="btn gallery-btn-primary">
+
+        Esplora le opere
+
+    </a>
+
+    <a asp-controller="Artists"
+       asp-action="Index"
+       class="btn gallery-btn-outline">
+
+        Esplora i nostri artisti
+
+    </a>
+
+    <a asp-controller="GalleryActivities"
+       asp-action="Index"
+       class="btn gallery-btn-outline">
+
+        Visite ed eventi
+
+    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-lg-5 d-none d-lg-block">
+
+                <div class="gallery-hero-art">
+
+                    <div class="gallery-art-frame">
+
+                        <div class="gallery-art-shape gallery-art-shape-one">
+                        </div>
+
+                        <div class="gallery-art-shape gallery-art-shape-two">
+                        </div>
+
+                        <div class="gallery-art-shape gallery-art-shape-three">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="gallery-section">
+
+    <div class="container">
+
+        <div class="gallery-section-heading">
+
+            <div class="gallery-eyebrow">
+                BeArtGallery
+            </div>
+
+            <h2>
+                Un nuovo modo di vivere la galleria
+            </h2>
+
+            <p>
+                Una piattaforma pensata per rendere
+                semplice l'incontro tra arte,
+                visitatori e attività culturali.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <div class="gallery-feature-card">
+
+                    <div class="gallery-feature-number">
+                        01
+                    </div>
+
+                    <h3>
+                        Scopri le opere
+                    </h3>
+
+                    <p>
+                        Consulta il catalogo digitale
+                        e approfondisci artisti,
+                        tecniche e storie delle opere.
+                    </p>
+
+                    <a asp-controller="Artworks"
+                       asp-action="Index">
+
+                        Vai al catalogo →
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="gallery-feature-card">
+
+                    <div class="gallery-feature-number">
+                        02
+                    </div>
+
+                    <h3>
+                        Vivi la galleria
+                    </h3>
+
+                    <p>
+                        Scopri visite guidate ed eventi,
+                        verifica i posti disponibili
+                        e scegli la tua esperienza.
+                    </p>
+
+                    <a asp-controller="GalleryActivities"
+                       asp-action="Index">
+
+                        Scopri gli eventi →
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="gallery-feature-card">
+
+                    <div class="gallery-feature-number">
+                        03
+                    </div>
+
+                    <h3>
+                        Prenota facilmente
+                    </h3>
+
+                    <p>
+                        Accedi al tuo account,
+                        prenota in pochi passaggi
+                        e gestisci le tue partecipazioni.
+                    </p>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Bookings"
+                           asp-action="Index">
+
+                            Le mie prenotazioni →
+
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-area="Identity"
+                           asp-page="/Account/Register">
+
+                            Crea un account →
+
+                        </a>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="gallery-experience-section">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+           <div class="col-lg-6">
+
+    <div class="gallery-experience-visual">
+
+        <img src="~/images/beartgallery-logo.png"
+             alt="BeArtGallery"
+             class="gallery-experience-logo" />
+
+    </div>
+
 </div>
+
+
+            <div class="col-lg-6">
+
+                <div class="gallery-eyebrow mb-3">
+                    La nostra esperienza
+                </div>
+
+                <h2 class="gallery-large-heading">
+                    Più di un catalogo digitale.
+                </h2>
+
+                <p class="gallery-large-text">
+
+                    BeArtGallery collega il patrimonio
+                    artistico della galleria con i servizi
+                    dedicati al visitatore: opere,
+                    attività, prenotazioni e informazioni
+                    convivono in un unico ambiente digitale.
+
+                </p>
+
+
+                <a asp-controller="GalleryActivities"
+                   asp-action="Index"
+                   class="btn gallery-btn-primary mt-3">
+
+                    Scopri cosa c'è in programma
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

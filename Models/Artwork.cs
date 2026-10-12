@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BeArtGallery.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BeArtGallery.Models
 {
@@ -26,5 +27,14 @@ namespace BeArtGallery.Models
         public int ArtistId { get; set; }
 
         public Artist? Artist { get; set; }
+
+        public ICollection<ArtworkFavorite> Favorites { get; set; }
+    = new List<ArtworkFavorite>();
+
+        public ICollection<ArtworkInquiry> Inquiries { get; set; }
+            = new List<ArtworkInquiry>();
+
+        public ArtworkAvailabilityStatus AvailabilityStatus { get; set; }
+    = ArtworkAvailabilityStatus.Available;
     }
 }

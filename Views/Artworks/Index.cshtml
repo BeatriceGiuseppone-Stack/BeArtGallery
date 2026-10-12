@@ -1,145 +1,292 @@
 @model IEnumerable<BeArtGallery.Models.Artwork>
 @using BeArtGallery.Authorization
+@using BeArtGallery.Models.Enums
 
 @{
     ViewData["Title"] = "Catalogo opere";
 }
 
-<div class="container py-4">
+<div class="container py-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    @* Intestazione della pagina *@
+
+    <div class="d-flex justify-content-between
+                align-items-end
+                flex-wrap
+                gap-3
+                mb-5">
+
         <div>
-            <h1 class="mb-1">Catalogo opere</h1>
-            <p class="text-muted mb-0">
-                Scopri le opere presenti nella galleria.
+
+            <div class="gallery-eyebrow mb-3">
+                La collezione
+            </div>
+
+            <h1 class="artworks-page-title">
+                Catalogo opere
+            </h1>
+
+            <p class="artworks-page-intro">
+                Esplora le opere presenti nella collezione
+                di BeArtGallery e scopri gli artisti,
+                le tecniche e le storie che le accompagnano.
             </p>
+
         </div>
 
-       @if (User.IsInRole(RoleNames.Staff) ||
-     User.IsInRole(RoleNames.Admin))
-{
-    <a asp-action="Create"
-       class="btn btn-dark">
-        Aggiungi opera
-    </a>
-}
+
+        @if (User.IsInRole(RoleNames.Staff) ||
+             User.IsInRole(RoleNames.Admin))
+        {
+            <a asp-controller="Artworks"
+               asp-action="Create"
+               class="btn gallery-btn-primary">
+
+                Nuova opera
+
+            </a>
+        }
+
     </div>
+
+
+    @* Messaggi *@
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mb-4">
+
+            @TempData["SuccessMessage"]
+
+        </div>
+    }
+
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mb-4">
+
+            @TempData["ErrorMessage"]
+
+        </div>
+    }
+
+
+    @* Catalogo *@
 
     @if (!Model.Any())
     {
-        <div class="alert alert-light border">
-            Non sono ancora presenti opere nel catalogo.
+        <div class="artwork-empty-state">
+
+            <div class="gallery-eyebrow mb-2">
+                Collezione
+            </div>
+
+            <h2>
+                Nessuna opera presente
+            </h2>
+
+            <p>
+                Il catalogo di BeArtGallery
+                non contiene ancora opere.
+            </p>
+
         </div>
     }
     else
     {
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="row g-5">
 
-            @foreach (var item in Model)
+            @foreach (var artwork in Model)
             {
-                <div class="col">
+                <div class="col-md-6 col-xl-4">
 
-                    <div class="card h-100 shadow-sm border-0">
+                    <article class="artwork-catalog-card">
 
-                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
-                        {
-                            <img src="@item.ImageUrl"
-                                 class="card-img-top"
-                                 alt="@item.Title"
-                                 style="height: 300px; object-fit: cover;" />
-                        }
-                        else
-                        {
-                            <div class="d-flex align-items-center justify-content-center bg-light text-muted"
-                                 style="height: 300px;">
-                                <span>Nessuna immagine disponibile</span>
-                            </div>
-                        }
+                        @* Immagine *@
 
-                        <div class="card-body">
-
-                            <h5 class="card-title mb-2">
-                                @item.Title
-                            </h5>
-
-                            <p class="card-text mb-1">
-                                <strong>Artista:</strong>
-                                @if (item.Artist != null)
-                                {
-                                    <span>
-                                        @item.Artist.FirstName @item.Artist.LastName
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">
-                                        Non disponibile
-                                    </span>
-                                }
-                            </p>
-
-                            @if (item.Year.HasValue)
+                       <a asp-controller="Artworks"
+                           asp-action="Details"
+                           asp-route-id="@artwork.Id"
+                           class="artwork-catalog-image-wrapper">
+                        
+                            @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl))
                             {
-                                <p class="card-text mb-1">
-                                    <strong>Anno:</strong> @item.Year
-                                </p>
+                                <img src="@artwork.ImageUrl"
+                                     alt="@artwork.Title"
+                                     class="artwork-catalog-image" />
                             }
-
-                            @if (!string.IsNullOrWhiteSpace(item.Technique))
+                            else
                             {
-                                <p class="card-text mb-1">
-                                    <strong>Tecnica:</strong> @item.Technique
-                                </p>
+                                <div class="artwork-catalog-placeholder">
+                        
+                                    Immagine non disponibile
+                        
+                                </div>
                             }
+                        
+                            @* Disponibilità sovrapposta all'immagine *@
+                        
+                            @if (artwork.AvailabilityStatus ==
+                                 ArtworkAvailabilityStatus.SoldOut)
+                            {
+                                <span class="artwork-catalog-availability-badge
+                                             artwork-catalog-availability-soldout">
+                        
+                                    Esaurito
+                        
+                                </span>
+                            }
+                            else if (artwork.AvailabilityStatus ==
+                                     ArtworkAvailabilityStatus.LimitedAvailability)
+                            {
+                                <span class="artwork-catalog-availability-badge
+                                             artwork-catalog-availability-limited">
+                        
+                                    Disponibilità limitata
+                        
+                                </span>
+                            }
+                            else if (artwork.AvailabilityStatus ==
+                                     ArtworkAvailabilityStatus.Unavailable)
+                            {
+                                <span class="artwork-catalog-availability-badge
+                                             artwork-catalog-availability-unavailable">
+                        
+                                    Non disponibile
+                        
+                                </span>
+                            }
+                        
+                        </a>
 
-                            <p class="mt-3 mb-0">
-                                @if (item.IsOnDisplay)
+                        <div class="artwork-catalog-content">
+
+                            @* Stato esposizione *@
+
+                            <div class="mb-3">
+
+                                @if (artwork.IsOnDisplay)
                                 {
-                                    <span class="badge bg-success">
+                                    <span class="gallery-status gallery-status-visible">
+
                                         In esposizione
+
                                     </span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-secondary">
-                                        Non in esposizione
+                                    <span class="gallery-status gallery-status-not-visible">
+
+                                        Non esposta
+
                                     </span>
                                 }
-                            </p>
 
-                        </div>
+                            </div>
 
-                        <div class="card-footer bg-white border-0 pb-3">
 
-                            <div class="d-flex gap-2 flex-wrap">
+                            @* Titolo *@
 
-                                <a asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-outline-dark btn-sm">
-                                    Dettagli
+                            <h2 class="artwork-catalog-title">
+
+                                <a asp-controller="Artworks"
+                                   asp-action="Details"
+                                   asp-route-id="@artwork.Id">
+
+                                    @artwork.Title
+
                                 </a>
 
-                                @if (User.IsInRole(RoleNames.Staff) ||
-     User.IsInRole(RoleNames.Admin))
-{
-    <a asp-action="Edit"
-       asp-route-id="@item.Id"
-       class="btn btn-outline-primary btn-sm">
-        Modifica
-    </a>
+                            </h2>
 
-    <a asp-action="Delete"
-       asp-route-id="@item.Id"
-       class="btn btn-outline-danger btn-sm">
-        Elimina
-    </a>
-}
+
+                            @* Artista *@
+
+                            @if (artwork.Artist != null)
+                            {
+                                <a asp-controller="Artists"
+                                   asp-action="Details"
+                                   asp-route-id="@artwork.ArtistId"
+                                   class="artwork-catalog-artist">
+
+                                    @artwork.Artist.FirstName
+                                    @artwork.Artist.LastName
+
+                                </a>
+                            }
+
+
+                            @* Metadati *@
+
+                            <div class="artwork-catalog-meta">
+
+                                @if (artwork.Year.HasValue)
+                                {
+                                    <span>
+                                        @artwork.Year
+                                    </span>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(
+                                    artwork.Technique))
+                                {
+                                    <span>
+                                        @artwork.Technique
+                                    </span>
+                                }
+
+                            </div>
+
+
+                            @* Azione pubblica *@
+
+                            <div class="artwork-catalog-actions">
+
+                                <a asp-controller="Artworks"
+                                   asp-action="Details"
+                                   asp-route-id="@artwork.Id"
+                                   class="artwork-catalog-details-link">
+
+                                    Scopri l'opera →
+
+                                </a>
+
+
+                                @* Azioni Staff e Admin *@
+
+                                @if (User.IsInRole(RoleNames.Staff) ||
+                                     User.IsInRole(RoleNames.Admin))
+                                {
+                                    <div class="artwork-catalog-admin-actions">
+
+                                        <a asp-controller="Artworks"
+                                           asp-action="Edit"
+                                           asp-route-id="@artwork.Id"
+                                           class="btn btn-sm gallery-btn-outline">
+
+                                            Modifica
+
+                                        </a>
+
+
+                                        <a asp-controller="Artworks"
+                                           asp-action="Delete"
+                                           asp-route-id="@artwork.Id"
+                                           class="btn btn-sm gallery-btn-danger">
+
+                                            Elimina
+
+                                        </a>
+
+                                    </div>
+                                }
 
                             </div>
 
                         </div>
 
-                    </div>
+                    </article>
 
                 </div>
             }

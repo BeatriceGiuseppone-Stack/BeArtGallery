@@ -5,116 +5,265 @@
     ViewData["Title"] = "Artisti";
 }
 
-<div class="container py-4">
+<div class="container py-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    @* Intestazione della pagina *@
 
-        <div>
-            <h1 class="mb-1">Artisti</h1>
+    <div class="d-flex justify-content-between
+                align-items-end
+                flex-wrap
+                gap-3
+                mb-5">
 
-            <p class="text-muted mb-0">
-                Artisti presenti nel catalogo di BeArtGallery.
-            </p>
+    @if (User.IsInRole(RoleNames.Staff) ||
+     User.IsInRole(RoleNames.Admin))
+{
+    <div class="gallery-management-note mb-4">
+
+        <div class="gallery-management-note-title">
+            Gestione artisti
         </div>
+
+        <p class="mb-0">
+            Un artista può essere eliminato solamente se
+            non ha opere associate nel catalogo.
+            Per questo motivo il pulsante
+            <strong>Elimina</strong> viene mostrato solo
+            quando non sono presenti opere collegate.
+        </p>
+
+    </div>
+}
+        <div>
+
+            <div class="gallery-eyebrow mb-3">
+                Il catalogo
+            </div>
+
+            <h1 class="artists-page-title">
+                I nostri artisti
+            </h1>
+
+            <p class="artists-page-intro">
+                Scopri gli artisti presenti nella collezione
+                di BeArtGallery e le opere che raccontano
+                il loro percorso.
+            </p>
+
+        </div>
+
 
         @if (User.IsInRole(RoleNames.Staff) ||
              User.IsInRole(RoleNames.Admin))
         {
-            <a asp-action="Create"
-               class="btn btn-dark">
-                Aggiungi artista
+            <a asp-controller="Artists"
+               asp-action="Create"
+               class="btn gallery-btn-primary">
+
+                Nuovo artista
+
             </a>
         }
 
     </div>
 
+
+    @* Messaggi *@
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mb-4">
+
+            @TempData["SuccessMessage"]
+
+        </div>
+    }
+
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mb-4">
+
+            @TempData["ErrorMessage"]
+
+        </div>
+    }
+
+
+    @* Elenco degli artisti *@
+
     @if (!Model.Any())
     {
-        <div class="alert alert-light border">
-            Non sono ancora presenti artisti.
+        <div class="artist-empty-state">
+
+            <div class="gallery-eyebrow mb-2">
+                Catalogo
+            </div>
+
+            <h2>
+                Nessun artista presente
+            </h2>
+
+            <p>
+                Il catalogo degli artisti non contiene
+                ancora elementi.
+            </p>
+
         </div>
     }
     else
     {
-        <div class="table-responsive">
+        <div class="row g-4">
 
-            <table class="table align-middle">
+            @foreach (var artist in Model)
+            {
+                <div class="col-md-6 col-lg-4">
 
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Cognome</th>
-                        <th>Nazionalità</th>
-                        <th>Nascita</th>
-                        <th>Morte</th>
-                        <th></th>
-                    </tr>
-                </thead>
+                    <article class="artist-card">
 
-                <tbody>
+                        @* Monogramma dell'artista *@
 
-                    @foreach (var item in Model)
-                    {
-                        <tr>
+                        <a asp-controller="Artists"
+                           asp-action="Details"
+                           asp-route-id="@artist.Id"
+                           class="artist-card-visual">
 
-                            <td>
-                                @item.FirstName
-                            </td>
+                            <span>
+                                @artist.FirstName.FirstOrDefault()
+                            </span>
 
-                            <td>
-                                @item.LastName
-                            </td>
+                            <strong>
+                                @artist.LastName.FirstOrDefault()
+                            </strong>
 
-                            <td>
-                                @item.Nationality
-                            </td>
+                        </a>
 
-                            <td>
-                                @if (item.BirthDate.HasValue)
-                                {
-                                    @item.BirthDate.Value.ToString("dd/MM/yyyy")
-                                }
-                            </td>
 
-                            <td>
-                                @if (item.DeathDate.HasValue)
-                                {
-                                    @item.DeathDate.Value.ToString("dd/MM/yyyy")
-                                }
-                            </td>
+                        <div class="artist-card-body">
 
-                            <td class="text-end">
+                            <div class="gallery-eyebrow mb-2">
+                                Artista
+                            </div>
 
-                                <a asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-outline-dark btn-sm">
-                                    Dettagli
+
+                            <h2 class="artist-card-title">
+
+                                <a asp-controller="Artists"
+                                   asp-action="Details"
+                                   asp-route-id="@artist.Id">
+
+                                    @artist.FirstName
+                                    @artist.LastName
+
                                 </a>
+
+                            </h2>
+
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                artist.Nationality))
+                            {
+                                <div class="artist-card-nationality">
+
+                                    @artist.Nationality
+
+                                </div>
+                            }
+
+
+                            <div class="artist-card-meta">
+
+                                @if (artist.BirthDate.HasValue)
+                                {
+                                    <span>
+
+                                        @artist.BirthDate.Value.Year
+
+                                        @if (artist.DeathDate.HasValue)
+                                        {
+                                            <text>
+                                                –
+                                                @artist.DeathDate.Value.Year
+                                            </text>
+                                        }
+
+                                    </span>
+                                }
+
+
+                                <span>
+
+                                    @artist.Artworks.Count
+                                    @(artist.Artworks.Count == 1
+                                        ? "opera"
+                                        : "opere")
+
+                                </span>
+
+                            </div>
+
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                artist.Biography))
+                            {
+                                <p class="artist-card-biography">
+
+                                    @artist.Biography
+
+                                </p>
+                            }
+
+
+                            <div class="artist-card-actions">
+
+                                <a asp-controller="Artists"
+                                   asp-action="Details"
+                                   asp-route-id="@artist.Id"
+                                   class="artist-card-link">
+
+                                    Scopri l'artista →
+
+                                </a>
+
 
                                 @if (User.IsInRole(RoleNames.Staff) ||
                                      User.IsInRole(RoleNames.Admin))
                                 {
-                                    <a asp-action="Edit"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-outline-primary btn-sm">
-                                        Modifica
-                                    </a>
+                                    <div class="artist-card-admin-actions">
 
-                                    <a asp-action="Delete"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-outline-danger btn-sm">
-                                        Elimina
-                                    </a>
+                                        <a asp-controller="Artists"
+                                           asp-action="Edit"
+                                           asp-route-id="@artist.Id"
+                                           class="btn btn-sm gallery-btn-outline">
+
+                                            Modifica
+
+                                        </a>
+
+
+                                        @if (!artist.Artworks.Any())
+                                        {
+                                            <a asp-controller="Artists"
+                                               asp-action="Delete"
+                                               asp-route-id="@artist.Id"
+                                               class="btn btn-sm gallery-btn-danger">
+
+                                                Elimina
+
+                                            </a>
+                                        }
+
+                                    </div>
                                 }
 
-                            </td>
+                            </div>
 
-                        </tr>
-                    }
+                        </div>
 
-                </tbody>
+                    </article>
 
-            </table>
+                </div>
+            }
 
         </div>
     }

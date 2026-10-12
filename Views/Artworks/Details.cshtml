@@ -1,187 +1,368 @@
-@model BeArtGallery.Models.Artwork
+@model BeArtGallery.ViewModels.ArtworkDetailsViewModel
+@using BeArtGallery.Authorization
+@using BeArtGallery.Models.Enums
 
 @{
-    ViewData["Title"] = Model.Title;
+    var artwork = Model.Artwork;
+
+    ViewData["Title"] = artwork.Title;
+
+    var inquiryHasErrors =
+        !ViewData.ModelState.IsValid;
 }
+
 
 <div class="container py-5">
 
-    <div class="mb-4">
-        <a asp-action="Index"
-           class="text-decoration-none text-dark">
+    @* Navigazione *@
+
+    <div class="mb-5">
+
+        <a asp-controller="Artworks"
+           asp-action="Index"
+           class="gallery-back-link">
+
             ← Torna al catalogo
+
         </a>
+
     </div>
 
-    <div class="row g-5">
 
-        <!-- IMMAGINE -->
+    @* Scheda principale *@
+
+    <div class="row g-5 align-items-start">
+
+        @* Immagine *@
+
         <div class="col-lg-6">
 
-            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
-            {
-                <img src="@Model.ImageUrl"
-                     alt="@Model.Title"
-                     class="img-fluid rounded shadow-sm w-100"
-                     style="max-height: 650px; object-fit: contain;" />
-            }
-            else
-            {
-                <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted"
-                     style="height: 500px;">
-                    Nessuna immagine disponibile
-                </div>
-            }
+            <div class="artwork-detail-image-wrapper">
+
+                @if (!string.IsNullOrWhiteSpace(
+                    artwork.ImageUrl))
+                {
+                    <img src="@artwork.ImageUrl"
+                         alt="@artwork.Title"
+                         class="artwork-detail-image" />
+                }
+                else
+                {
+                    <div class="artwork-detail-placeholder">
+
+                        Immagine non disponibile
+
+                    </div>
+                }
+
+            </div>
 
         </div>
 
 
-        <!-- INFORMAZIONI -->
+        @* Informazioni *@
+
         <div class="col-lg-6">
 
-            <span class="text-uppercase text-muted small">
-                Opera
-            </span>
+            <div class="artwork-detail-content">
 
-            <h1 class="display-5 fw-semibold mt-2 mb-3">
-                @Model.Title
-            </h1>
+                <div class="gallery-eyebrow mb-3">
+                    Opera
+                </div>
 
 
-            @if (Model.Artist != null)
-            {
-                <h4 class="fw-normal mb-4">
-                    @Model.Artist.FirstName @Model.Artist.LastName
-                </h4>
-            }
+                <h1 class="artwork-detail-title">
+
+                    @artwork.Title
+
+                </h1>
 
 
-            <hr />
-
-
-            <dl class="row mt-4">
-
-                @if (Model.Year.HasValue)
+                @if (artwork.Artist != null)
                 {
-                    <dt class="col-sm-4">
-                        Anno
-                    </dt>
+                    <a asp-controller="Artists"
+                       asp-action="Details"
+                       asp-route-id="@artwork.ArtistId"
+                       class="artwork-detail-artist">
 
-                    <dd class="col-sm-8">
-                        @Model.Year
-                    </dd>
+                        @artwork.Artist.FirstName
+                        @artwork.Artist.LastName
+
+                    </a>
                 }
 
 
-                @if (!string.IsNullOrWhiteSpace(Model.Technique))
-                {
-                    <dt class="col-sm-4">
-                        Tecnica
-                    </dt>
+                @* Azioni principali *@
 
-                    <dd class="col-sm-8">
-                        @Model.Technique
-                    </dd>
-                }
+                <div class="artwork-primary-actions">
 
 
-                <dt class="col-sm-4">
-                    Esposizione
-                </dt>
+                    @* Preferiti *@
 
-                <dd class="col-sm-8">
-
-                    @if (Model.IsOnDisplay)
+                    @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <span class="badge bg-success">
-                            Attualmente esposta
-                        </span>
+                        <form asp-controller="Artworks"
+                              asp-action="ToggleFavorite"
+                              method="post">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@artwork.Id" />
+
+
+                            @if (Model.IsFavorite)
+                            {
+                                <button type="submit"
+                                        class="gallery-favorite-button active"
+                                        aria-label="Rimuovi l'opera dai preferiti">
+
+                                    <span class="gallery-favorite-heart">
+                                        ♥
+                                    </span>
+
+                                    Nei tuoi preferiti
+
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit"
+                                        class="gallery-favorite-button"
+                                        aria-label="Aggiungi l'opera ai preferiti">
+
+                                    <span class="gallery-favorite-heart">
+                                        ♡
+                                    </span>
+
+                                    Aggiungi ai preferiti
+
+                                </button>
+                            }
+
+                        </form>
                     }
                     else
                     {
-                        <span class="badge bg-secondary">
-                            Non in esposizione
-                        </span>
+                        <a asp-area="Identity"
+                           asp-page="/Account/Login"
+                           asp-route-returnUrl="@Context.Request.Path"
+                           class="gallery-favorite-button">
+
+                            <span class="gallery-favorite-heart">
+                                ♡
+                            </span>
+
+                            Salva nei preferiti
+
+                        </a>
                     }
 
-                </dd>
 
-            </dl>
+                    @* Richiesta informazioni *@
 
+                    <button type="button"
+                            class="btn gallery-btn-primary"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#artworkInquiry"
+                            aria-expanded="@(inquiryHasErrors.ToString().ToLower())"
+                            aria-controls="artworkInquiry">
 
-            @if (!string.IsNullOrWhiteSpace(Model.Description))
-            {
-                <div class="mt-4">
+                        Richiedi informazioni
 
-                    <h5>
-                        Descrizione
-                    </h5>
-
-                    <p class="text-muted"
-                       style="line-height: 1.8;">
-                        @Model.Description
-                    </p>
+                    </button>
 
                 </div>
-            }
 
 
-            @if (Model.Artist != null)
-            {
-                <div class="mt-5 p-4 bg-light rounded">
+                @* Conferma richiesta *@
 
-                    <h5>
-                        L'artista
-                    </h5>
+                @if (TempData["InquirySuccess"] != null)
+                {
+                    <div class="artwork-inquiry-success"
+                         role="status">
 
-                    <h6 class="mb-2">
-                        @Model.Artist.FirstName @Model.Artist.LastName
-                    </h6>
+                        <div class="artwork-inquiry-success-title">
+                            Richiesta inviata
+                        </div>
 
-
-                    @if (!string.IsNullOrWhiteSpace(Model.Artist.Nationality))
-                    {
-                        <p class="mb-1">
-                            <strong>Nazionalità:</strong>
-                            @Model.Artist.Nationality
-                        </p>
-                    }
-
-
-                    @if (Model.Artist.BirthDate.HasValue)
-                    {
-                        <p class="mb-1">
-                            <strong>Nascita:</strong>
-                            @Model.Artist.BirthDate.Value.ToString("dd/MM/yyyy")
-                        </p>
-                    }
-
-
-                    @if (Model.Artist.DeathDate.HasValue)
-                    {
                         <p class="mb-0">
-                            <strong>Morte:</strong>
-                            @Model.Artist.DeathDate.Value.ToString("dd/MM/yyyy")
+                            @TempData["InquirySuccess"]
                         </p>
-                    }
+
+                    </div>
+                }
+
+
+                @* Form a comparsa *@
+
+                <div class="collapse @(inquiryHasErrors ? "show" : "")"
+                     id="artworkInquiry">
+
+                    <div class="artwork-inquiry-panel">
+
+                        <div class="gallery-eyebrow mb-2">
+                            Contatta la galleria
+                        </div>
+
+                        <h2>
+                            Richiedi informazioni sull'opera
+                        </h2>
+
+                        <p class="artwork-inquiry-intro">
+                            Vuoi conoscere maggiori dettagli,
+                            informazioni sull'esposizione
+                            o sulla collezione?
+                            Scrivi alla galleria.
+                        </p>
+
+
+                        @await Html.PartialAsync(
+                            "_ArtworkInquiryForm",
+                            Model.Inquiry)
+
+                    </div>
 
                 </div>
-            }
 
 
-            <div class="mt-4 d-flex gap-2 flex-wrap">
+                <div class="artwork-detail-divider">
+                </div>
 
-                <a asp-action="Edit"
-                   asp-route-id="@Model.Id"
-                   class="btn btn-outline-primary">
-                    Modifica
-                </a>
 
-                <a asp-action="Delete"
-                   asp-route-id="@Model.Id"
-                   class="btn btn-outline-danger">
-                    Elimina
-                </a>
+                @* Scheda tecnica *@
+
+                <div class="gallery-eyebrow mb-3">
+                    Scheda tecnica
+                </div>
+
+
+                <dl class="artwork-metadata">
+
+                    @if (artwork.Year.HasValue)
+                    {
+                        <div class="artwork-metadata-row">
+
+                            <dt>
+                                Anno
+                            </dt>
+
+                            <dd>
+                                @artwork.Year
+                            </dd>
+
+                        </div>
+                    }
+
+
+                    @if (!string.IsNullOrWhiteSpace(
+                        artwork.Technique))
+                    {
+                        <div class="artwork-metadata-row">
+
+                            <dt>
+                                Tecnica
+                            </dt>
+
+                            <dd>
+                                @artwork.Technique
+                            </dd>
+
+                        </div>
+                    }
+
+
+                    <div class="artwork-metadata-row">
+
+                        <dt>
+                            Esposizione
+                        </dt>
+
+                        <dd>
+
+                            @if (artwork.IsOnDisplay)
+                            {
+                                <span class="gallery-status gallery-status-visible">
+
+                                    Attualmente esposta
+
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="gallery-status gallery-status-not-visible">
+
+                                    Non esposta
+
+                                </span>
+                            }
+
+                        </dd>
+
+                    </div>
+
+                    <div class="artwork-metadata-row">
+
+    <dt>
+        Disponibilità
+    </dt>
+
+    <dd>
+
+        @switch (artwork.AvailabilityStatus)
+        {
+            case ArtworkAvailabilityStatus.Available:
+
+                <span class="artwork-availability
+                             artwork-availability-available">
+
+                    Disponibile
+
+                </span>
+
+                break;
+
+
+            case ArtworkAvailabilityStatus.LimitedAvailability:
+
+                <span class="artwork-availability
+                             artwork-availability-limited">
+
+                    Disponibilità limitata
+
+                </span>
+
+                break;
+
+
+            case ArtworkAvailabilityStatus.SoldOut:
+
+                <span class="artwork-availability
+                             artwork-availability-sold-out">
+
+                    Esaurita
+
+                </span>
+
+                break;
+
+
+            case ArtworkAvailabilityStatus.Unavailable:
+
+                <span class="artwork-availability
+                             artwork-availability-unavailable">
+
+                    Non disponibile
+
+                </span>
+
+                break;
+        }
+
+    </dd>
+
+</div>
+
+                </dl>
 
             </div>
 
@@ -189,4 +370,284 @@
 
     </div>
 
+
+    @* Descrizione *@
+
+    @if (!string.IsNullOrWhiteSpace(
+        artwork.Description))
+    {
+        <section class="artwork-editorial-section">
+
+            <div class="gallery-eyebrow mb-3">
+                L'opera
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-4">
+
+                    <h2>
+                        Descrizione
+                    </h2>
+
+                </div>
+
+                <div class="col-lg-7">
+
+                    <p class="artwork-editorial-text">
+                        @artwork.Description
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+    }
+
+
+    @* Artista *@
+
+    @if (artwork.Artist != null)
+    {
+        <section class="artwork-editorial-section">
+
+            <div class="gallery-eyebrow mb-3">
+                L'artista
+            </div>
+
+
+            <div class="row g-5">
+
+                <div class="col-lg-5">
+
+                    <h2 class="artwork-artist-large-title">
+
+                        @artwork.Artist.FirstName
+                        @artwork.Artist.LastName
+
+                    </h2>
+
+                </div>
+
+
+                <div class="col-lg-7">
+
+                    <div class="artwork-artist-data">
+
+                        @if (!string.IsNullOrWhiteSpace(
+                            artwork.Artist.Nationality))
+                        {
+                            <div>
+
+                                <span>
+                                    Nazionalità
+                                </span>
+
+                                <strong>
+                                    @artwork.Artist.Nationality
+                                </strong>
+
+                            </div>
+                        }
+
+
+                        @if (artwork.Artist.BirthDate.HasValue)
+                        {
+                            <div>
+
+                                <span>
+                                    Nascita
+                                </span>
+
+                                <strong>
+                                    @artwork.Artist.BirthDate.Value.ToString("dd/MM/yyyy")
+                                </strong>
+
+                            </div>
+                        }
+
+
+                        @if (artwork.Artist.DeathDate.HasValue)
+                        {
+                            <div>
+
+                                <span>
+                                    Morte
+                                </span>
+
+                                <strong>
+                                    @artwork.Artist.DeathDate.Value.ToString("dd/MM/yyyy")
+                                </strong>
+
+                            </div>
+                        }
+
+                    </div>
+
+
+                    @if (!string.IsNullOrWhiteSpace(
+                        artwork.Artist.Biography))
+                    {
+                        <p class="artwork-artist-biography">
+                            @artwork.Artist.Biography
+                        </p>
+                    }
+
+
+                    <a asp-controller="Artists"
+                       asp-action="Details"
+                       asp-route-id="@artwork.ArtistId"
+                       class="artwork-artist-link">
+
+                        Scopri l'artista →
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+    }
+
+
+    @* Altre opere dello stesso artista *@
+
+    @if (Model.RelatedArtworks.Any())
+    {
+        <section class="related-artworks-section">
+
+            <div class="related-artworks-header">
+
+                <div>
+
+                    <div class="gallery-eyebrow mb-3">
+                        Continua a scoprire
+                    </div>
+
+                    <h2>
+                        Altre opere di
+                        @artwork.Artist?.FirstName
+                        @artwork.Artist?.LastName
+                    </h2>
+
+                </div>
+
+
+                <a asp-controller="Artists"
+                   asp-action="Details"
+                   asp-route-id="@artwork.ArtistId"
+                   class="artwork-artist-link">
+
+                    Vedi l'artista →
+
+                </a>
+
+            </div>
+
+
+            <div class="row g-4">
+
+                @foreach (var related in Model.RelatedArtworks)
+                {
+                    <div class="col-md-4">
+
+                        <article class="related-artwork-card">
+
+                            <a asp-controller="Artworks"
+                               asp-action="Details"
+                               asp-route-id="@related.Id"
+                               class="related-artwork-image-wrapper">
+
+                                @if (!string.IsNullOrWhiteSpace(
+                                    related.ImageUrl))
+                                {
+                                    <img src="@related.ImageUrl"
+                                         alt="@related.Title"
+                                         class="related-artwork-image" />
+                                }
+                                else
+                                {
+                                    <div class="related-artwork-placeholder">
+
+                                        Immagine non disponibile
+
+                                    </div>
+                                }
+
+                            </a>
+
+
+                            <div class="related-artwork-content">
+
+                                <h3>
+
+                                    <a asp-controller="Artworks"
+                                       asp-action="Details"
+                                       asp-route-id="@related.Id">
+
+                                        @related.Title
+
+                                    </a>
+
+                                </h3>
+
+
+                                @if (related.Year.HasValue)
+                                {
+                                    <span>
+                                        @related.Year
+                                    </span>
+                                }
+
+                            </div>
+
+                        </article>
+
+                    </div>
+                }
+
+            </div>
+
+        </section>
+    }
+
+
+    @* Gestione Staff/Admin *@
+
+    @if (User.IsInRole(RoleNames.Staff) ||
+         User.IsInRole(RoleNames.Admin))
+    {
+        <div class="artwork-admin-actions">
+
+            <a asp-controller="Artworks"
+               asp-action="Edit"
+               asp-route-id="@artwork.Id"
+               class="btn gallery-btn-outline">
+
+                Modifica opera
+
+            </a>
+
+
+            <a asp-controller="Artworks"
+               asp-action="Delete"
+               asp-route-id="@artwork.Id"
+               class="btn gallery-btn-danger">
+
+                Elimina opera
+
+            </a>
+
+        </div>
+    }
+
 </div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

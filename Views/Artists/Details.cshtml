@@ -1,66 +1,319 @@
 @model BeArtGallery.Models.Artist
+@using BeArtGallery.Authorization
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = $"{Model.FirstName} {Model.LastName}";
 }
 
-<h1>Details</h1>
+<div class="container py-5">
 
-<div>
-    <h4>Artist</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nationality)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nationality)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BirthDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BirthDate)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeathDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeathDate)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Biography)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Biography)
-        </dd>
-    </dl>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Artworks)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Artworks)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @* Torna alla lista degli artisti *@
+
+    <div class="mb-5">
+
+        <a asp-controller="Artists"
+           asp-action="Index"
+           class="gallery-back-link">
+
+            ← Torna agli artisti
+
+        </a>
+
+    </div>
+
+
+    <div class="row g-5">
+
+        @* Informazioni principali *@
+
+        <div class="col-lg-8">
+
+            <div class="gallery-eyebrow mb-3">
+                Artista
+            </div>
+
+            <h1 class="artist-detail-title">
+
+                @Model.FirstName
+                @Model.LastName
+
+            </h1>
+
+
+            @if (!string.IsNullOrWhiteSpace(Model.Nationality))
+            {
+                <p class="artist-detail-nationality">
+
+                    @Model.Nationality
+
+                </p>
+            }
+
+
+            <div class="artist-detail-divider">
+            </div>
+
+
+            @* Dati biografici *@
+
+            <div class="artist-biographical-data">
+
+                @if (Model.BirthDate.HasValue)
+                {
+                    <div class="artist-data-item">
+
+                        <span>
+                            Nascita
+                        </span>
+
+                        <strong>
+                            @Model.BirthDate.Value.ToString("dd/MM/yyyy")
+                        </strong>
+
+                    </div>
+                }
+
+
+                @if (Model.DeathDate.HasValue)
+                {
+                    <div class="artist-data-item">
+
+                        <span>
+                            Morte
+                        </span>
+
+                        <strong>
+                            @Model.DeathDate.Value.ToString("dd/MM/yyyy")
+                        </strong>
+
+                    </div>
+                }
+
+
+                @if (!string.IsNullOrWhiteSpace(Model.Nationality))
+                {
+                    <div class="artist-data-item">
+
+                        <span>
+                            Nazionalità
+                        </span>
+
+                        <strong>
+                            @Model.Nationality
+                        </strong>
+
+                    </div>
+                }
+
+            </div>
+
+
+            @* Biografia *@
+
+            <section class="artist-biography">
+
+                <div class="gallery-eyebrow mb-2">
+                    Biografia
+                </div>
+
+                <h2>
+                    La vita e l'opera
+                </h2>
+
+
+                @if (!string.IsNullOrWhiteSpace(Model.Biography))
+                {
+                    <p>
+                        @Model.Biography
+                    </p>
+                }
+                else
+                {
+                    <p class="text-muted">
+                        Biografia non ancora disponibile.
+                    </p>
+                }
+
+            </section>
+
+
+            @* Azioni Staff / Admin *@
+
+           @if (User.IsInRole(RoleNames.Staff) ||
+     User.IsInRole(RoleNames.Admin))
+{
+    <div class="artist-admin-actions">
+
+        <a asp-controller="Artists"
+           asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn gallery-btn-outline">
+
+            Modifica artista
+
+        </a>
+
+
+        @if (Model.Artworks == null ||
+             !Model.Artworks.Any())
+        {
+            <a asp-controller="Artists"
+               asp-action="Delete"
+               asp-route-id="@Model.Id"
+               class="btn gallery-btn-danger">
+
+                Elimina artista
+
+            </a>
+        }
+
+    </div>
+}
+
+        </div>
+
+
+        @* Elemento decorativo *@
+
+        <div class="col-lg-4">
+
+            <div class="artist-monogram">
+
+                <span>
+                    @Model.FirstName.FirstOrDefault()
+                </span>
+
+                <strong>
+                    @Model.LastName.FirstOrDefault()
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    @* Opere dell'artista *@
+
+    <section class="artist-artworks-section">
+
+        <div class="d-flex justify-content-between
+                    align-items-end
+                    gap-3
+                    mb-4">
+
+            <div>
+
+                <div class="gallery-eyebrow mb-2">
+                    Catalogo
+                </div>
+
+                <h2 class="artist-artworks-title">
+                    Opere di @Model.FirstName @Model.LastName
+                </h2>
+
+            </div>
+
+
+            <a asp-controller="Artworks"
+               asp-action="Index"
+               class="artist-view-all-link">
+
+                Esplora tutte le opere →
+
+            </a>
+
+        </div>
+
+
+        @if (Model.Artworks != null &&
+             Model.Artworks.Any())
+        {
+            <div class="row g-4">
+
+                @foreach (var artwork in Model.Artworks)
+                {
+                    <div class="col-md-6 col-lg-4">
+
+                        <article class="artist-artwork-card">
+
+                            <a asp-controller="Artworks"
+                               asp-action="Details"
+                               asp-route-id="@artwork.Id"
+                               class="artist-artwork-image-link">
+
+                                @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl))
+                                {
+                                    <img src="@artwork.ImageUrl"
+                                         alt="@artwork.Title"
+                                         class="artist-artwork-image" />
+                                }
+                                else
+                                {
+                                    <div class="artist-artwork-placeholder">
+
+                                        Immagine non disponibile
+
+                                    </div>
+                                }
+
+                            </a>
+
+
+                            <div class="artist-artwork-content">
+
+                                <h3>
+
+                                    <a asp-controller="Artworks"
+                                       asp-action="Details"
+                                       asp-route-id="@artwork.Id">
+
+                                        @artwork.Title
+
+                                    </a>
+
+                                </h3>
+
+
+                                <div class="artist-artwork-meta">
+
+                                    @if (artwork.Year.HasValue)
+                                    {
+                                        <span>
+                                            @artwork.Year
+                                        </span>
+                                    }
+
+                                    @if (!string.IsNullOrWhiteSpace(
+                                        artwork.Technique))
+                                    {
+                                        <span>
+                                            @artwork.Technique
+                                        </span>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="artist-no-artworks">
+
+                Non sono ancora presenti opere di questo artista
+                nel catalogo.
+
+            </div>
+        }
+
+    </section>
+
 </div>

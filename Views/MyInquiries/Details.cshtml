@@ -1,0 +1,158 @@
+﻿@model BeArtGallery.ViewModels.MyArtworkInquiryDetailsViewModel
+@using BeArtGallery.Models.Enums
+
+@{
+    ViewData["Title"] = "Richiesta " + Model.ArtworkTitle;
+}
+
+<div class="container py-5">
+
+    <div class="mb-5">
+
+        <a asp-action="Index"
+           class="gallery-back-link">
+
+            ← Torna alle mie richieste
+
+        </a>
+
+    </div>
+
+
+    <div class="gallery-eyebrow mb-3">
+        Conversazione con la galleria
+    </div>
+
+    <h1 class="inquiry-details-title">
+        @Model.ArtworkTitle
+    </h1>
+
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="gallery-management-note mb-4">
+
+            <p class="mb-0">
+                @TempData["ErrorMessage"]
+            </p>
+
+        </div>
+    }
+
+
+    <div class="inquiry-conversation mt-5">
+
+        @* Messaggio iniziale *@
+
+        <div class="inquiry-conversation-row inquiry-conversation-user">
+
+            <div class="inquiry-conversation-bubble">
+
+                <div class="inquiry-conversation-author">
+                    Tu
+                </div>
+
+                <p>
+                    @Model.Message
+                </p>
+
+                <span>
+                    @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                </span>
+
+            </div>
+
+        </div>
+
+
+        @foreach (var message in Model.Messages)
+        {
+            var fromOperator =
+                message.SenderType ==
+                ArtworkInquiryMessageSenderType.Operator;
+
+
+            <div class="inquiry-conversation-row
+                        @(fromOperator
+                            ? "inquiry-conversation-operator"
+                            : "inquiry-conversation-user")">
+
+                <div class="inquiry-conversation-bubble">
+
+                    <div class="inquiry-conversation-author">
+
+                        @(fromOperator
+                            ? "BeArtGallery"
+                            : "Tu")
+
+                    </div>
+
+                    <p>
+                        @message.Message
+                    </p>
+
+                    <span>
+                        @message.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                    </span>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+
+    @if (Model.CanReply)
+    {
+        <form asp-action="Reply"
+              method="post"
+              class="inquiry-reply-form mt-5">
+
+            <input type="hidden"
+                   name="InquiryId"
+                   value="@Model.Id" />
+
+
+            <label for="replyMessage"
+                   class="form-label gallery-form-label">
+
+                Scrivi un messaggio
+
+            </label>
+
+            <textarea id="replyMessage"
+                      name="Message"
+                      class="form-control gallery-form-control"
+                      rows="4"
+                      required
+                      maxlength="2000"
+                      placeholder="Scrivi qui..."></textarea>
+
+
+            <button type="submit"
+                    class="btn gallery-btn-primary mt-3">
+
+                Invia messaggio
+
+            </button>
+
+        </form>
+    }
+    else
+    {
+        <div class="gallery-management-note mt-5">
+
+            <strong>
+                Conversazione chiusa
+            </strong>
+
+            <p class="mb-0 mt-1">
+                La galleria ha contrassegnato questa richiesta
+                come conclusa.
+            </p>
+
+        </div>
+    }
+
+</div>

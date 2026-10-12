@@ -134,6 +134,9 @@ namespace BeArtGallery.Data.Migrations
                     b.Property<int>("ArtistId")
                         .HasColumnType("int");
 
+                    b.Property<int>("AvailabilityStatus")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -161,6 +164,115 @@ namespace BeArtGallery.Data.Migrations
                     b.HasIndex("ArtistId");
 
                     b.ToTable("Artworks");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkFavorite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArtworkId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArtworkId");
+
+                    b.HasIndex("UserId", "ArtworkId")
+                        .IsUnique();
+
+                    b.ToTable("ArtworkFavorites");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkInquiry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArtworkId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArtworkId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ArtworkInquiries");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkInquiryMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArtworkInquiryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SenderType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SenderUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SenderUserId");
+
+                    b.HasIndex("ArtworkInquiryId", "SenderType", "ReadAt");
+
+                    b.ToTable("ArtworkInquiryMessages");
                 });
 
             modelBuilder.Entity("BeArtGallery.Models.Booking", b =>
@@ -415,6 +527,61 @@ namespace BeArtGallery.Data.Migrations
                     b.Navigation("Artist");
                 });
 
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkFavorite", b =>
+                {
+                    b.HasOne("BeArtGallery.Models.Artwork", "Artwork")
+                        .WithMany("Favorites")
+                        .HasForeignKey("ArtworkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeArtGallery.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artwork");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkInquiry", b =>
+                {
+                    b.HasOne("BeArtGallery.Models.Artwork", "Artwork")
+                        .WithMany("Inquiries")
+                        .HasForeignKey("ArtworkId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("BeArtGallery.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Artwork");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkInquiryMessage", b =>
+                {
+                    b.HasOne("BeArtGallery.Models.ArtworkInquiry", "ArtworkInquiry")
+                        .WithMany("Messages")
+                        .HasForeignKey("ArtworkInquiryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeArtGallery.Data.ApplicationUser", "SenderUser")
+                        .WithMany()
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("ArtworkInquiry");
+
+                    b.Navigation("SenderUser");
+                });
+
             modelBuilder.Entity("BeArtGallery.Models.Booking", b =>
                 {
                     b.HasOne("BeArtGallery.Data.ApplicationUser", "CancelledByUser")
@@ -505,6 +672,18 @@ namespace BeArtGallery.Data.Migrations
             modelBuilder.Entity("BeArtGallery.Models.Artist", b =>
                 {
                     b.Navigation("Artworks");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.Artwork", b =>
+                {
+                    b.Navigation("Favorites");
+
+                    b.Navigation("Inquiries");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkInquiry", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("BeArtGallery.Models.GalleryActivity", b =>

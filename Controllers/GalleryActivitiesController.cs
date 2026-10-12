@@ -22,40 +22,159 @@ namespace BeArtGallery.Controllers
         }
 
         // INDEX PUBBLICO
-        public async Task<IActionResult> Index(bool showCancelled = false)
+        public async Task<IActionResult> Index(
+    bool showCancelled = false,
+    bool showPast = false)
         {
             var now = DateTime.Now;
 
-            var baseQuery = _context.GalleryActivities.AsNoTracking().Where(a => a.StartDateTime >= now);
+            var canViewHistory =
+                User.IsInRole(RoleNames.Staff) ||
+                User.IsInRole(RoleNames.Admin);
 
-            var cancelledCount = await baseQuery.CountAsync(a => a.Status == GalleryActivityStatus.Cancelled);
 
-            if (!showCancelled)
+            // Un visitatore normale non può forzare
+            // showPast=true dalla query string.
+            if (!canViewHistory)
             {
-                baseQuery = baseQuery.Where(a => a.Status != GalleryActivityStatus.Cancelled);
+                showPast = false;
             }
 
-            var activities = await baseQuery.OrderBy(a => a.Status == GalleryActivityStatus.Cancelled ? 1 : 0).ThenBy(a => a.StartDateTime)
-                .Select(a => new GalleryActivityViewModel
-                {
-                    Id = a.Id,
-                    Title = a.Title,
-                    Description = a.Description,
-                    ActivityType = a.ActivityType,
-                    StartDateTime = a.StartDateTime,
-                    DurationMinutes = a.DurationMinutes,
-                    MaxParticipants = a.MaxParticipants,
-                    Location = a.Location,
-                    Status = a.Status,
-                    CancellationReason = a.CancellationReason,
-                    CancelledAt = a.CancelledAt,
-                    HasBookings = a.Bookings.Any(),
-                    BookedParticipants = a.Bookings.Where(b => b.Status == BookingStatus.Confirmed).Sum(b => (int?)b.NumberOfParticipants) ?? 0
-                })
-                .ToListAsync();
 
-            ViewBag.ShowCancelled = showCancelled;
-            ViewBag.CancelledCount = cancelledCount;
+            var query =
+                _context.GalleryActivities
+                    .AsNoTracking()
+                    .AsQueryable();
+
+
+            // Per il pubblico e, di default, anche per Staff/Admin
+            // mostriamo solo attività future.
+            if (!showPast)
+            {
+                query =
+                    query.Where(a =>
+                        a.StartDateTime >= now);
+            }
+
+
+            // Gli annullati continuano a essere
+            // nascosti finché non vengono richiesti.
+            if (!showCancelled)
+            {
+                query =
+                    query.Where(a =>
+                        a.Status !=
+                        GalleryActivityStatus.Cancelled);
+            }
+
+
+            var activities =
+                await query
+                    .OrderBy(a =>
+                        a.Status ==
+                        GalleryActivityStatus.Cancelled
+                            ? 1
+                            : 0)
+                    .ThenBy(a =>
+                        a.StartDateTime)
+                    .Select(a =>
+                        new GalleryActivityViewModel
+                        {
+                            Id = a.Id,
+
+                            Title = a.Title,
+
+                            Description =
+                                a.Description,
+
+                            ActivityType =
+                                a.ActivityType,
+
+                            StartDateTime =
+                                a.StartDateTime,
+
+                            DurationMinutes =
+                                a.DurationMinutes,
+
+                            MaxParticipants =
+                                a.MaxParticipants,
+
+                            Location =
+                                a.Location,
+
+                            Status =
+                                a.Status,
+
+                            CancellationReason =
+                                a.CancellationReason,
+
+                            CancelledAt =
+                                a.CancelledAt,
+
+                            HasBookings =
+                                a.Bookings.Any(),
+
+                            BookedParticipants =
+                                a.Bookings
+                                    .Where(b =>
+                                        b.Status ==
+                                        BookingStatus.Confirmed)
+                                    .Sum(b =>
+                                        (int?)b.NumberOfParticipants)
+                                ?? 0
+                        })
+                    .ToListAsync();
+
+
+            // Conteggio annullati relativo alla modalità corrente.
+            var cancelledQuery =
+                _context.GalleryActivities
+                    .AsNoTracking()
+                    .Where(a =>
+                        a.Status ==
+                        GalleryActivityStatus.Cancelled);
+
+
+            if (!showPast)
+            {
+                cancelledQuery =
+                    cancelledQuery.Where(a =>
+                        a.StartDateTime >= now);
+            }
+
+
+            var cancelledCount =
+                await cancelledQuery.CountAsync();
+
+
+            // Lo storico è disponibile solo a Staff/Admin.
+            var pastCount = 0;
+
+            if (canViewHistory)
+            {
+                pastCount =
+                    await _context.GalleryActivities
+                        .AsNoTracking()
+                        .CountAsync(a =>
+                            a.StartDateTime < now);
+            }
+
+
+            ViewBag.ShowCancelled =
+                showCancelled;
+
+            ViewBag.CancelledCount =
+                cancelledCount;
+
+            ViewBag.ShowPast =
+                showPast;
+
+            ViewBag.PastCount =
+                pastCount;
+
+            ViewBag.CanViewHistory =
+                canViewHistory;
+
 
             return View(activities);
         }

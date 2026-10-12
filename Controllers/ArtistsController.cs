@@ -1,4 +1,3 @@
-
 using BeArtGallery.Authorization;
 using BeArtGallery.Data;
 using BeArtGallery.Models;
@@ -6,98 +5,186 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-public class ArtistsController : Controller
+namespace BeArtGallery.Controllers
 {
-    private readonly ApplicationDbContext _context;
-
-    public ArtistsController(ApplicationDbContext context)
+    public class ArtistsController : Controller
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    // GET: ARTISTS
-    public async Task<IActionResult> Index()    
-    {
-        return View(await _context.Artists.ToListAsync());
-    }
-
-    // GET: ARTISTS/Details/5
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null)
+        public ArtistsController(ApplicationDbContext context)
         {
-            return NotFound();
+            _context = context;
         }
 
-        var artist = await _context.Artists
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (artist == null)
+
+        // GET: Artists
+        // Pagina pubblica con tutti gli artisti
+
+        public async Task<IActionResult> Index()
         {
-            return NotFound();
+            var artists = await _context.Artists
+                .AsNoTracking()
+                .Include(a => a.Artworks)
+                .OrderBy(a => a.LastName)
+                .ThenBy(a => a.FirstName)
+                .ToListAsync();
+
+            return View(artists);
         }
 
-        return View(artist);
-    }
 
-    // GET: ARTISTS/Create
-    [Authorize(Roles = RoleNames.StaffOrAdmin)]
-    public IActionResult Create()
-    {
-        return View();
-    }
+        // GET: Artists/Details/5
+        // Pagina pubblica di dettaglio dell'artista
 
-    // POST: ARTISTS/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    [Authorize(Roles = RoleNames.StaffOrAdmin)]
-    public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Nationality,BirthDate,DeathDate,Biography,Artworks")] Artist artist)
-    {
-        if (ModelState.IsValid)
+        public async Task<IActionResult> Details(int? id)
         {
-            _context.Add(artist);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var artist = await _context.Artists
+                .AsNoTracking()
+                .Include(a => a.Artworks)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (artist == null)
+            {
+                return NotFound();
+            }
+
+            return View(artist);
+        }
+
+
+        // GET: Artists/Create
+
+        [Authorize(Roles = RoleNames.StaffOrAdmin)]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+
+        // POST: Artists/Create
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.StaffOrAdmin)]
+        public async Task<IActionResult> Create(
+            [Bind(
+                "FirstName," +
+                "LastName," +
+                "Nationality," +
+                "BirthDate," +
+                "DeathDate," +
+                "Biography"
+            )]
+            Artist artist)
+        {
+            ValidateArtistDates(artist);
+
+            if (!ModelState.IsValid)
+            {
+                return View(artist);
+            }
+
+            _context.Artists.Add(artist);
+
             await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] =
+                $"Artista {artist.FirstName} {artist.LastName} creato correttamente.";
+
             return RedirectToAction(nameof(Index));
         }
-        return View(artist);
-    }
 
-    // GET: ARTISTS/Edit/5
-    [Authorize(Roles = RoleNames.StaffOrAdmin)]
-    public async Task<IActionResult> Edit(int? id)
-    {
-        if (id == null)
+
+        // GET: Artists/Edit/5
+
+        [Authorize(Roles = RoleNames.StaffOrAdmin)]
+        public async Task<IActionResult> Edit(int? id)
         {
-            return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var artist = await _context.Artists
+                .FindAsync(id);
+
+            if (artist == null)
+            {
+                return NotFound();
+            }
+
+            return View(artist);
         }
 
-        var artist = await _context.Artists.FindAsync(id);
-        if (artist == null)
-        {
-            return NotFound();
-        }
-        return View(artist);
-    }
 
-    // POST: ARTISTS/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    [Authorize(Roles = RoleNames.StaffOrAdmin)]
-    public async Task<IActionResult> Edit(int? id, [Bind("Id,FirstName,LastName,Nationality,BirthDate,DeathDate,Biography,Artworks")] Artist artist)
-    {
-        if (id != artist.Id)
-        {
-            return NotFound();
-        }
+        // POST: Artists/Edit/5
 
-        if (ModelState.IsValid)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.StaffOrAdmin)]
+        public async Task<IActionResult> Edit(
+            int? id,
+            [Bind(
+                "Id," +
+                "FirstName," +
+                "LastName," +
+                "Nationality," +
+                "BirthDate," +
+                "DeathDate," +
+                "Biography"
+            )]
+            Artist artist)
         {
+            if (id == null ||
+                id != artist.Id)
+            {
+                return NotFound();
+            }
+
+            var existingArtist = await _context.Artists
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (existingArtist == null)
+            {
+                return NotFound();
+            }
+
+
+            ValidateArtistDates(artist);
+
+
+            if (!ModelState.IsValid)
+            {
+                return View(artist);
+            }
+
+
             try
             {
-                _context.Update(artist);
+                existingArtist.FirstName =
+                    artist.FirstName;
+
+                existingArtist.LastName =
+                    artist.LastName;
+
+                existingArtist.Nationality =
+                    artist.Nationality;
+
+                existingArtist.BirthDate =
+                    artist.BirthDate;
+
+                existingArtist.DeathDate =
+                    artist.DeathDate;
+
+                existingArtist.Biography =
+                    artist.Biography;
+
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -106,53 +193,115 @@ public class ArtistsController : Controller
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
+
+
+            TempData["SuccessMessage"] =
+                $"Artista {artist.FirstName} {artist.LastName} modificato correttamente.";
+
             return RedirectToAction(nameof(Index));
         }
-        return View(artist);
-    }
 
-    // GET: ARTISTS/Delete/5
-    [Authorize(Roles = RoleNames.StaffOrAdmin)]
-    public async Task<IActionResult> Delete(int? id)
-    {
-        if (id == null)
+
+        // GET: Artists/Delete/5
+
+        [Authorize(Roles = RoleNames.StaffOrAdmin)]
+        public async Task<IActionResult> Delete(int? id)
         {
-            return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var artist = await _context.Artists
+                .AsNoTracking()
+                .Include(a => a.Artworks)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (artist == null)
+            {
+                return NotFound();
+            }
+
+
+            if (artist.Artworks.Any())
+            {
+                TempData["ErrorMessage"] =
+                    "Non è possibile eliminare questo artista perché " +
+                    "sono presenti opere associate nel catalogo.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+
+            return View(artist);
         }
 
-        var artist = await _context.Artists
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (artist == null)
-        {
-            return NotFound();
-        }
 
-        return View(artist);
-    }
+        // POST: Artists/Delete/5
 
-    // POST: ARTISTS/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    [Authorize(Roles = RoleNames.StaffOrAdmin)]
-    public async Task<IActionResult> DeleteConfirmed(int? id)
-    {
-        var artist = await _context.Artists.FindAsync(id);
-        if (artist != null)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = RoleNames.StaffOrAdmin)]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var artist = await _context.Artists
+                .Include(a => a.Artworks)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            if (artist == null)
+            {
+                return NotFound();
+            }
+
+
+            // Ripetiamo il controllo lato server:
+            // non basta nascondere o bloccare il pulsante nella View.
+
+            if (artist.Artworks.Any())
+            {
+                TempData["ErrorMessage"] =
+                    "Non è possibile eliminare questo artista perché " +
+                    "sono presenti opere associate nel catalogo.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+
             _context.Artists.Remove(artist);
+
+            await _context.SaveChangesAsync();
+
+
+            TempData["SuccessMessage"] =
+                $"Artista {artist.FirstName} {artist.LastName} eliminato correttamente.";
+
+            return RedirectToAction(nameof(Index));
         }
 
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
 
-    private bool ArtistExists(int? id)
-    {
-        return _context.Artists.Any(e => e.Id == id);
+        // Controlla che la data di morte non preceda
+        // la data di nascita.
+
+        private void ValidateArtistDates(Artist artist)
+        {
+            if (artist.BirthDate.HasValue &&
+                artist.DeathDate.HasValue &&
+                artist.DeathDate.Value < artist.BirthDate.Value)
+            {
+                ModelState.AddModelError(
+                    nameof(artist.DeathDate),
+                    "La data di morte non può precedere la data di nascita.");
+            }
+        }
+
+
+        private bool ArtistExists(int id)
+        {
+            return _context.Artists
+                .Any(a => a.Id == id);
+        }
     }
 }

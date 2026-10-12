@@ -8,6 +8,12 @@
     var showCancelled = ViewBag.ShowCancelled != null && (bool)ViewBag.ShowCancelled;
 
     var cancelledCount = ViewBag.CancelledCount != null ? (int)ViewBag.CancelledCount : 0;
+
+    var showPast = ViewBag.ShowPast != null && (bool)ViewBag.ShowPast;
+
+var pastCount = ViewBag.PastCount != null ? (int)ViewBag.PastCount : 0;
+
+var canViewHistory = ViewBag.CanViewHistory != null && (bool)ViewBag.CanViewHistory;
 }
 
 <div class="container py-5">
@@ -33,35 +39,65 @@
             @* Pulsante per mostrare o nascondere le attività annullate *@
 
             @if (cancelledCount > 0)
-            {
-                @if (!showCancelled)
-                {
-                    <a asp-controller="GalleryActivities"
-                       asp-action="Index"
-                       asp-route-showCancelled="true"
-                       class="btn btn-outline-secondary">
+{
+    @if (!showCancelled)
+    {
+        <a asp-controller="GalleryActivities"
+           asp-action="Index"
+           asp-route-showCancelled="true"
+           asp-route-showPast="@showPast"
+           class="btn gallery-btn-outline">
 
-                        Visualizza anche annullati (@cancelledCount)
+            Visualizza anche annullati (@cancelledCount)
 
-                    </a>
-                }
-                else
-                {
-                    <a asp-controller="GalleryActivities"
-                       asp-action="Index"
-                       asp-route-showCancelled="false"
-                       class="btn btn-outline-secondary">
+        </a>
+    }
+    else
+    {
+        <a asp-controller="GalleryActivities"
+           asp-action="Index"
+           asp-route-showCancelled="false"
+           asp-route-showPast="@showPast"
+           class="btn gallery-btn-outline">
 
-                        Nascondi annullati
+            Nascondi annullati
 
-                    </a>
-                }
-            }
+        </a>
+    }
+}
 
             @* Creazione di una nuova attività disponibile solo per Staff e Admin *@
 
             @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
             {
+                @if (canViewHistory && pastCount > 0)
+{
+    @if (!showPast)
+    {
+        <a asp-controller="GalleryActivities"
+           asp-action="Index"
+           asp-route-showPast="true"
+           asp-route-showCancelled="@showCancelled"
+           class="btn gallery-btn-outline">
+
+            Visualizza storico (@pastCount)
+
+        </a>
+    }
+    else
+    {
+        <a asp-controller="GalleryActivities"
+           asp-action="Index"
+           asp-route-showPast="false"
+           asp-route-showCancelled="@showCancelled"
+           class="btn gallery-btn-outline">
+
+            Nascondi storico
+
+        </a>
+    }
+}
+
                 <a asp-controller="GalleryActivities"
                    asp-action="Create"
                    class="btn btn-dark">

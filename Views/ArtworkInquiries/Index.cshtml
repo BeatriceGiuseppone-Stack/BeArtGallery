@@ -1,0 +1,331 @@
+﻿@model BeArtGallery.ViewModels.ArtworkInquiryIndexViewModel
+@using BeArtGallery.Models.Enums
+
+@{
+    ViewData["Title"] = "Richieste informazioni";
+}
+
+<div class="container py-5">
+
+    <div class="d-flex
+                justify-content-between
+                align-items-end
+                flex-wrap
+                gap-4
+                mb-5">
+
+        <div>
+
+            <div class="gallery-eyebrow mb-3">
+                Gestione galleria
+            </div>
+
+            <h1 class="inquiries-page-title">
+                Richieste informazioni
+            </h1>
+
+            <p class="inquiries-page-intro">
+                Consulta e gestisci le richieste inviate
+                dai visitatori dalle schede delle opere.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="gallery-management-note mb-4">
+
+            <div class="gallery-management-note-title">
+                Operazione completata
+            </div>
+
+            <p class="mb-0">
+                @TempData["SuccessMessage"]
+            </p>
+
+        </div>
+    }
+
+
+    @* Riepilogo *@
+
+    <div class="row g-3 mb-5">
+
+        <div class="col-md-3">
+
+            <a asp-action="Index"
+               class="inquiry-stat-card">
+
+                <span>
+                    Tutte
+                </span>
+
+                <strong>
+                    @Model.TotalCount
+                </strong>
+
+            </a>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <a asp-action="Index"
+               asp-route-status="@ArtworkInquiryStatus.New"
+               class="inquiry-stat-card">
+
+                <span>
+                    Nuove
+                </span>
+
+                <strong>
+                    @Model.NewCount
+                </strong>
+
+            </a>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <a asp-action="Index"
+               asp-route-status="@ArtworkInquiryStatus.InProgress"
+               class="inquiry-stat-card">
+
+                <span>
+                    In lavorazione
+                </span>
+
+                <strong>
+                    @Model.InProgressCount
+                </strong>
+
+            </a>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <a asp-action="Index"
+               asp-route-status="@ArtworkInquiryStatus.Closed"
+               class="inquiry-stat-card">
+
+                <span>
+                    Chiuse
+                </span>
+
+                <strong>
+                    @Model.ClosedCount
+                </strong>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    @* Filtro corrente *@
+
+    @if (Model.StatusFilter.HasValue)
+    {
+        <div class="inquiries-filter-bar mb-4">
+
+            <span>
+                Stai visualizzando:
+            </span>
+
+            <strong>
+
+                @switch (Model.StatusFilter.Value)
+                {
+                    case ArtworkInquiryStatus.New:
+                        <text>Nuove</text>
+                        break;
+
+                    case ArtworkInquiryStatus.InProgress:
+                        <text>In lavorazione</text>
+                        break;
+
+                    case ArtworkInquiryStatus.Closed:
+                        <text>Chiuse</text>
+                        break;
+                }
+
+            </strong>
+
+
+            <a asp-action="Index">
+                Mostra tutte
+            </a>
+
+        </div>
+    }
+
+
+    @if (!Model.Inquiries.Any())
+    {
+        <div class="inquiry-empty-state">
+
+            <div class="gallery-eyebrow mb-2">
+                Richieste
+            </div>
+
+            <h2>
+                Nessuna richiesta trovata
+            </h2>
+
+            <p>
+                Non sono presenti richieste
+                corrispondenti al filtro selezionato.
+            </p>
+
+        </div>
+    }
+    else
+    {
+        <div class="inquiries-list">
+
+            @foreach (var inquiry in Model.Inquiries)
+            {
+                <article class="inquiry-list-item">
+
+                    <div class="inquiry-list-main">
+
+                        <div class="inquiry-list-top">
+
+                            <div>
+
+                                <div class="gallery-eyebrow mb-2">
+                                    Opera
+                                </div>
+
+                                <h2>
+
+                                    <a asp-controller="Artworks"
+                                       asp-action="Details"
+                                       asp-route-id="@inquiry.ArtworkId">
+
+                                        @inquiry.ArtworkTitle
+
+                                    </a>
+
+                                </h2>
+
+                                @if (!string.IsNullOrWhiteSpace(
+                                    inquiry.ArtistName))
+                                {
+                                    <p class="inquiry-artist">
+                                        @inquiry.ArtistName
+                                    </p>
+                                }
+
+                            </div>
+
+
+                            <div>
+
+                                @switch (inquiry.Status)
+                                {
+                                    case ArtworkInquiryStatus.New:
+
+                                        <span class="inquiry-status inquiry-status-new">
+                                            Nuova
+                                        </span>
+
+                                        break;
+
+
+                                    case ArtworkInquiryStatus.InProgress:
+
+                                        <span class="inquiry-status inquiry-status-progress">
+                                            In lavorazione
+                                        </span>
+
+                                        break;
+
+
+                                    case ArtworkInquiryStatus.Closed:
+
+                                        <span class="inquiry-status inquiry-status-closed">
+                                            Chiusa
+                                        </span>
+
+                                        break;
+                                }
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="inquiry-requester">
+
+                            <div>
+
+                                <span>
+                                    Richiedente
+                                </span>
+
+                                <strong>
+                                    @inquiry.Name
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Email
+                                </span>
+
+                                <a href="mailto:@inquiry.Email">
+                                    @inquiry.Email
+                                </a>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Ricevuta
+                                </span>
+
+                                <strong>
+                                    @inquiry.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="inquiry-list-action">
+
+                        <a asp-action="Details"
+                           asp-route-id="@inquiry.Id"
+                           class="btn gallery-btn-outline">
+
+                            Visualizza
+
+                        </a>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    }
+
+</div>

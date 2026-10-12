@@ -1,0 +1,196 @@
+﻿@model IEnumerable<BeArtGallery.Models.ArtworkFavorite>
+
+@{
+    ViewData["Title"] = "I miei preferiti";
+}
+
+<div class="container py-5">
+
+    <div class="mb-5">
+
+        <div class="gallery-eyebrow mb-3">
+            La tua collezione
+        </div>
+
+        <h1 class="artworks-page-title">
+            I miei preferiti
+        </h1>
+
+        <p class="artworks-page-intro">
+            Ritrova le opere che hai salvato
+            durante la tua visita a BeArtGallery.
+        </p>
+
+    </div>
+
+
+    @if (!Model.Any())
+    {
+        <div class="favorite-empty-state">
+
+            <div class="favorite-empty-heart">
+                ♡
+            </div>
+
+            <h2>
+                Non hai ancora opere preferite
+            </h2>
+
+            <p>
+                Esplora il catalogo e salva le opere
+                che vuoi ritrovare più facilmente.
+            </p>
+
+            <a asp-controller="Artworks"
+               asp-action="Index"
+               class="btn gallery-btn-primary">
+
+                Esplora le opere
+
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="row g-5">
+
+            @foreach (var favorite in Model)
+            {
+                if (favorite.Artwork == null)
+                {
+                    continue;
+                }
+
+                var artwork =
+                    favorite.Artwork;
+
+
+                <div class="col-md-6 col-xl-4">
+
+                    <article class="artwork-catalog-card">
+
+                        <a asp-controller="Artworks"
+                           asp-action="Details"
+                           asp-route-id="@artwork.Id"
+                           class="artwork-catalog-image-wrapper">
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                artwork.ImageUrl))
+                            {
+                                <img src="@artwork.ImageUrl"
+                                     alt="@artwork.Title"
+                                     class="artwork-catalog-image" />
+                            }
+                            else
+                            {
+                                <div class="artwork-catalog-placeholder">
+
+                                    Immagine non disponibile
+
+                                </div>
+                            }
+
+                        </a>
+
+
+                        <div class="artwork-catalog-content">
+
+                            <div class="gallery-eyebrow mb-2">
+                                Opera preferita
+                            </div>
+
+
+                            <h2 class="artwork-catalog-title">
+
+                                <a asp-controller="Artworks"
+                                   asp-action="Details"
+                                   asp-route-id="@artwork.Id">
+
+                                    @artwork.Title
+
+                                </a>
+
+                            </h2>
+
+
+                            @if (artwork.Artist != null)
+                            {
+                                <a asp-controller="Artists"
+                                   asp-action="Details"
+                                   asp-route-id="@artwork.ArtistId"
+                                   class="artwork-catalog-artist">
+
+                                    @artwork.Artist.FirstName
+                                    @artwork.Artist.LastName
+
+                                </a>
+                            }
+
+
+                            <div class="artwork-catalog-meta">
+
+                                @if (artwork.Year.HasValue)
+                                {
+                                    <span>
+                                        @artwork.Year
+                                    </span>
+                                }
+
+                                @if (!string.IsNullOrWhiteSpace(
+                                    artwork.Technique))
+                                {
+                                    <span>
+                                        @artwork.Technique
+                                    </span>
+                                }
+
+                            </div>
+
+
+                            <div class="favorite-card-actions">
+
+                                <a asp-controller="Artworks"
+                                   asp-action="Details"
+                                   asp-route-id="@artwork.Id"
+                                   class="artwork-catalog-details-link">
+
+                                    Scopri l'opera →
+
+                                </a>
+
+
+                                <form asp-controller="Artworks"
+                                      asp-action="ToggleFavorite"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@artwork.Id" />
+
+                                    <input type="hidden"
+                                           name="fromFavorites"
+                                           value="true" />
+
+                                    <button type="submit"
+                                            class="favorite-remove-button">
+
+                                        ♥ Rimuovi dai preferiti
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>

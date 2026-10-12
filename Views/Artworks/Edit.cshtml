@@ -1,135 +1,413 @@
 @model BeArtGallery.Models.Artwork
+@using BeArtGallery.Models.Enums
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Modifica opera";
 }
 
-<div class="mb-4">
-    <a asp-action="Index"
-       class="text-decoration-none text-dark">
-        ← Torna al catalogo
-    </a>
+<div class="container py-5">
+
+    @* Navigazione *@
+
+    <div class="mb-5">
+
+        <a asp-controller="Artworks"
+           asp-action="Details"
+           asp-route-id="@Model.Id"
+           class="gallery-back-link">
+
+            ← Torna all'opera
+
+        </a>
+
+    </div>
+
+
+    <div class="row g-5">
+
+        <div class="col-lg-8">
+
+            <div class="gallery-eyebrow mb-3">
+                Gestione opere
+            </div>
+
+            <h1 class="gallery-form-title">
+                Modifica opera
+            </h1>
+
+            <p class="gallery-form-intro">
+                Aggiorna le informazioni di
+                <strong>@Model.Title</strong>.
+            </p>
+
+
+            <form asp-action="Edit"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="gallery-form">
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <input type="hidden"
+                       asp-for="ImageUrl" />
+
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+
+                <div class="row g-4">
+
+                    @* Titolo *@
+
+                    <div class="col-12">
+
+                        <label asp-for="Title"
+                               class="form-label gallery-form-label">
+
+                            Titolo
+
+                        </label>
+
+                        <input asp-for="Title"
+                               class="form-control gallery-form-control" />
+
+                        <span asp-validation-for="Title"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    @* Anno *@
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Year"
+                               class="form-label gallery-form-label">
+
+                            Anno
+
+                        </label>
+
+                        <input asp-for="Year"
+                               type="number"
+                               class="form-control gallery-form-control" />
+
+                        <span asp-validation-for="Year"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    @* Tecnica *@
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Technique"
+                               class="form-label gallery-form-label">
+
+                            Tecnica
+
+                        </label>
+
+                        <input asp-for="Technique"
+                               class="form-control gallery-form-control" />
+
+                        <span asp-validation-for="Technique"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+
+                    @* Artista *@
+
+                    <div class="col-12">
+
+                        <label asp-for="ArtistId"
+                               class="form-label gallery-form-label">
+
+                            Artista
+
+                        </label>
+
+                        <select asp-for="ArtistId"
+                                asp-items="ViewBag.ArtistId"
+                                class="form-select gallery-form-control">
+
+                            <option value="">
+                                Seleziona un artista
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="ArtistId"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                    <div class="col-12">
+
+    <label asp-for="AvailabilityStatus"
+           class="form-label gallery-form-label">
+
+        Disponibilità
+
+    </label>
+
+    <select asp-for="AvailabilityStatus"
+            class="form-select gallery-form-control">
+
+        <option value="@ArtworkAvailabilityStatus.Available">
+            Disponibile
+        </option>
+
+        <option value="@ArtworkAvailabilityStatus.LimitedAvailability">
+            Disponibilità limitata
+        </option>
+
+        <option value="@ArtworkAvailabilityStatus.SoldOut">
+            Esaurita
+        </option>
+
+        <option value="@ArtworkAvailabilityStatus.Unavailable">
+            Non disponibile
+        </option>
+
+    </select>
+
+    <span asp-validation-for="AvailabilityStatus"
+          class="text-danger small">
+    </span>
+
 </div>
 
-<h1>Modifica Opera</h1>
+                    @* Descrizione *@
 
-<h4>Opera</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit"
-              method="post"
-              enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Year" class="control-label"></label>
-                <input asp-for="Year" class="form-control" />
-                <span asp-validation-for="Year" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Technique" class="control-label"></label>
-                <input asp-for="Technique" class="form-control" />
-                <span asp-validation-for="Technique" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
+                    <div class="col-12">
 
-                <label class="control-label">
-                    Immagine dell'opera
-                </label>
+                        <label asp-for="Description"
+                               class="form-label gallery-form-label">
 
-                @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
-                {
-                    <div class="mb-3">
-                        <img id="imagePreview"
-                             src="@Model.ImageUrl"
-                             alt="Immagine attuale di @Model.Title"
-                             class="img-fluid rounded"
-                             style="max-height: 350px;" />
+                            Descrizione
+
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control gallery-form-control"
+                                  rows="7"></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger small">
+                        </span>
+
                     </div>
-                }
-                else
-                {
-                    <div class="mb-3">
-                        <img id="imagePreview"
-                             src=""
-                             alt="Anteprima dell'opera"
-                             class="img-fluid rounded d-none"
-                             style="max-height: 350px;" />
+
+
+                    @* Immagine attuale *@
+
+                    @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                    {
+                        <div class="col-12">
+
+                            <div class="gallery-eyebrow mb-3">
+                                Immagine attuale
+                            </div>
+
+                            <div class="artwork-current-image">
+
+                                <img src="@Model.ImageUrl"
+                                     alt="@Model.Title" />
+
+                            </div>
+
+                        </div>
+                    }
+
+
+                    @* Sostituzione immagine *@
+
+                    <div class="col-12">
+
+                        <label for="imageFile"
+                               class="form-label gallery-form-label">
+
+                            Sostituisci immagine
+
+                        </label>
+
+                        <input type="file"
+                               id="imageFile"
+                               name="imageFile"
+                               class="form-control gallery-form-control"
+                               accept=".jpg,.jpeg,.png,.webp" />
+
+                        <div class="form-text">
+                            Lascia vuoto per mantenere
+                            l'immagine attuale.
+                            Formati supportati: JPG, PNG e WEBP.
+                            Dimensione massima 5 MB.
+                        </div>
+
+
+                        <div id="imagePreviewContainer"
+                             class="artwork-upload-preview d-none">
+
+                            <div class="gallery-eyebrow mb-2">
+                                Nuova anteprima
+                            </div>
+
+                            <img id="imagePreview"
+                                 src=""
+                                 alt="Anteprima della nuova immagine" />
+
+                        </div>
+
                     </div>
-                }
 
-                <input type="file"
-                       id="imageFile"
-                       name="imageFile"
-                       class="form-control"
-                       accept="image/jpeg,image/png,image/webp" />
 
-                @Html.ValidationMessage(
-                    "imageFile",
-                    "",
-                    new { @class = "text-danger" })
+                    @* Stato esposizione *@
 
-                <div class="form-text">
-                    Lascia vuoto per mantenere l'immagine attuale.
+                    <div class="col-12">
+
+                        <div class="gallery-checkbox-wrapper">
+
+                            <input asp-for="IsOnDisplay"
+                                   class="form-check-input" />
+
+                            <label asp-for="IsOnDisplay"
+                                   class="form-check-label">
+
+                                Opera attualmente esposta in galleria
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="gallery-form-actions">
+
+                    <button type="submit"
+                            class="btn gallery-btn-primary">
+
+                        Salva modifiche
+
+                    </button>
+
+                    <a asp-controller="Artworks"
+                       asp-action="Details"
+                       asp-route-id="@Model.Id"
+                       class="btn gallery-btn-outline">
+
+                        Annulla
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        @* Pannello informativo *@
+
+        <div class="col-lg-4 d-none d-lg-block">
+
+            <div class="gallery-form-side">
+
+                <div>
+
+                    <div class="gallery-eyebrow mb-3">
+                        Catalogo
+                    </div>
+
+                    <h2>
+                        @Model.Title
+                    </h2>
+
+                    <p>
+                        Le modifiche apportate saranno
+                        immediatamente visibili nella
+                        scheda pubblica dell'opera.
+                    </p>
+
                 </div>
 
             </div>
-            <div class="form-group">
-                <label asp-for="IsOnDisplay" class="control-label"></label>
-                <input asp-for="IsOnDisplay" class="form-check-input" />
-                <span asp-validation-for="IsOnDisplay" class="text-danger"></span>
-            </div>
-            <div class="form-group mb-3">
-                <label asp-for="ArtistId" class="control-label">Artist</label>
 
-                <select asp-for="ArtistId"
-                        class="form-control"
-                        asp-items="ViewBag.ArtistId">
-                    <option value="">-- Select artist --</option>
-                </select>
+        </div>
 
-                <span asp-validation-for="ArtistId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-@* 
-                <a asp-action="Index"
-                   class="text-decoration-none text-dark">
-                    ← Torna al catalogo
-                </a> *@
-            </div>
-        </form>
     </div>
+
 </div>
+
 
 @section Scripts {
 
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        const imageInput = document.getElementById("imageFile");
-        const imagePreview = document.getElementById("imagePreview");
 
-        imageInput.addEventListener("change", function () {
+        const imageFile =
+            document.getElementById("imageFile");
 
-            const file = this.files[0];
+        const imagePreview =
+            document.getElementById("imagePreview");
 
-            if (!file)
-                return;
+        const imagePreviewContainer =
+            document.getElementById("imagePreviewContainer");
 
-            imagePreview.src = URL.createObjectURL(file);
-            imagePreview.classList.remove("d-none");
-        });
+
+        imageFile?.addEventListener(
+            "change",
+            function () {
+
+                const file =
+                    this.files?.[0];
+
+
+                if (!file) {
+
+                    imagePreview.src = "";
+
+                    imagePreviewContainer
+                        .classList
+                        .add("d-none");
+
+                    return;
+                }
+
+
+                const reader =
+                    new FileReader();
+
+
+                reader.onload = function (event) {
+
+                    imagePreview.src =
+                        event.target.result;
+
+                    imagePreviewContainer
+                        .classList
+                        .remove("d-none");
+
+                };
+
+
+                reader.readAsDataURL(file);
+
+            });
+
     </script>
+
 }
