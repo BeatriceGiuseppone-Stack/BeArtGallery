@@ -1,0 +1,644 @@
+﻿/* =================================================
+   BEARTGALLERY
+   Visualizza nella tua stanza
+   ================================================= */
+
+
+/* -------------------------------------------------
+   Sezione principale
+   ------------------------------------------------- */
+
+.room-preview-section {
+    margin-top: 6rem;
+    padding-top: 5rem;
+    border-top: 1px solid var(--gallery-border);
+}
+
+
+.room-preview-title {
+    margin-bottom: 1rem;
+    font-size: clamp(2.8rem, 4vw, 4.5rem);
+    line-height: 1.05;
+}
+
+
+.room-preview-intro {
+    margin-bottom: 2.5rem;
+    color: var(--gallery-muted);
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+
+/* -------------------------------------------------
+   Passaggi
+   ------------------------------------------------- */
+
+.room-preview-steps {
+    margin-bottom: 2.5rem;
+}
+
+
+.room-preview-step {
+    display: grid;
+    grid-template-columns: 35px 1fr;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--gallery-border);
+}
+
+
+    .room-preview-step > span {
+        color: var(--gallery-accent);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+    }
+
+
+    .room-preview-step strong {
+        display: block;
+        margin-bottom: 0.35rem;
+    }
+
+
+    .room-preview-step p {
+        margin: 0;
+        color: var(--gallery-muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+
+/* -------------------------------------------------
+   Controlli
+   ------------------------------------------------- */
+
+/*.room-preview-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+*/
+.room-reference-input {
+    position: relative;
+}
+
+
+    .room-reference-input input {
+        padding-right: 4rem;
+    }
+
+
+    .room-reference-input > span {
+        position: absolute;
+        top: 50%;
+        right: 1.25rem;
+        transform: translateY(-50%);
+        color: var(--gallery-muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+
+/* -------------------------------------------------
+   Messaggio di stato
+   ------------------------------------------------- */
+
+.room-preview-status {
+    padding: 1rem 1.25rem;
+    color: var(--gallery-muted);
+    background-color: var(--gallery-soft);
+    border-left: 3px solid var(--gallery-accent);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+
+    .room-preview-status.is-error {
+        color: #813e38;
+        border-left-color: #813e38;
+    }
+
+
+/* -------------------------------------------------
+   Privacy
+   ------------------------------------------------- */
+
+/*.room-preview-privacy {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gallery-border);
+}
+
+
+    .room-preview-privacy strong {
+        display: block;
+        margin-bottom: 0.4rem;
+    }
+
+
+    .room-preview-privacy p {
+        margin: 0;
+        color: var(--gallery-muted);
+        font-size: 0.85rem;
+        line-height: 1.6;
+    }
+*/
+
+/* -------------------------------------------------
+   Area di anteprima
+   ------------------------------------------------- */
+
+.room-preview-workspace {
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: var(--gallery-soft);
+    border: 1px solid var(--gallery-border);
+}
+
+
+/* -------------------------------------------------
+   Placeholder iniziale
+   ------------------------------------------------- */
+
+.room-preview-placeholder {
+    width: 100%;
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--gallery-muted);
+}
+
+
+    .room-preview-placeholder > div {
+        max-width: 420px;
+        margin: 0 auto;
+    }
+
+
+.room-preview-placeholder-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1.25rem;
+    color: var(--gallery-accent);
+    border: 1px solid var(--gallery-accent);
+    border-radius: 50%;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2rem;
+}
+
+
+.room-preview-placeholder strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--gallery-text);
+    font-size: 1.1rem;
+}
+
+
+.room-preview-placeholder p {
+    margin: 0;
+}
+
+
+/* -------------------------------------------------
+   Canvas
+   ------------------------------------------------- */
+
+.room-preview-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 750px;
+    object-fit: contain;
+    touch-action: none;
+    cursor: grab;
+}
+
+
+    .room-preview-canvas:active {
+        cursor: grabbing;
+    }
+
+
+/* -------------------------------------------------
+   Legenda
+   ------------------------------------------------- */
+
+.room-preview-legend {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    color: var(--gallery-muted);
+    font-size: 0.78rem;
+}
+
+
+/* =================================================
+   TABLET
+   ================================================= */
+
+@media (max-width: 991.98px) {
+
+    .room-preview-section {
+        margin-top: 5rem;
+        padding-top: 4rem;
+    }
+
+
+    .room-preview-workspace {
+        min-height: 420px;
+    }
+}
+
+
+/* =================================================
+   MOBILE
+   ================================================= */
+
+@media (max-width: 767.98px) {
+
+    .room-preview-section {
+        margin-top: 4rem;
+        padding-top: 3rem;
+    }
+
+
+    .room-preview-title {
+        font-size: 2.8rem;
+    }
+
+
+    .room-preview-workspace {
+        min-height: 300px;
+    }
+
+
+    .room-preview-legend {
+        flex-direction: column;
+    }
+
+
+    .room-preview-step {
+        grid-template-columns: 30px 1fr;
+    }
+}
+
+
+/* =================================================
+   MOBILE PICCOLO
+   ================================================= */
+
+@media (max-width: 575.98px) {
+
+    .room-preview-title {
+        font-size: 2.4rem;
+    }
+
+
+    .room-preview-workspace {
+        min-height: 250px;
+    }
+
+
+    .room-preview-placeholder {
+        padding: 3rem 1.25rem;
+    }
+}
+
+/* =================================================
+   COLONNA ANTEPRIMA
+   ================================================= */
+
+.room-preview-right-column {
+    width: 100%;
+}
+
+
+/* =================================================
+   PANNELLO CONTROLLI
+   ================================================= */
+
+.room-preview-control-panel {
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: var(--gallery-surface);
+    border: 1px solid var(--gallery-border);
+}
+
+
+/* Campo misura */
+
+.room-reference-input {
+    position: relative;
+}
+
+
+    .room-reference-input input {
+        padding-right: 4rem;
+    }
+
+
+    .room-reference-input > span {
+        position: absolute;
+        top: 50%;
+        right: 1.25rem;
+        transform: translateY(-50%);
+        color: var(--gallery-muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+        pointer-events: none;
+    }
+
+
+/* Pulsanti */
+
+.room-preview-action-button {
+    width: 100%;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =================================================
+   STATO DELLA SCALA
+   ================================================= */
+
+.room-preview-status {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    color: var(--gallery-muted);
+    background-color: var(--gallery-soft);
+    border-left: 3px solid var(--gallery-accent);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+
+    .room-preview-status.is-error {
+        color: #813e38;
+        border-left-color: #813e38;
+    }
+
+
+/* =================================================
+   PRIVACY
+   ================================================= */
+
+.room-preview-privacy {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gallery-border);
+}
+
+
+.room-preview-privacy-icon {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: var(--gallery-accent);
+    border: 1px solid var(--gallery-accent);
+    border-radius: 50%;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+
+.room-preview-privacy strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--gallery-text);
+}
+
+
+.room-preview-privacy p {
+    max-width: 650px;
+    margin: 0;
+    color: var(--gallery-muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+/* =================================================
+   MODALITÀ ANTEPRIMA
+   ================================================= */
+
+.room-preview-mode-section {
+    margin-top: 2rem;
+}
+
+
+.room-preview-mode-label {
+    margin-bottom: 0.75rem;
+    color: var(--gallery-text);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+
+.room-preview-mode-switch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+
+.room-preview-mode-button {
+    min-height: 110px;
+    padding: 1.25rem;
+    text-align: left;
+    color: var(--gallery-text);
+    background-color: transparent;
+    border: 1px solid var(--gallery-border);
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+
+    .room-preview-mode-button:hover {
+        border-color: var(--gallery-text);
+    }
+
+
+    .room-preview-mode-button.active {
+        color: #ffffff;
+        background-color: var(--gallery-dark);
+        border-color: var(--gallery-dark);
+    }
+
+
+.room-preview-mode-title {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+
+.room-preview-mode-description {
+    display: block;
+    color: var(--gallery-muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+
+.room-preview-mode-button.active
+.room-preview-mode-description {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* =================================================
+   SUGGERIMENTO ANTEPRIMA LIBERA
+   ================================================= */
+
+.room-preview-mode-hint {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background-color: var(--gallery-soft);
+}
+
+
+    .room-preview-mode-hint strong {
+        display: block;
+        margin-bottom: 0.35rem;
+    }
+
+
+    .room-preview-mode-hint p {
+        margin: 0;
+        color: var(--gallery-muted);
+        font-size: 0.87rem;
+        line-height: 1.6;
+    }
+
+
+/* =================================================
+   SCALA REALE
+   ================================================= */
+
+.room-preview-real-scale {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gallery-border);
+}
+
+
+.room-preview-real-scale-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+
+    .room-preview-real-scale-heading h3 {
+        margin: 0.35rem 0 0;
+        font-size: 1.5rem;
+    }
+
+
+    .room-preview-real-scale-heading p {
+        max-width: 330px;
+        margin: 0;
+        color: var(--gallery-muted);
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+
+.room-preview-reference-example {
+    height: 100%;
+    padding: 1rem 1.25rem;
+    background-color: var(--gallery-soft);
+}
+
+
+    .room-preview-reference-example strong {
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+
+
+    .room-preview-reference-example p {
+        margin: 0;
+        color: var(--gallery-muted);
+        font-size: 0.82rem;
+        line-height: 1.5;
+    }
+
+/* =================================================
+   TABLET
+   ================================================= */
+
+@media (max-width: 991.98px) {
+
+    .room-preview-control-panel {
+        margin-top: 1.75rem;
+        padding: 1.75rem;
+    }
+}
+
+
+/* =================================================
+   MOBILE
+   ================================================= */
+
+@media (max-width: 767.98px) {
+    .room-preview-mode-switch {
+        grid-template-columns: 1fr;
+    }
+
+
+    .room-preview-mode-button {
+        min-height: auto;
+    }
+
+
+    .room-preview-real-scale-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .room-preview-control-panel {
+        margin-top: 1.5rem;
+        padding: 1.25rem;
+    }
+
+
+    .room-preview-action-button {
+        min-height: 52px;
+    }
+
+
+    .room-preview-status {
+        margin-top: 1.25rem;
+    }
+
+
+    .room-preview-privacy {
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+    }
+}

@@ -1,0 +1,277 @@
+﻿@{
+    ViewData["Title"] = "Chi siamo";
+}
+
+<div class="about-page">
+
+    @* Hero *@
+
+    <section class="about-hero">
+
+        <div class="container">
+
+            <div class="row align-items-end g-5">
+
+                <div class="col-lg-8">
+
+                    <div class="gallery-eyebrow mb-3">
+                        BeArtGallery
+                    </div>
+
+                    <h1 class="about-title">
+                        Arte, cultura e persone.
+                    </h1>
+
+                    <p class="about-lead">
+                        BeArtGallery nasce con l'obiettivo di rendere
+                        l'arte un'esperienza accessibile, coinvolgente
+                        e aperta alla scoperta.
+                    </p>
+
+                </div>
+
+
+                <div class="col-lg-4">
+
+                    <p class="about-side-text">
+                        Nel cuore di Roma, la galleria ospita opere,
+                        artisti, visite guidate ed eventi dedicati
+                        alla valorizzazione dell'arte moderna
+                        e contemporanea.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    @* Introduzione *@
+
+    <section class="about-section">
+
+        <div class="container">
+
+            <div class="row g-5">
+
+                <div class="col-lg-4">
+
+                    <div class="gallery-eyebrow mb-3">
+                        La galleria
+                    </div>
+
+                    <h2 class="about-section-title">
+                        Uno spazio da vivere.
+                    </h2>
+
+                </div>
+
+
+                <div class="col-lg-7 offset-lg-1">
+
+                    <div class="about-text">
+
+                        <p>
+                            BeArtGallery è una galleria d'arte indipendente
+                            dedicata alla promozione e alla valorizzazione
+                            di artisti, opere e percorsi culturali.
+                        </p>
+
+                        <p>
+                            La galleria nasce dall'idea che l'arte non debba
+                            essere soltanto osservata, ma anche conosciuta,
+                            raccontata e condivisa.
+                        </p>
+
+                        <p>
+                            Accanto all'esposizione delle opere, BeArtGallery
+                            organizza visite guidate, incontri ed eventi
+                            pensati per avvicinare il pubblico agli artisti
+                            e alle storie che si trovano dietro ogni opera.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    @* Informazioni visita *@
+
+    <section class="about-info-section">
+
+        <div class="container">
+
+            <div class="gallery-eyebrow mb-3">
+                Visita BeArtGallery
+            </div>
+
+            <h2 class="about-info-title">
+                Informazioni utili
+            </h2>
+
+
+            <div class="row g-4 mt-3">
+
+                @* Dove siamo *@
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="about-info-card">
+
+                        <div class="about-info-number">
+                            01
+                        </div>
+
+                        <h3>
+                            Dove siamo
+                        </h3>
+
+                        <p>
+                            Via delle Arti 18<br />
+                            00186 Roma RM<br />
+                            Italia
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                @* Orari *@
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="about-info-card">
+
+                        <div class="about-info-number">
+                            02
+                        </div>
+
+                        <h3>
+                            Orari di apertura
+                        </h3>
+
+                        <div class="about-hours">
+
+                            <div>
+                                <span>Lunedì</span>
+                                <strong>Chiuso</strong>
+                            </div>
+
+                            <div>
+                                <span>Martedì – Venerdì</span>
+                                <strong>10:00 – 19:00</strong>
+                            </div>
+
+                            <div>
+                                <span>Sabato – Domenica</span>
+                                <strong>10:00 – 20:00</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                @* Contatti *@
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="about-info-card">
+
+                        <div class="about-info-number">
+                            03
+                        </div>
+
+                        <h3>
+                            Contatti
+                        </h3>
+
+                        <p>
+                            <a href="mailto:info@beartgallery.it">
+                                info@beartgallery.it
+                            </a>
+                        </p>
+
+                        <p>
+                            <a href="tel:+390600000000">
+                                +39 06 0000 0000
+                            </a>
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    @* CTA finale *@
+
+    <section class="about-cta">
+
+        <div class="container">
+
+            <div class="about-cta-inner">
+
+                <div>
+
+                    <div class="gallery-eyebrow mb-3">
+                        Scopri la galleria
+                    </div>
+
+                    <h2>
+                        Vivi BeArtGallery.
+                    </h2>
+
+                    <p>
+                        Esplora la collezione oppure prenota
+                        una delle prossime visite ed esperienze.
+                    </p>
+
+                </div>
+
+
+                <div class="about-cta-actions">
+
+                    <a asp-controller="Artworks"
+                       asp-action="Index"
+                       class="btn gallery-btn-primary">
+
+                        Esplora le opere
+
+                    </a>
+
+
+                    <a asp-controller="GalleryActivities"
+                       asp-action="Index"
+                       class="btn gallery-btn-outline">
+
+                        Visite ed eventi
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>

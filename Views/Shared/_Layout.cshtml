@@ -24,6 +24,10 @@
           href="~/css/site.css"
           asp-append-version="true" />
 
+          @await RenderSectionAsync(
+    "Styles",
+    required: false)
+
     <link rel="stylesheet"
           href="~/BeArtGallery.styles.css"
           asp-append-version="true" />
@@ -232,8 +236,19 @@
                             </li>
                         }
 
-                    </ul>
+                        <li class="nav-item">
 
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="About">
+                        
+                                Chi siamo
+                        
+                            </a>
+                        
+                        </li>
+
+                    </ul>
 
                     <div class="gallery-account">
 

@@ -11,6 +11,12 @@
         !ViewData.ModelState.IsValid;
 }
 
+@section Styles
+{
+    <link rel="stylesheet"
+          href="~/css/artwork-room-preview.css"
+          asp-append-version="true" />
+}
 
 <div class="container py-5">
 
@@ -270,6 +276,24 @@
                         </div>
                     }
 
+                    @if (artwork.WidthCm.HasValue && artwork.HeightCm.HasValue)
+                    {
+                        <div class="artwork-metadata-row">
+
+                            <dt>
+                                Dimensioni
+                            </dt>
+
+                            <dd>
+                                @artwork.WidthCm.Value.ToString("0.#")
+                                ×
+                                @artwork.HeightCm.Value.ToString("0.#")
+                                cm
+                            </dd>
+
+                        </div>
+                    }
+
 
                     <div class="artwork-metadata-row">
 
@@ -370,6 +394,14 @@
 
     </div>
 
+    @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl) &&
+     artwork.WidthCm.HasValue &&
+     artwork.WidthCm.Value > 0 &&
+     artwork.HeightCm.HasValue &&
+     artwork.HeightCm.Value > 0)
+    {
+        <partial name="_ArtworkRoomPreview" model="artwork" />
+    }
 
     @* Descrizione *@
 
@@ -649,5 +681,5 @@
 @section Scripts {
 
     <partial name="_ValidationScriptsPartial" />
-
+    <script src="~/js/artwork-room-preview.js" asp-append-version="true"></script>
 }

@@ -253,9 +253,9 @@ public class ArtworksController : Controller
     [ValidateAntiForgeryToken]
     [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Create(
-        [Bind("Id,Title,Year,Technique,Description,IsOnDisplay,AvailabilityStatus,ArtistId")]
-        Artwork artwork,
-        IFormFile? imageFile)
+    [Bind("Id,Title,Year,Technique,Description,IsOnDisplay,WidthCm,HeightCm,AvailabilityStatus,ArtistId")]
+    Artwork artwork,
+    IFormFile? imageFile)
     {
         if (imageFile == null ||
             imageFile.Length == 0)
@@ -324,10 +324,10 @@ public class ArtworksController : Controller
     [ValidateAntiForgeryToken]
     [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Edit(
-        int? id,
-       [Bind("Id,Title,Year,Technique,Description,IsOnDisplay,AvailabilityStatus,ArtistId")]
-        Artwork artwork,
-        IFormFile? imageFile)
+    int? id,
+    [Bind("Id,Title,Year,Technique,Description,IsOnDisplay,WidthCm,HeightCm,AvailabilityStatus,ArtistId")]
+    Artwork artwork,
+    IFormFile? imageFile)
     {
         if (id != artwork.Id)
         {
@@ -356,6 +356,8 @@ public class ArtworksController : Controller
         existingArtwork.IsOnDisplay = artwork.IsOnDisplay;
         existingArtwork.ArtistId = artwork.ArtistId;
         existingArtwork.AvailabilityStatus = artwork.AvailabilityStatus;
+        existingArtwork.WidthCm = artwork.WidthCm;
+        existingArtwork.HeightCm = artwork.HeightCm;
 
         string? newImageUrl = null;
         string? oldImageUrl = existingArtwork.ImageUrl;
