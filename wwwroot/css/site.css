@@ -2927,3 +2927,161 @@ select.gallery-form-control {
     background-color: var(--gallery-soft);
     z-index: -1;
 }
+
+/* =================================================
+   NAVBAR - AREA PERSONALE
+   ================================================= */
+
+.gallery-main-nav {
+    align-items: center;
+    gap: 0.15rem;
+}
+
+
+.gallery-user-nav {
+    align-items: center;
+    margin-left: auto;
+}
+
+
+.gallery-account-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    white-space: nowrap;
+}
+
+
+.gallery-account-menu {
+    min-width: 230px;
+    padding: 0.65rem 0;
+    border: 1px solid var(--gallery-border);
+    border-radius: 0;
+    background-color: var(--gallery-surface);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+
+    .gallery-account-menu .dropdown-item {
+        padding: 0.75rem 1.25rem;
+        color: var(--gallery-text);
+        font-size: 0.9rem;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+
+        .gallery-account-menu .dropdown-item:hover,
+        .gallery-account-menu .dropdown-item:focus {
+            color: var(--gallery-text);
+            background-color: var(--gallery-soft);
+        }
+
+
+    .gallery-account-menu .dropdown-divider {
+        margin: 0.5rem 0;
+        border-color: var(--gallery-border);
+    }
+
+
+.gallery-logout-link {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: left;
+}
+
+
+/* =================================================
+   RESPONSIVE
+   ================================================= */
+
+@media (max-width: 991.98px) {
+
+    .gallery-user-nav {
+        align-items: stretch;
+        width: 100%;
+        margin-left: 0;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--gallery-border);
+    }
+
+
+    .gallery-account-menu {
+        width: 100%;
+        margin-top: 0.5rem;
+        box-shadow: none;
+    }
+}
+/* =================================================
+   CHI SIAMO - HERO CON SFONDO
+   ================================================= */
+
+.about-hero-background {
+    position: relative;
+    padding: 7rem 0 6rem;
+    background-image: url('/images/about-gallery.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+
+    /* Overlay chiaro per leggibilità testo */
+    .about-hero-background::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(247, 244, 239, 0.82);
+        z-index: 0;
+    }
+
+
+    /* Contenuto sopra overlay */
+    .about-hero-background .container {
+        position: relative;
+        z-index: 1;
+    }
+
+
+    /* Testi */
+    .about-hero-background .gallery-eyebrow {
+        color: var(--gallery-accent);
+    }
+
+    .about-hero-background .about-title {
+        color: var(--gallery-text);
+    }
+
+    .about-hero-background .about-lead,
+    .about-hero-background .about-side-text {
+        color: #3f3a35;
+        font-weight: 500;
+    }
+
+    .about-hero-background .about-side-text {
+        color: #3f3a35;
+        font-weight: 500;
+        line-height: 1.8;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.25);
+    }
+
+
+/* Responsive */
+@media (max-width: 991.98px) {
+    .about-hero-background {
+        padding: 5.5rem 0 4.5rem;
+        background-position: center;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .about-hero-background {
+        padding: 4.5rem 0 3.5rem;
+    }
+
+        .about-hero-background::before {
+            background: rgba(247, 244, 239, 0.88);
+        }
+}

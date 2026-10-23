@@ -283,6 +283,39 @@ namespace BeArtGallery.Data.Migrations
                     b.ToTable("ArtworkInquiryMessages");
                 });
 
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkView", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArtworkId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SessionId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("ViewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("ArtworkId", "ViewedAt");
+
+                    b.HasIndex("SessionId", "ArtworkId");
+
+                    b.ToTable("ArtworkViews");
+                });
+
             modelBuilder.Entity("BeArtGallery.Models.Booking", b =>
                 {
                     b.Property<int>("Id")
@@ -590,6 +623,24 @@ namespace BeArtGallery.Data.Migrations
                     b.Navigation("SenderUser");
                 });
 
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkView", b =>
+                {
+                    b.HasOne("BeArtGallery.Models.Artwork", "Artwork")
+                        .WithMany("Views")
+                        .HasForeignKey("ArtworkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeArtGallery.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Artwork");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BeArtGallery.Models.Booking", b =>
                 {
                     b.HasOne("BeArtGallery.Data.ApplicationUser", "CancelledByUser")
@@ -687,6 +738,8 @@ namespace BeArtGallery.Data.Migrations
                     b.Navigation("Favorites");
 
                     b.Navigation("Inquiries");
+
+                    b.Navigation("Views");
                 });
 
             modelBuilder.Entity("BeArtGallery.Models.ArtworkInquiry", b =>

@@ -230,3 +230,73 @@ a {
         scroll-behavior: auto !important;
     }
 }
+
+/* =================================================
+   IMMAGINE GALLERIA - CHI SIAMO
+   ================================================= */
+
+.about-gallery-image-section {
+    padding: 0 0 2rem;
+}
+
+.about-gallery-image-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background-color: var(--gallery-soft);
+}
+
+.about-gallery-image {
+    display: block;
+    width: 100%;
+    height: 620px;
+    object-fit: cover;
+    object-position: center;
+}
+
+
+/* Piccolo dettaglio decorativo */
+
+.about-gallery-image-wrapper::after {
+    content: "";
+    position: absolute;
+    left: 2rem;
+    bottom: 2rem;
+    width: 90px;
+    height: 4px;
+    background-color: var(--gallery-accent);
+}
+
+
+/* =================================================
+   TABLET
+   ================================================= */
+
+@media (max-width: 991.98px) {
+
+    .about-gallery-image {
+        height: 480px;
+    }
+}
+
+
+/* =================================================
+   MOBILE
+   ================================================= */
+
+@media (max-width: 767.98px) {
+
+    .about-gallery-image-section {
+        padding-bottom: 1rem;
+    }
+
+    .about-gallery-image {
+        height: 360px;
+    }
+
+    .about-gallery-image-wrapper::after {
+        left: 1.25rem;
+        bottom: 1.25rem;
+        width: 60px;
+    }
+}

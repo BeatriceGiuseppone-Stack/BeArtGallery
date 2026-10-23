@@ -1,0 +1,805 @@
+﻿@model BeArtGallery.ViewModels.DashboardViewModel
+
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+
+@section Styles
+{
+    <link rel="stylesheet"
+          href="~/css/dashboard.css"
+          asp-append-version="true" />
+}
+
+
+<div class="dashboard-page">
+
+    <div class="container">
+
+
+        @* =================================================
+           HEADER
+           ================================================= *@
+
+        <header class="dashboard-header">
+
+            <div>
+
+                <div class="gallery-eyebrow">
+                    BeArtGallery Management
+                </div>
+
+                <h1>
+                    Dashboard
+                </h1>
+
+                <p>
+                    Una panoramica sulle attività della galleria,
+                    sull'interesse dei visitatori e sulle prenotazioni.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        @* =================================================
+           KPI
+           ================================================= *@
+
+        <section class="dashboard-kpis">
+
+            <div class="dashboard-kpi">
+
+                <span>
+                    Utenti registrati
+                </span>
+
+                <strong>
+                    @Model.TotalUsers
+                </strong>
+
+                <small>
+                    Account presenti sulla piattaforma
+                </small>
+
+            </div>
+
+
+            <div class="dashboard-kpi">
+
+                <span>
+                    Opere
+                </span>
+
+                <strong>
+                    @Model.TotalArtworks
+                </strong>
+
+                <small>
+                    @Model.AvailableArtworks disponibili
+                </small>
+
+            </div>
+
+
+            <div class="dashboard-kpi">
+
+                <span>
+                    Preferiti
+                </span>
+
+                <strong>
+                    @Model.TotalFavorites
+                </strong>
+
+                <small>
+                    Salvataggi complessivi
+                </small>
+
+            </div>
+
+
+            <div class="dashboard-kpi">
+
+                <span>
+                    Richieste aperte
+                </span>
+
+                <strong>
+                    @Model.OpenInquiries
+                </strong>
+
+                <small>
+                    @Model.TotalInquiries totali
+                </small>
+
+            </div>
+
+
+            <div class="dashboard-kpi">
+
+                <span>
+                    Prenotazioni
+                </span>
+
+                <strong>
+                    @Model.ConfirmedBookings
+                </strong>
+
+                <small>
+                    Prenotazioni confermate
+                </small>
+
+            </div>
+
+
+            <div class="dashboard-kpi dashboard-kpi-highlight">
+
+                <span>
+                    Occupazione
+                </span>
+
+                <strong>
+                    @Model.OccupancyRate%
+                </strong>
+
+                <small>
+                    Posti occupati nelle prossime attività
+                </small>
+
+            </div>
+
+            <div class="dashboard-kpi">
+
+                <span>
+                    Visualizzazioni opere
+                </span>
+
+                <strong>
+                    @Model.TotalArtworkViews
+                </strong>
+
+                <small>
+                    Visualizzazioni registrate nel catalogo
+                </small>
+
+            </div>
+
+
+            <div class="dashboard-kpi">
+
+                <span>
+                    Vista → Preferito
+                </span>
+
+                <strong>
+                    @Model.ViewToFavoriteRate%
+                </strong>
+
+                <small>
+                    Rapporto tra visualizzazioni e preferiti
+                </small>
+
+            </div>
+
+
+            <div class="dashboard-kpi dashboard-kpi-highlight">
+
+                <span>
+                    Preferito → Richiesta
+                </span>
+
+                <strong>
+                    @Model.FavoriteToInquiryRate%
+                </strong>
+
+                <small>
+                    Rapporto tra preferiti e richieste
+                </small>
+
+            </div>
+
+        </section>
+
+
+        @* =================================================
+           GRAFICI
+           ================================================= *@
+
+        <section class="dashboard-grid dashboard-chart-grid">
+
+            <article class="dashboard-panel dashboard-panel-large">
+
+                <div class="dashboard-panel-header">
+
+                    <div>
+
+                        <span class="gallery-eyebrow">
+                            Andamento
+                        </span>
+
+                        <h2>
+                            Prenotazioni
+                        </h2>
+
+                    </div>
+
+                    <span class="dashboard-panel-note">
+                        Ultimi 6 mesi
+                    </span>
+
+                </div>
+
+
+                <div class="dashboard-chart-container">
+
+                    <canvas id="bookingsChart">
+                    </canvas>
+
+                </div>
+
+            </article>
+
+
+            <article class="dashboard-panel">
+
+                <div class="dashboard-panel-header">
+
+                    <div>
+
+                        <span class="gallery-eyebrow">
+                            Contatti
+                        </span>
+
+                        <h2>
+                            Richieste informazioni
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-chart-container dashboard-chart-small">
+
+                    <canvas id="inquiriesChart">
+                    </canvas>
+
+                </div>
+
+
+                <div class="dashboard-chart-legend">
+
+                    <div>
+                        <span>
+                            Nuove
+                        </span>
+
+                        <strong>
+                            @Model.NewInquiries
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>
+                            In lavorazione
+                        </span>
+
+                        <strong>
+                            @Model.InProgressInquiries
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>
+                            Chiuse
+                        </span>
+
+                        <strong>
+                            @Model.ClosedInquiries
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        @* =================================================
+           OPERE
+           ================================================= *@
+
+        <section class="dashboard-grid dashboard-artworks-grid">
+
+            @* Visualizzazioni *@
+
+            <article class="dashboard-panel">
+
+                <div class="dashboard-panel-header">
+
+                    <div>
+
+                        <span class="gallery-eyebrow">
+                            Visibilità
+                        </span>
+
+                        <h2>
+                            Opere più visualizzate
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                @if (Model.MostViewedArtworks.Any())
+                {
+                    <div class="dashboard-ranking">
+
+                        @{
+                            var position = 1;
+                        }
+
+                        @foreach (var artwork in Model.MostViewedArtworks)
+                        {
+                            <a asp-controller="Artworks"
+                               asp-action="Details"
+                               asp-route-id="@artwork.ArtworkId"
+                               class="dashboard-ranking-item">
+
+                                <span class="dashboard-ranking-position">
+                                    @position.ToString("00")
+                                </span>
+
+
+                                @if (!string.IsNullOrWhiteSpace(
+                                    artwork.ImageUrl))
+                                {
+                                    <img src="@artwork.ImageUrl"
+                                         alt=""
+                                         class="dashboard-artwork-image" />
+                                }
+
+
+                                <div class="dashboard-ranking-content">
+
+                                    <strong>
+                                        @artwork.Title
+                                    </strong>
+
+                                    <span>
+                                        @artwork.ArtistName
+                                    </span>
+
+                                </div>
+
+
+                                <div class="dashboard-ranking-value">
+
+                                    <strong>
+                                        @artwork.Count
+                                    </strong>
+
+                                    <span>
+                                        visualizzazioni
+                                    </span>
+
+                                </div>
+
+                            </a>
+
+                            position++;
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="dashboard-empty">
+
+                        Non sono ancora presenti dati
+                        sulle visualizzazioni.
+
+                    </div>
+                }
+
+            </article>
+
+            @* Preferiti *@
+
+            <article class="dashboard-panel">
+
+                <div class="dashboard-panel-header">
+
+                    <div>
+
+                        <span class="gallery-eyebrow">
+                            Interesse
+                        </span>
+
+                        <h2>
+                            Opere più apprezzate
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                @if (Model.MostFavoritedArtworks.Any())
+                {
+                    <div class="dashboard-ranking">
+
+                        @{
+                            var position = 1;
+                        }
+
+                        @foreach (var artwork in Model.MostFavoritedArtworks)
+                        {
+                            <a asp-controller="Artworks"
+                               asp-action="Details"
+                               asp-route-id="@artwork.ArtworkId"
+                               class="dashboard-ranking-item">
+
+                                <span class="dashboard-ranking-position">
+                                    @position.ToString("00")
+                                </span>
+
+
+                                @if (!string.IsNullOrWhiteSpace(
+                                    artwork.ImageUrl))
+                                {
+                                    <img src="@artwork.ImageUrl"
+                                         alt=""
+                                         class="dashboard-artwork-image" />
+                                }
+
+
+                                <div class="dashboard-ranking-content">
+
+                                    <strong>
+                                        @artwork.Title
+                                    </strong>
+
+                                    <span>
+                                        @artwork.ArtistName
+                                    </span>
+
+                                </div>
+
+
+                                <div class="dashboard-ranking-value">
+
+                                    <strong>
+                                        @artwork.Count
+                                    </strong>
+
+                                    <span>
+                                        preferiti
+                                    </span>
+
+                                </div>
+
+                            </a>
+
+                            position++;
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="dashboard-empty">
+                        Non sono ancora presenti dati sui preferiti.
+                    </div>
+                }
+
+            </article>
+
+
+            @* Richieste *@
+
+            <article class="dashboard-panel">
+
+                <div class="dashboard-panel-header">
+
+                    <div>
+
+                        <span class="gallery-eyebrow">
+                            Interesse commerciale
+                        </span>
+
+                        <h2>
+                            Opere più richieste
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                @if (Model.MostRequestedArtworks.Any())
+                {
+                    <div class="dashboard-ranking">
+
+                        @{
+                            var position = 1;
+                        }
+
+                        @foreach (var artwork in Model.MostRequestedArtworks)
+                        {
+                            <a asp-controller="Artworks"
+                               asp-action="Details"
+                               asp-route-id="@artwork.ArtworkId"
+                               class="dashboard-ranking-item">
+
+                                <span class="dashboard-ranking-position">
+                                    @position.ToString("00")
+                                </span>
+
+
+                                @if (!string.IsNullOrWhiteSpace(
+                                    artwork.ImageUrl))
+                                {
+                                    <img src="@artwork.ImageUrl"
+                                         alt=""
+                                         class="dashboard-artwork-image" />
+                                }
+
+
+                                <div class="dashboard-ranking-content">
+
+                                    <strong>
+                                        @artwork.Title
+                                    </strong>
+
+                                    <span>
+                                        @artwork.ArtistName
+                                    </span>
+
+                                </div>
+
+
+                                <div class="dashboard-ranking-value">
+
+                                    <strong>
+                                        @artwork.Count
+                                    </strong>
+
+                                    <span>
+                                        richieste
+                                    </span>
+
+                                </div>
+
+                            </a>
+
+                            position++;
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="dashboard-empty">
+                        Non sono ancora presenti richieste.
+                    </div>
+                }
+
+            </article>
+
+        </section>
+
+        @if (Model.Insights.Any())
+        {
+            <section class="dashboard-insights">
+
+                <div class="dashboard-section-heading">
+
+                    <div>
+
+                        <span class="gallery-eyebrow">
+                            Analisi automatica
+                        </span>
+
+                        <h2>
+                            Insight
+                        </h2>
+
+                    </div>
+
+                    <p>
+                        Indicazioni generate automaticamente
+                        sulla base dei dati raccolti dalla piattaforma.
+                    </p>
+
+                </div>
+
+
+                <div class="dashboard-insights-grid">
+
+                    @foreach (var insight in Model.Insights)
+                    {
+                        <article class="
+                            dashboard-insight
+                            dashboard-insight-@insight.Type">
+
+                            <span class="dashboard-insight-label">
+                                Insight
+                            </span>
+
+                            <h3>
+                                @insight.Title
+                            </h3>
+
+                            <p>
+                                @insight.Description
+                            </p>
+
+                        </article>
+                    }
+
+                </div>
+
+            </section>
+        }
+
+        @* =================================================
+           PROSSIME ATTIVITÀ
+           ================================================= *@
+
+        <section class="dashboard-panel dashboard-activities-panel">
+
+            <div class="dashboard-panel-header">
+
+                <div>
+
+                    <span class="gallery-eyebrow">
+                        Agenda
+                    </span>
+
+                    <h2>
+                        Prossime attività
+                    </h2>
+
+                </div>
+
+                <a asp-controller="GalleryActivities"
+                   asp-action="Index"
+                   class="dashboard-text-link">
+
+                    Visualizza tutte →
+
+                </a>
+
+            </div>
+
+
+            @if (Model.UpcomingActivitiesList.Any())
+            {
+                <div class="dashboard-activities">
+
+                    @foreach (var activity in Model.UpcomingActivitiesList)
+                    {
+                        <a asp-controller="GalleryActivities"
+                           asp-action="Details"
+                           asp-route-id="@activity.Id"
+                           class="dashboard-activity">
+
+                            <div class="dashboard-activity-date">
+
+                                <strong>
+                                    @activity.StartDateTime.ToString("dd")
+                                </strong>
+
+                                <span>
+                                    @activity.StartDateTime.ToString("MMM")
+                                </span>
+
+                            </div>
+
+
+                            <div class="dashboard-activity-content">
+
+                                <strong>
+                                    @activity.Title
+                                </strong>
+
+                                <span>
+                                    @activity.StartDateTime.ToString("HH:mm")
+                                </span>
+
+                            </div>
+
+
+                            <div class="dashboard-activity-capacity">
+
+                                <div>
+
+                                    <span>
+                                        Partecipanti
+                                    </span>
+
+                                    <strong>
+                                        @activity.BookedParticipants /
+                                        @activity.MaxParticipants
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="dashboard-progress">
+
+                                    <span style="width:
+                                        @($"{activity.OccupancyRate.ToString(System.Globalization.CultureInfo.InvariantCulture)}%")">
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="dashboard-empty">
+                    Non ci sono attività future programmate.
+                </div>
+            }
+
+        </section>
+
+
+        @* =================================================
+           DATI PER I GRAFICI
+           ================================================= *@
+
+        <script id="dashboardData"
+                type="application/json">
+
+                    @Html.Raw(
+                            JsonSerializer.Serialize(
+                                    new
+                                    {
+                                            bookings = Model.BookingsByMonth,
+
+                                            inquiries = new
+                                            {
+                                                    newCount =
+                                                            Model.NewInquiries,
+
+                                                    inProgressCount =
+                                                            Model.InProgressInquiries,
+
+                                                    closedCount =
+                                                            Model.ClosedInquiries
+                                            }
+                                    }
+                            )
+                    )
+
+        </script>
+
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+
+    <script src="~/js/dashboard.js"
+            asp-append-version="true">
+    </script>
+}

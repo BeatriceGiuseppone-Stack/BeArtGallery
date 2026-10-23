@@ -22,6 +22,8 @@ namespace BeArtGallery.Data
 
         public DbSet<ArtworkInquiryMessage> ArtworkInquiryMessages { get; set; }
 
+        public DbSet<ArtworkView> ArtworkViews { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -109,6 +111,35 @@ namespace BeArtGallery.Data
                     m.ArtworkInquiryId,
                     m.SenderType,
                     m.ReadAt
+                });
+
+            builder.Entity<ArtworkView>()
+    .HasOne(v => v.Artwork)
+    .WithMany(a => a.Views)
+    .HasForeignKey(v => v.ArtworkId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<ArtworkView>()
+                .HasOne(v => v.User)
+                .WithMany()
+                .HasForeignKey(v => v.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+
+            builder.Entity<ArtworkView>()
+                .HasIndex(v => new
+                {
+                    v.ArtworkId,
+                    v.ViewedAt
+                });
+
+
+            builder.Entity<ArtworkView>()
+                .HasIndex(v => new
+                {
+                    v.SessionId,
+                    v.ArtworkId
                 });
         }
     }

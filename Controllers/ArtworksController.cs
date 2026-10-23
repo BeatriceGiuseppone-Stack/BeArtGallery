@@ -73,7 +73,8 @@ public class ArtworksController : Controller
         {
             return NotFound();
         }
-
+        await TrackArtworkViewAsync(
+        id.Value);
         return View(viewModel);
     }
 
@@ -666,5 +667,98 @@ public class ArtworksController : Controller
         {
             System.IO.File.Delete(fullPath);
         }
+    }
+
+    private async Task TrackArtworkViewAsync(
+    int artworkId)
+    {
+        // Le visualizzazioni effettuate da Staff/Admin
+        // non devono falsare le statistiche.
+
+        if (User.IsInRole(RoleNames.Staff) ||
+            User.IsInRole(RoleNames.Admin))
+        {
+            return;
+        }
+
+
+        // Forziamo l'utilizzo della sessione.
+
+        HttpContext.Session.SetString(
+            "BeArtGalleryAnalytics",
+            "active");
+
+
+        var sessionId =
+            HttpContext.Session.Id;
+
+
+        if (string.IsNullOrWhiteSpace(
+            sessionId))
+        {
+            return;
+        }
+
+
+        var thirtyMinutesAgo =
+            DateTime.UtcNow
+                .AddMinutes(-30);
+
+
+        // Evitiamo di registrare refresh ripetuti
+        // della stessa opera nella stessa sessione.
+
+        var alreadyViewed =
+            await _context.ArtworkViews
+                .AsNoTracking()
+                .AnyAsync(v =>
+                    v.ArtworkId ==
+                        artworkId &&
+                    v.SessionId ==
+                        sessionId &&
+                    v.ViewedAt >=
+                        thirtyMinutesAgo);
+
+
+        if (alreadyViewed)
+        {
+            return;
+        }
+
+
+        string? userId =
+            null;
+
+
+        if (User.Identity?.IsAuthenticated ==
+            true)
+        {
+            userId =
+                _userManager.GetUserId(User);
+        }
+
+
+        var artworkView =
+            new ArtworkView
+            {
+                ArtworkId =
+                    artworkId,
+
+                UserId =
+                    userId,
+
+                SessionId =
+                    sessionId,
+
+                ViewedAt =
+                    DateTime.UtcNow
+            };
+
+
+        _context.ArtworkViews.Add(
+            artworkView);
+
+
+        await _context.SaveChangesAsync();
     }
 }

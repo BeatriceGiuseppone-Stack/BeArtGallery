@@ -17,6 +17,7 @@
 
     <script type="importmap"></script>
 
+
     <link rel="stylesheet"
           href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
@@ -24,15 +25,18 @@
           href="~/css/site.css"
           asp-append-version="true" />
 
-          @await RenderSectionAsync(
-    "Styles",
-    required: false)
+
+    @await RenderSectionAsync(
+        "Styles",
+        required: false)
+
 
     <link rel="stylesheet"
           href="~/BeArtGallery.styles.css"
           asp-append-version="true" />
 
 </head>
+
 
 <body>
 
@@ -42,18 +46,27 @@
 
             <div class="container">
 
+
+                @* =================================================
+                   LOGO
+                   ================================================= *@
+
                 <a class="navbar-brand gallery-brand"
-   asp-area=""
-   asp-controller="Home"
-   asp-action="Index"
-   aria-label="BeArtGallery - Home">
+                   asp-area=""
+                   asp-controller="Home"
+                   asp-action="Index"
+                   aria-label="BeArtGallery - Home">
 
-    <img src="~/images/beartgallery-logo-horizontal.png"
-         alt="BeArtGallery"
-         class="gallery-brand-logo" />
+                    <img src="~/images/beartgallery-logo-horizontal.png"
+                         alt="BeArtGallery"
+                         class="gallery-brand-logo" />
 
-</a>
+                </a>
 
+
+                @* =================================================
+                   MENU MOBILE
+                   ================================================= *@
 
                 <button class="navbar-toggler"
                         type="button"
@@ -63,7 +76,8 @@
                         aria-expanded="false"
                         aria-label="Apri il menu di navigazione">
 
-                    <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon">
+                    </span>
 
                 </button>
 
@@ -71,7 +85,15 @@
                 <div class="collapse navbar-collapse"
                      id="mainNavigation">
 
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    @* =================================================
+                       NAVIGAZIONE PRINCIPALE
+                       ================================================= *@
+
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gallery-main-nav">
+
+
+                        @* Home *@
 
                         <li class="nav-item">
 
@@ -87,6 +109,8 @@
                         </li>
 
 
+                        @* Opere *@
+
                         <li class="nav-item">
 
                             <a class="nav-link"
@@ -99,6 +123,8 @@
 
                         </li>
 
+
+                        @* Visite ed eventi *@
 
                         <li class="nav-item">
 
@@ -113,47 +139,24 @@
                         </li>
 
 
-                        @if (User.Identity?.IsAuthenticated == true && User.IsInRole(RoleNames.Visitore))
-                        {
-                            <li class="nav-item">
+                        @* Chi siamo *@
 
-                                <a class="nav-link"
-                                   asp-controller="Bookings"
-                                   asp-action="Index">
+                        <li class="nav-item">
 
-                                    Le mie prenotazioni
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="About">
 
-                                </a>
+                                Chi siamo
 
-                            </li>
-                            <li class="nav-item">
-                            
-                                <a class="nav-link"
-                                   asp-controller="Artworks"
-                                   asp-action="Favorites">
-                            
-                                    I miei preferiti
-                            
-                                </a>
-                            
-                            </li>
+                            </a>
 
-                            <li class="nav-item">
-                            
-                                <a class="nav-link gallery-nav-notification"
-                                   asp-controller="MyInquiries"
-                                   asp-action="Index">
-                            
-                                    Le mie richieste
-                            
-                                    @await Component.InvokeAsync(
-                                        "InquiryNotificationCount")
-                            
-                                </a>
-                            
-                            </li>
-                        }
+                        </li>
 
+
+                        @* =================================================
+                           GESTIONE - SOLO STAFF / ADMIN
+                           ================================================= *@
 
                         @if (User.IsInRole(RoleNames.Staff) ||
                              User.IsInRole(RoleNames.Admin))
@@ -173,6 +176,31 @@
 
                                 <ul class="dropdown-menu gallery-dropdown">
 
+
+                                    @* Dashboard *@
+
+                                    <li>
+
+                                        <a class="dropdown-item"
+                                           asp-controller="Dashboard"
+                                           asp-action="Index">
+
+                                            Dashboard
+
+                                        </a>
+
+                                    </li>
+
+
+                                    <li>
+
+                                        <hr class="dropdown-divider" />
+
+                                    </li>
+
+
+                                    @* Artisti *@
+
                                     <li>
 
                                         <a class="dropdown-item"
@@ -186,6 +214,8 @@
                                     </li>
 
 
+                                    @* Prenotazioni *@
+
                                     <li>
 
                                         <a class="dropdown-item"
@@ -198,17 +228,25 @@
 
                                     </li>
 
+
+                                    @* Richieste informazioni *@
+
                                     <li>
-                                    
+
                                         <a class="dropdown-item"
                                            asp-controller="ArtworkInquiries"
                                            asp-action="Index">
-                                    
+
                                             Richieste informazioni
-                                    
+
                                         </a>
-                                    
+
                                     </li>
+
+
+                                    @* =====================================
+                                       SOLO ADMIN
+                                       ===================================== *@
 
                                     @if (User.IsInRole(RoleNames.Admin))
                                     {
@@ -217,6 +255,7 @@
                                             <hr class="dropdown-divider" />
 
                                         </li>
+
 
                                         <li>
 
@@ -236,23 +275,199 @@
                             </li>
                         }
 
-                        <li class="nav-item">
-
-                            <a class="nav-link"
-                               asp-controller="Home"
-                               asp-action="About">
-                        
-                                Chi siamo
-                        
-                            </a>
-                        
-                        </li>
-
                     </ul>
+
+
+                    @* =================================================
+                       AREA ACCOUNT
+                       ================================================= *@
 
                     <div class="gallery-account">
 
-                        <partial name="_LoginPartial" />
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+
+                            @* =========================================
+                               UTENTE AUTENTICATO
+                               ========================================= *@
+
+                            <ul class="navbar-nav gallery-user-nav">
+
+                                <li class="nav-item dropdown">
+
+                                    <a class="nav-link dropdown-toggle gallery-account-toggle"
+                                       href="#"
+                                       id="accountDropdown"
+                                       role="button"
+                                       data-bs-toggle="dropdown"
+                                       aria-expanded="false">
+
+                                        Area personale
+
+
+                                        @if (User.IsInRole(RoleNames.Visitore))
+                                        {
+                                            @await Component.InvokeAsync(
+                                                "InquiryNotificationCount")
+                                        }
+
+                                    </a>
+
+
+                                    <ul class="dropdown-menu dropdown-menu-end gallery-dropdown gallery-account-menu"
+                                        aria-labelledby="accountDropdown">
+
+
+                                        @* =================================
+                                           FUNZIONI VISITATORE
+                                           ================================= *@
+
+                                        @if (User.IsInRole(RoleNames.Visitore))
+                                        {
+
+                                            <li>
+
+                                                <a class="dropdown-item"
+                                                   asp-controller="Bookings"
+                                                   asp-action="Index">
+
+                                                    Le mie prenotazioni
+
+                                                </a>
+
+                                            </li>
+
+
+                                            <li>
+
+                                                <a class="dropdown-item"
+                                                   asp-controller="Artworks"
+                                                   asp-action="Favorites">
+
+                                                    I miei preferiti
+
+                                                </a>
+
+                                            </li>
+
+
+                                            <li>
+
+                                                <a class="dropdown-item gallery-nav-notification"
+                                                   asp-controller="MyInquiries"
+                                                   asp-action="Index">
+
+                                                    <span>
+                                                        Le mie richieste
+                                                    </span>
+
+
+                                                    @await Component.InvokeAsync(
+                                                        "InquiryNotificationCount")
+
+                                                </a>
+
+                                            </li>
+
+
+                                            <li>
+
+                                                <hr class="dropdown-divider" />
+
+                                            </li>
+                                        }
+
+
+                                        @* =================================
+                                           PROFILO
+                                           ================================= *@
+
+                                        <li>
+
+                                            <a class="dropdown-item"
+                                               asp-area="Identity"
+                                               asp-page="/Account/Manage/Index">
+
+                                                Il mio profilo
+
+                                            </a>
+
+                                        </li>
+
+
+                                        <li>
+
+                                            <hr class="dropdown-divider" />
+
+                                        </li>
+
+
+                                        @* =================================
+                                           LOGOUT
+                                           ================================= *@
+
+                                        <li>
+
+                                            <form asp-area="Identity"
+                                                  asp-page="/Account/Logout"
+                                                  method="post"
+                                                  class="m-0">
+
+                                                <button type="submit"
+                                                        class="dropdown-item gallery-logout-link">
+
+                                                    Logout
+
+                                                </button>
+
+                                            </form>
+
+                                        </li>
+
+                                    </ul>
+
+                                </li>
+
+                            </ul>
+
+                        }
+                        else
+                        {
+
+                            @* =========================================
+                               UTENTE NON AUTENTICATO
+                               ========================================= *@
+
+                            <ul class="navbar-nav gallery-user-nav">
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-area="Identity"
+                                       asp-page="/Account/Register">
+
+                                        Registrati
+
+                                    </a>
+
+                                </li>
+
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-area="Identity"
+                                       asp-page="/Account/Login">
+
+                                        Accedi
+
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        }
 
                     </div>
 
@@ -265,6 +480,10 @@
     </header>
 
 
+    @* =================================================
+       CONTENUTO PAGINA
+       ================================================= *@
+
     <main role="main">
 
         @RenderBody()
@@ -272,11 +491,18 @@
     </main>
 
 
+    @* =================================================
+       FOOTER
+       ================================================= *@
+
     <footer class="gallery-footer">
 
         <div class="container">
 
             <div class="row gy-4 align-items-start">
+
+
+                @* Brand *@
 
                 <div class="col-md-5">
 
@@ -285,12 +511,16 @@
                     </div>
 
                     <p class="gallery-footer-text">
+
                         Arte, visite ed esperienze culturali
                         in un unico spazio digitale.
+
                     </p>
 
                 </div>
 
+
+                @* Esplora *@
 
                 <div class="col-md-3">
 
@@ -298,18 +528,34 @@
                         Esplora
                     </div>
 
+
                     <a asp-controller="Artworks"
                        asp-action="Index">
+
                         Opere
+
                     </a>
+
 
                     <a asp-controller="GalleryActivities"
                        asp-action="Index">
+
                         Visite ed eventi
+
+                    </a>
+
+
+                    <a asp-controller="Home"
+                       asp-action="About">
+
+                        Chi siamo
+
                     </a>
 
                 </div>
 
+
+                @* Informazioni *@
 
                 <div class="col-md-4">
 
@@ -317,9 +563,12 @@
                         Informazioni
                     </div>
 
+
                     <a asp-controller="Home"
                        asp-action="Privacy">
+
                         Privacy
+
                     </a>
 
                 </div>
@@ -338,12 +587,20 @@
     </footer>
 
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @* =================================================
+       SCRIPT
+       ================================================= *@
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js">
+    </script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js">
+    </script>
 
     <script src="~/js/site.js"
-            asp-append-version="true"></script>
+            asp-append-version="true">
+    </script>
+
 
     @await RenderSectionAsync(
         "Scripts",

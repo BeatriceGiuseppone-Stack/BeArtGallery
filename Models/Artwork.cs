@@ -59,12 +59,10 @@ namespace BeArtGallery.Models
 
         public Artist? Artist { get; set; }
 
+        public ICollection<ArtworkFavorite> Favorites { get; set; } = new List<ArtworkFavorite>();
 
-        public ICollection<ArtworkFavorite> Favorites { get; set; }
-            = new List<ArtworkFavorite>();
+        public ICollection<ArtworkInquiry> Inquiries { get; set; } = new List<ArtworkInquiry>();
 
-
-        public ICollection<ArtworkInquiry> Inquiries { get; set; }
-            = new List<ArtworkInquiry>();
+        public ICollection<ArtworkView> Views { get; set; } = new List<ArtworkView>();
     }
 }
