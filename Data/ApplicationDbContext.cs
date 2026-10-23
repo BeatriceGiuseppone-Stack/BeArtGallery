@@ -24,6 +24,10 @@ namespace BeArtGallery.Data
 
         public DbSet<ArtworkView> ArtworkViews { get; set; }
 
+        public DbSet<ArtworkAudioGuide> ArtworkAudioGuides { get; set; }
+
+        public DbSet<ArtworkQrScan> ArtworkQrScans { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -140,6 +144,42 @@ namespace BeArtGallery.Data
                 {
                     v.SessionId,
                     v.ArtworkId
+                });
+
+            builder.Entity<ArtworkAudioGuide>()
+    .HasOne(a => a.Artwork)
+    .WithMany(a => a.AudioGuides)
+    .HasForeignKey(a => a.ArtworkId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<ArtworkAudioGuide>()
+                .HasIndex(a => new
+                {
+                    a.ArtworkId,
+                    a.LanguageCode
+                })
+                .IsUnique();
+
+            builder.Entity<ArtworkQrScan>()
+    .HasOne(s => s.Artwork)
+    .WithMany(a => a.QrScans)
+    .HasForeignKey(s => s.ArtworkId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.Entity<ArtworkQrScan>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+
+            builder.Entity<ArtworkQrScan>()
+                .HasIndex(s => new
+                {
+                    s.ArtworkId,
+                    s.ScannedAt
                 });
         }
     }

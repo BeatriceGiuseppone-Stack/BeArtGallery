@@ -501,6 +501,7 @@ public class ArtworksController : Controller
         var artwork = await _context.Artworks
             .AsNoTracking()
             .Include(a => a.Artist)
+            .Include(a => a.AudioGuides)
             .FirstOrDefaultAsync(a => a.Id == artworkId);
 
         if (artwork == null)

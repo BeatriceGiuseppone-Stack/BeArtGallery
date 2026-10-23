@@ -1,0 +1,193 @@
+﻿@model BeArtGallery.ViewModels.ArtworkAudioGuideViewModel
+
+@{
+    ViewData["Title"] = "Modifica audioguida";
+}
+
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8 col-xl-7">
+
+
+            <div class="gallery-eyebrow mb-3">
+                Gestione audioguida
+            </div>
+
+
+            <h1 class="display-5 mb-3">
+                Modifica audioguida
+            </h1>
+
+
+            <p class="text-muted mb-5">
+
+                Modifica l'audioguida di
+
+                <strong>
+                    @ViewBag.ArtworkTitle
+                </strong>.
+
+            </p>
+
+
+            <form method="post"
+                  enctype="multipart/form-data">
+
+                <input asp-for="ArtworkId"
+                       type="hidden" />
+
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-4">
+                </div>
+
+
+                <div class="mb-4">
+
+                    <label asp-for="LanguageCode"
+                           class="form-label gallery-form-label">
+                    </label>
+
+                    <select asp-for="LanguageCode"
+                            class="form-select gallery-form-control">
+
+                        <option value="it-IT">
+                            Italiano
+                        </option>
+
+                        <option value="en-US">
+                            Inglese
+                        </option>
+
+                        <option value="fr-FR">
+                            Francese
+                        </option>
+
+                        <option value="es-ES">
+                            Spagnolo
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="LanguageCode"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <div class="mb-4">
+
+                    <label asp-for="Title"
+                           class="form-label gallery-form-label">
+                    </label>
+
+                    <input asp-for="Title"
+                           class="form-control gallery-form-control" />
+
+                    <span asp-validation-for="Title"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <div class="mb-4">
+
+                    <label asp-for="AudioFile"
+                           class="form-label gallery-form-label">
+
+                        Sostituisci file audio
+
+                    </label>
+
+                    <input asp-for="AudioFile"
+                           type="file"
+                           accept=".mp3,.m4a,.wav,audio/*"
+                           class="form-control gallery-form-control" />
+
+                    <div class="form-text">
+                        Lascia vuoto questo campo se vuoi
+                        mantenere il file audio attuale.
+                    </div>
+
+                    <span asp-validation-for="AudioFile"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <div class="mb-4">
+
+                    <label asp-for="Transcript"
+                           class="form-label gallery-form-label">
+
+                        Trascrizione
+
+                    </label>
+
+                    <textarea asp-for="Transcript"
+                              rows="8"
+                              class="form-control gallery-form-control">
+                    </textarea>
+
+                    <span asp-validation-for="Transcript"
+                          class="text-danger small">
+                    </span>
+
+                </div>
+
+
+                <div class="form-check mb-5">
+
+                    <input asp-for="IsActive"
+                           class="form-check-input" />
+
+                    <label asp-for="IsActive"
+                           class="form-check-label">
+
+                        Audioguida attiva
+
+                    </label>
+
+                </div>
+
+
+                <div class="d-flex gap-3 flex-wrap">
+
+                    <button type="submit"
+                            class="btn gallery-btn-primary">
+
+                        Salva modifiche
+
+                    </button>
+
+
+                    <a asp-controller="Artworks"
+                       asp-action="Details"
+                       asp-route-id="@Model.ArtworkId"
+                       class="btn gallery-btn-outline">
+
+                        Annulla
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

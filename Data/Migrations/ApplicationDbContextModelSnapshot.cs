@@ -174,6 +174,53 @@ namespace BeArtGallery.Data.Migrations
                     b.ToTable("Artworks");
                 });
 
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkAudioGuide", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArtworkId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AudioUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LanguageCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Transcript")
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArtworkId", "LanguageCode")
+                        .IsUnique();
+
+                    b.ToTable("ArtworkAudioGuides");
+                });
+
             modelBuilder.Entity("BeArtGallery.Models.ArtworkFavorite", b =>
                 {
                     b.Property<int>("Id")
@@ -281,6 +328,36 @@ namespace BeArtGallery.Data.Migrations
                     b.HasIndex("ArtworkInquiryId", "SenderType", "ReadAt");
 
                     b.ToTable("ArtworkInquiryMessages");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkQrScan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ArtworkId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ScannedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SessionId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("ArtworkId", "ScannedAt");
+
+                    b.ToTable("ArtworkQrScans");
                 });
 
             modelBuilder.Entity("BeArtGallery.Models.ArtworkView", b =>
@@ -568,6 +645,17 @@ namespace BeArtGallery.Data.Migrations
                     b.Navigation("Artist");
                 });
 
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkAudioGuide", b =>
+                {
+                    b.HasOne("BeArtGallery.Models.Artwork", "Artwork")
+                        .WithMany("AudioGuides")
+                        .HasForeignKey("ArtworkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artwork");
+                });
+
             modelBuilder.Entity("BeArtGallery.Models.ArtworkFavorite", b =>
                 {
                     b.HasOne("BeArtGallery.Models.Artwork", "Artwork")
@@ -621,6 +709,24 @@ namespace BeArtGallery.Data.Migrations
                     b.Navigation("ArtworkInquiry");
 
                     b.Navigation("SenderUser");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.ArtworkQrScan", b =>
+                {
+                    b.HasOne("BeArtGallery.Models.Artwork", "Artwork")
+                        .WithMany("QrScans")
+                        .HasForeignKey("ArtworkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeArtGallery.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Artwork");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BeArtGallery.Models.ArtworkView", b =>
@@ -735,9 +841,13 @@ namespace BeArtGallery.Data.Migrations
 
             modelBuilder.Entity("BeArtGallery.Models.Artwork", b =>
                 {
+                    b.Navigation("AudioGuides");
+
                     b.Navigation("Favorites");
 
                     b.Navigation("Inquiries");
+
+                    b.Navigation("QrScans");
 
                     b.Navigation("Views");
                 });

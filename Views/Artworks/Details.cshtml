@@ -11,16 +11,42 @@
         !ViewData.ModelState.IsValid;
 }
 
+
 @section Styles
 {
     <link rel="stylesheet"
           href="~/css/artwork-room-preview.css"
           asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/artwork-audio-guide.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/artwork-audio-guide.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/artwork-qr.css"
+          asp-append-version="true" />
 }
+
 
 <div class="container py-5">
 
-    @* Navigazione *@
+    @if (TempData["AudioGuideSuccess"] != null)
+    {
+        <div class="alert alert-success mb-5"
+             role="status">
+
+            @TempData["AudioGuideSuccess"]
+
+        </div>
+    }
+
+    @* =================================================
+       NAVIGAZIONE
+       ================================================= *@
 
     <div class="mb-5">
 
@@ -35,9 +61,12 @@
     </div>
 
 
-    @* Scheda principale *@
+    @* =================================================
+       SCHEDA PRINCIPALE
+       ================================================= *@
 
     <div class="row g-5 align-items-start">
+
 
         @* Immagine *@
 
@@ -98,7 +127,9 @@
                 }
 
 
-                @* Azioni principali *@
+                @* =================================================
+                   AZIONI PRINCIPALI
+                   ================================================= *@
 
                 <div class="artwork-primary-actions">
 
@@ -180,7 +211,9 @@
                 </div>
 
 
-                @* Conferma richiesta *@
+                @* =================================================
+                   CONFERMA RICHIESTA
+                   ================================================= *@
 
                 @if (TempData["InquirySuccess"] != null)
                 {
@@ -199,7 +232,9 @@
                 }
 
 
-                @* Form a comparsa *@
+                @* =================================================
+                   FORM RICHIESTA
+                   ================================================= *@
 
                 <div class="collapse @(inquiryHasErrors ? "show" : "")"
                      id="artworkInquiry">
@@ -215,10 +250,13 @@
                         </h2>
 
                         <p class="artwork-inquiry-intro">
+
                             Vuoi conoscere maggiori dettagli,
                             informazioni sull'esposizione
                             o sulla collezione?
+
                             Scrivi alla galleria.
+
                         </p>
 
 
@@ -235,7 +273,9 @@
                 </div>
 
 
-                @* Scheda tecnica *@
+                @* =================================================
+                   SCHEDA TECNICA
+                   ================================================= *@
 
                 <div class="gallery-eyebrow mb-3">
                     Scheda tecnica
@@ -243,6 +283,7 @@
 
 
                 <dl class="artwork-metadata">
+
 
                     @if (artwork.Year.HasValue)
                     {
@@ -276,7 +317,9 @@
                         </div>
                     }
 
-                    @if (artwork.WidthCm.HasValue && artwork.HeightCm.HasValue)
+
+                    @if (artwork.WidthCm.HasValue &&
+                         artwork.HeightCm.HasValue)
                     {
                         <div class="artwork-metadata-row">
 
@@ -285,10 +328,12 @@
                             </dt>
 
                             <dd>
+
                                 @artwork.WidthCm.Value.ToString("0.#")
                                 ×
                                 @artwork.HeightCm.Value.ToString("0.#")
                                 cm
+
                             </dd>
 
                         </div>
@@ -324,67 +369,68 @@
 
                     </div>
 
+
                     <div class="artwork-metadata-row">
 
-    <dt>
-        Disponibilità
-    </dt>
+                        <dt>
+                            Disponibilità
+                        </dt>
 
-    <dd>
+                        <dd>
 
-        @switch (artwork.AvailabilityStatus)
-        {
-            case ArtworkAvailabilityStatus.Available:
+                            @switch (artwork.AvailabilityStatus)
+                            {
+                                case ArtworkAvailabilityStatus.Available:
 
-                <span class="artwork-availability
-                             artwork-availability-available">
+                                    <span class="artwork-availability
+                                        artwork-availability-available">
 
-                    Disponibile
+                                        Disponibile
 
-                </span>
+                                    </span>
 
-                break;
-
-
-            case ArtworkAvailabilityStatus.LimitedAvailability:
-
-                <span class="artwork-availability
-                             artwork-availability-limited">
-
-                    Disponibilità limitata
-
-                </span>
-
-                break;
+                                    break;
 
 
-            case ArtworkAvailabilityStatus.SoldOut:
+                                case ArtworkAvailabilityStatus.LimitedAvailability:
 
-                <span class="artwork-availability
-                             artwork-availability-sold-out">
+                                    <span class="artwork-availability
+                                        artwork-availability-limited">
 
-                    Esaurita
+                                        Disponibilità limitata
 
-                </span>
+                                    </span>
 
-                break;
+                                    break;
 
 
-            case ArtworkAvailabilityStatus.Unavailable:
+                                case ArtworkAvailabilityStatus.SoldOut:
 
-                <span class="artwork-availability
-                             artwork-availability-unavailable">
+                                    <span class="artwork-availability
+                                        artwork-availability-sold-out">
 
-                    Non disponibile
+                                        Esaurita
 
-                </span>
+                                    </span>
 
-                break;
-        }
+                                    break;
 
-    </dd>
 
-</div>
+                                case ArtworkAvailabilityStatus.Unavailable:
+
+                                    <span class="artwork-availability
+                                        artwork-availability-unavailable">
+
+                                        Non disponibile
+
+                                    </span>
+
+                                    break;
+                            }
+
+                        </dd>
+
+                    </div>
 
                 </dl>
 
@@ -394,16 +440,326 @@
 
     </div>
 
-    @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl) &&
-     artwork.WidthCm.HasValue &&
-     artwork.WidthCm.Value > 0 &&
-     artwork.HeightCm.HasValue &&
-     artwork.HeightCm.Value > 0)
-    {
-        <partial name="_ArtworkRoomPreview" model="artwork" />
+
+    @* =================================================
+       AUDIOGUIDE
+       ================================================= *@
+
+    @{
+        var canManageAudio =
+            User.IsInRole(RoleNames.Staff) ||
+            User.IsInRole(RoleNames.Admin);
+
+
+        var activeAudioGuides =
+            artwork.AudioGuides
+                .Where(a => a.IsActive)
+                .OrderBy(a => a.LanguageCode)
+                .ToList();
     }
 
-    @* Descrizione *@
+
+    @if (activeAudioGuides.Any() ||
+         canManageAudio)
+    {
+        <section class="artwork-audio-section">
+
+
+            @* =================================================
+               HEADER AUDIOGUIDA
+               ================================================= *@
+
+            <div class="artwork-audio-header">
+
+                <div>
+
+                    <div class="gallery-eyebrow mb-3">
+                        Ascolta l'opera
+                    </div>
+
+                    <h2 class="artwork-audio-title">
+                        Audioguida
+                    </h2>
+
+                    <p class="artwork-audio-intro">
+
+                        Scopri la storia, il contesto
+                        e i dettagli di
+
+                        <strong>
+                            @artwork.Title
+                        </strong>
+
+                        attraverso l'audioguida
+                        di BeArtGallery.
+
+                    </p>
+
+                </div>
+
+
+                @if (canManageAudio)
+                {
+                    <a asp-controller="ArtworkAudioGuides"
+                       asp-action="Create"
+                       asp-route-artworkId="@artwork.Id"
+                       class="btn gallery-btn-outline">
+
+                        + Aggiungi audioguida
+
+                    </a>
+                }
+
+            </div>
+
+
+            @* =================================================
+               AUDIOGUIDE ATTIVE
+               ================================================= *@
+
+            @if (activeAudioGuides.Any())
+            {
+                <div class="artwork-audio-list">
+
+                    @foreach (var guide in activeAudioGuides)
+                    {
+                        var languageName =
+                            guide.LanguageCode switch
+                            {
+                                "it-IT" => "Italiano",
+                                "en-US" => "Inglese",
+                                "fr-FR" => "Francese",
+                                "es-ES" => "Spagnolo",
+                                _ => guide.LanguageCode
+                            };
+
+
+                        <article class="artwork-audio-card">
+
+
+                            <div class="artwork-audio-card-header">
+
+                                <div>
+
+                                    <span class="artwork-audio-language">
+
+                                        @languageName
+
+                                    </span>
+
+
+                                    <h3>
+                                        @guide.Title
+                                    </h3>
+
+                                </div>
+
+
+                                @if (canManageAudio)
+                                {
+                                    <div class="artwork-audio-admin-actions">
+
+                                        <a asp-controller="ArtworkAudioGuides"
+                                           asp-action="Edit"
+                                           asp-route-id="@guide.Id">
+
+                                            Modifica
+
+                                        </a>
+
+
+                                        <a asp-controller="ArtworkAudioGuides"
+                                           asp-action="Delete"
+                                           asp-route-id="@guide.Id"
+                                           class="text-danger">
+
+                                            Elimina
+
+                                        </a>
+
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            @* Player audio *@
+
+                            <audio controls
+                                   preload="metadata"
+                                   class="artwork-audio-player">
+
+                                <source src="@guide.AudioUrl" />
+
+                                Il tuo browser non supporta
+                                la riproduzione audio.
+
+                            </audio>
+
+
+                            @* Trascrizione *@
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                guide.Transcript))
+                            {
+                                <div class="artwork-audio-transcript">
+
+                                    <button class="artwork-transcript-toggle"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#transcript-@guide.Id"
+                                            aria-expanded="false"
+                                            aria-controls="transcript-@guide.Id">
+
+                                        Leggi la trascrizione
+
+                                    </button>
+
+
+                                    <div class="collapse"
+                                         id="transcript-@guide.Id">
+
+                                        <div class="artwork-transcript-content">
+
+                                            @guide.Transcript
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            }
+
+                        </article>
+                    }
+
+                </div>
+            }
+            else if (canManageAudio)
+            {
+                <div class="artwork-audio-empty">
+
+                    <strong>
+                        Nessuna audioguida attiva
+                    </strong>
+
+                    <p>
+
+                        Aggiungi un'audioguida per rendere
+                        disponibile un nuovo contenuto
+                        ai visitatori.
+
+                    </p>
+
+                </div>
+            }
+
+
+            @* =================================================
+               AUDIOGUIDE NON PUBBLICATE
+               SOLO STAFF / ADMIN
+               ================================================= *@
+
+            @if (canManageAudio)
+            {
+                var inactiveAudioGuides =
+                    artwork.AudioGuides
+                        .Where(a => !a.IsActive)
+                        .OrderBy(a => a.LanguageCode)
+                        .ToList();
+
+
+                if (inactiveAudioGuides.Any())
+                {
+                    <div class="artwork-inactive-audio">
+
+                        <div class="gallery-eyebrow mb-3">
+
+                            Audioguide non pubblicate
+
+                        </div>
+
+
+                        @foreach (var guide in inactiveAudioGuides)
+                        {
+                            var inactiveLanguageName =
+                                guide.LanguageCode switch
+                                {
+                                    "it-IT" => "Italiano",
+                                    "en-US" => "Inglese",
+                                    "fr-FR" => "Francese",
+                                    "es-ES" => "Spagnolo",
+                                    _ => guide.LanguageCode
+                                };
+
+
+                            <div class="artwork-inactive-audio-item">
+
+                                <div>
+
+                                    <strong>
+                                        @guide.Title
+                                    </strong>
+
+                                    <span>
+                                        @inactiveLanguageName
+                                    </span>
+
+                                </div>
+
+
+                                <div>
+
+                                    <a asp-controller="ArtworkAudioGuides"
+                                       asp-action="Edit"
+                                       asp-route-id="@guide.Id">
+
+                                        Modifica
+
+                                    </a>
+
+
+                                    <a asp-controller="ArtworkAudioGuides"
+                                       asp-action="Delete"
+                                       asp-route-id="@guide.Id"
+                                       class="text-danger ms-3">
+
+                                        Elimina
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+            }
+
+        </section>
+    }
+
+
+    @* =================================================
+       VISUALIZZA NELLA TUA STANZA
+       ================================================= *@
+
+    @if (!string.IsNullOrWhiteSpace(
+            artwork.ImageUrl) &&
+         artwork.WidthCm.HasValue &&
+         artwork.WidthCm.Value > 0 &&
+         artwork.HeightCm.HasValue &&
+         artwork.HeightCm.Value > 0)
+    {
+        <partial name="_ArtworkRoomPreview"
+                 model="artwork" />
+    }
+
+
+    @* =================================================
+       DESCRIZIONE
+       ================================================= *@
 
     @if (!string.IsNullOrWhiteSpace(
         artwork.Description))
@@ -414,6 +770,7 @@
                 L'opera
             </div>
 
+
             <div class="row">
 
                 <div class="col-lg-4">
@@ -423,6 +780,7 @@
                     </h2>
 
                 </div>
+
 
                 <div class="col-lg-7">
 
@@ -438,7 +796,9 @@
     }
 
 
-    @* Artista *@
+    @* =================================================
+       ARTISTA
+       ================================================= *@
 
     @if (artwork.Artist != null)
     {
@@ -466,6 +826,7 @@
                 <div class="col-lg-7">
 
                     <div class="artwork-artist-data">
+
 
                         @if (!string.IsNullOrWhiteSpace(
                             artwork.Artist.Nationality))
@@ -544,7 +905,9 @@
     }
 
 
-    @* Altre opere dello stesso artista *@
+    @* =================================================
+       ALTRE OPERE DELLO STESSO ARTISTA
+       ================================================= *@
 
     @if (Model.RelatedArtworks.Any())
     {
@@ -559,9 +922,11 @@
                     </div>
 
                     <h2>
+
                         Altre opere di
                         @artwork.Artist?.FirstName
                         @artwork.Artist?.LastName
+
                     </h2>
 
                 </div>
@@ -646,7 +1011,67 @@
     }
 
 
-    @* Gestione Staff/Admin *@
+    @* =================================================
+       GESTIONE STAFF / ADMIN
+       ================================================= *@
+
+    @if (User.IsInRole(RoleNames.Staff) ||
+  User.IsInRole(RoleNames.Admin))
+    {
+        <section class="artwork-qr-admin-section">
+
+            <div class="gallery-eyebrow mb-3">
+                QR dell'opera
+            </div>
+
+
+            <div class="artwork-qr-admin-layout">
+
+                <div class="artwork-qr-image-wrapper">
+
+                    <img src="@Url.Action(
+                             "Image",
+                             "ArtworkQr",
+                             new { id = artwork.Id })"
+                         alt="QR code per @artwork.Title"
+                         class="artwork-qr-image" />
+
+                </div>
+
+
+                <div class="artwork-qr-content">
+
+                    <h2>
+                        QR code visitatore
+                    </h2>
+
+                    <p>
+                        Posiziona questo QR accanto all'opera
+                        in galleria. Scansionandolo, il visitatore
+                        accederà direttamente alla pagina digitale
+                        dell'opera e alla relativa audioguida.
+                    </p>
+
+
+                    <div class="artwork-qr-actions">
+
+                        <a asp-controller="ArtworkQr"
+                           asp-action="Download"
+                           asp-route-id="@artwork.Id"
+                           class="btn gallery-btn-primary">
+
+                            Scarica QR
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+    }
 
     @if (User.IsInRole(RoleNames.Staff) ||
          User.IsInRole(RoleNames.Admin))
@@ -678,8 +1103,11 @@
 </div>
 
 
-@section Scripts {
-
+@section Scripts
+{
     <partial name="_ValidationScriptsPartial" />
-    <script src="~/js/artwork-room-preview.js" asp-append-version="true"></script>
+
+    <script src="~/js/artwork-room-preview.js"
+            asp-append-version="true">
+    </script>
 }

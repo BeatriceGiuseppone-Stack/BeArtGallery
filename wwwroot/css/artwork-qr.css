@@ -1,0 +1,92 @@
+﻿/* =================================================
+   BEARTGALLERY - QR OPERA
+   ================================================= */
+
+.artwork-qr-admin-section {
+    margin-top: 6rem;
+    padding-top: 5rem;
+    border-top: 1px solid var(--gallery-border);
+}
+
+
+.artwork-qr-admin-layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    align-items: center;
+    gap: 4rem;
+    padding: 2.5rem;
+    background-color: var(--gallery-soft);
+}
+
+
+/* =================================================
+   QR
+   ================================================= */
+
+.artwork-qr-image-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    background-color: #ffffff;
+    border: 1px solid var(--gallery-border);
+}
+
+
+.artwork-qr-image {
+    display: block;
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+}
+
+
+/* =================================================
+   TESTO
+   ================================================= */
+
+.artwork-qr-content h2 {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+
+.artwork-qr-content p {
+    max-width: 650px;
+    margin-bottom: 2rem;
+    color: var(--gallery-muted);
+    line-height: 1.8;
+}
+
+
+.artwork-qr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+
+/* =================================================
+   RESPONSIVE
+   ================================================= */
+
+@media (max-width: 767.98px) {
+
+    .artwork-qr-admin-section {
+        margin-top: 4rem;
+        padding-top: 3rem;
+    }
+
+
+    .artwork-qr-admin-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 1.5rem;
+    }
+
+
+    .artwork-qr-image-wrapper {
+        max-width: 260px;
+        margin: 0 auto;
+    }
+}

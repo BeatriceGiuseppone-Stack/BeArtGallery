@@ -1,0 +1,253 @@
+﻿/* =================================================
+   BEARTGALLERY - AUDIOGUIDA
+   ================================================= */
+
+.artwork-audio-section {
+    margin-top: 6rem;
+    padding-top: 5rem;
+    border-top: 1px solid var(--gallery-border);
+}
+
+
+/* =================================================
+   HEADER
+   ================================================= */
+
+.artwork-audio-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+
+.artwork-audio-title {
+    margin-bottom: 1rem;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    line-height: 1;
+}
+
+
+.artwork-audio-intro {
+    max-width: 650px;
+    margin: 0;
+    color: var(--gallery-muted);
+    line-height: 1.8;
+}
+
+
+/* =================================================
+   LISTA
+   ================================================= */
+
+.artwork-audio-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+
+/* =================================================
+   CARD
+   ================================================= */
+
+.artwork-audio-card {
+    padding: 2rem;
+    background-color: var(--gallery-surface);
+    border: 1px solid var(--gallery-border);
+}
+
+
+.artwork-audio-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+
+.artwork-audio-card h3 {
+    margin: 0.4rem 0 0;
+    font-size: 1.4rem;
+}
+
+
+.artwork-audio-language {
+    color: var(--gallery-accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+
+/* =================================================
+   PLAYER
+   ================================================= */
+
+.artwork-audio-player {
+    display: block;
+    width: 100%;
+}
+
+
+/* =================================================
+   AZIONI STAFF
+   ================================================= */
+
+.artwork-audio-admin-actions {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+}
+
+
+    .artwork-audio-admin-actions a {
+        color: var(--gallery-text);
+        text-decoration: none;
+    }
+
+
+        .artwork-audio-admin-actions a:hover {
+            text-decoration: underline;
+        }
+
+
+/* =================================================
+   TRASCRIZIONE
+   ================================================= */
+
+.artwork-audio-transcript {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gallery-border);
+}
+
+
+.artwork-transcript-toggle {
+    padding: 0;
+    color: var(--gallery-text);
+    background: transparent;
+    border: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+    .artwork-transcript-toggle:hover {
+        color: var(--gallery-accent);
+    }
+
+
+.artwork-transcript-content {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    color: var(--gallery-muted);
+    background-color: var(--gallery-soft);
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
+
+/* =================================================
+   EMPTY
+   ================================================= */
+
+.artwork-audio-empty {
+    padding: 2rem;
+    background-color: var(--gallery-soft);
+    border: 1px solid var(--gallery-border);
+}
+
+
+    .artwork-audio-empty strong {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+
+    .artwork-audio-empty p {
+        margin: 0;
+        color: var(--gallery-muted);
+    }
+
+
+/* =================================================
+   AUDIOGUIDE NON PUBBLICATE
+   ================================================= */
+
+.artwork-inactive-audio {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gallery-border);
+}
+
+
+.artwork-inactive-audio-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--gallery-border);
+}
+
+
+    .artwork-inactive-audio-item strong,
+    .artwork-inactive-audio-item span {
+        display: block;
+    }
+
+
+    .artwork-inactive-audio-item span {
+        margin-top: 0.25rem;
+        color: var(--gallery-muted);
+        font-size: 0.8rem;
+    }
+
+
+    .artwork-inactive-audio-item a {
+        color: var(--gallery-text);
+        font-size: 0.8rem;
+        text-decoration: none;
+    }
+
+
+/* =================================================
+   RESPONSIVE
+   ================================================= */
+
+@media (max-width: 767.98px) {
+
+    .artwork-audio-section {
+        margin-top: 4rem;
+        padding-top: 3rem;
+    }
+
+
+    .artwork-audio-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+
+    .artwork-audio-card {
+        padding: 1.25rem;
+    }
+
+
+    .artwork-audio-card-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+
+    .artwork-inactive-audio-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

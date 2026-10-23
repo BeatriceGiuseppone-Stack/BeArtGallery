@@ -64,5 +64,9 @@ namespace BeArtGallery.Models
         public ICollection<ArtworkInquiry> Inquiries { get; set; } = new List<ArtworkInquiry>();
 
         public ICollection<ArtworkView> Views { get; set; } = new List<ArtworkView>();
+
+        public ICollection<ArtworkAudioGuide> AudioGuides { get; set; } = new List<ArtworkAudioGuide>();
+
+        public ICollection<ArtworkQrScan> QrScans { get; set; } = new List<ArtworkQrScan>();
     }
 }
