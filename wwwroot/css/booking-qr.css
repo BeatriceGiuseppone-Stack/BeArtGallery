@@ -1,0 +1,220 @@
+﻿/* =================================================
+   BEARTGALLERY - QR PRENOTAZIONE
+   ================================================= */
+
+
+/* =================================================
+   BIGLIETTO DIGITALE
+   ================================================= */
+
+.booking-qr-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gallery-border);
+}
+
+
+.booking-qr-heading {
+    margin-bottom: 1.5rem;
+}
+
+
+.booking-qr-title {
+    margin-bottom: 0.6rem;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+}
+
+
+.booking-qr-description {
+    margin: 0;
+    color: var(--gallery-muted);
+    line-height: 1.7;
+}
+
+
+/* =================================================
+   CONTENUTO
+   ================================================= */
+
+.booking-qr-content {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    align-items: center;
+    gap: 2rem;
+    padding: 1.5rem;
+    background-color: var(--gallery-soft);
+    border: 1px solid var(--gallery-border);
+}
+
+
+/* =================================================
+   QR
+   ================================================= */
+
+.booking-qr-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    background-color: #ffffff;
+    border: 1px solid var(--gallery-border);
+}
+
+
+.booking-qr-image {
+    display: block;
+    width: 100%;
+    max-width: 160px;
+    height: auto;
+}
+
+
+/* =================================================
+   DATI BIGLIETTO
+   ================================================= */
+
+.booking-qr-info {
+    display: grid;
+    gap: 0.9rem;
+}
+
+
+.booking-qr-info-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid rgba(29, 29, 27, 0.12);
+}
+
+
+    .booking-qr-info-item:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+
+    .booking-qr-info-item span {
+        color: var(--gallery-muted);
+        font-size: 0.8rem;
+    }
+
+
+    .booking-qr-info-item strong {
+        color: var(--gallery-text);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-align: right;
+    }
+
+
+/* =================================================
+   AVVISO
+   ================================================= */
+
+.booking-qr-notice {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-top: 1rem;
+    color: var(--gallery-muted);
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+
+.booking-qr-notice-icon {
+    color: var(--gallery-accent);
+    font-size: 1.1rem;
+}
+
+
+/* =================================================
+   CHECK-IN COMPLETATO
+   ================================================= */
+
+.booking-checkin-completed {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #edf5ef;
+    border: 1px solid #b8d5bf;
+}
+
+
+.booking-checkin-icon {
+    display: flex;
+    flex: 0 0 48px;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    color: #245b32;
+    background-color: #d8eadc;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+
+.booking-checkin-title {
+    margin-bottom: 0.3rem;
+    color: #245b32;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+
+.booking-checkin-date {
+    color: #536b59;
+    font-size: 0.8rem;
+}
+
+
+/* =================================================
+   AZIONI
+   ================================================= */
+
+.booking-actions {
+    margin-top: 1.5rem;
+}
+
+
+/* =================================================
+   RESPONSIVE
+   ================================================= */
+
+@media (max-width: 575.98px) {
+
+    .booking-qr-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+
+    .booking-qr-wrapper {
+        width: 190px;
+        margin: 0 auto;
+    }
+
+
+    .booking-qr-info-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+
+        .booking-qr-info-item strong {
+            text-align: left;
+        }
+
+
+    .booking-checkin-completed {
+        align-items: flex-start;
+    }
+}

@@ -100,7 +100,8 @@ namespace BeArtGallery.Controllers.Api
                 UserId = userId,
                 NumberOfParticipants = request.NumberOfParticipants,
                 BookingDate = DateTime.UtcNow,
-                Status = BookingStatus.Confirmed
+                Status = BookingStatus.Confirmed,
+                QrToken = Guid.NewGuid().ToString("N")
             };
 
             _context.Bookings.Add(booking);

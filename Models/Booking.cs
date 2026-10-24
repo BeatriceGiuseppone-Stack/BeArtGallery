@@ -37,5 +37,14 @@ namespace BeArtGallery.Models
 
         [MaxLength(500)]
         public string? CancellationReason { get; set; }
+
+        [MaxLength(64)]
+        public string? QrToken { get; set; }
+
+        public DateTime? CheckedInAt { get; set; }
+
+        public string? CheckedInByUserId { get; set; }
+
+        public ApplicationUser? CheckedInByUser { get; set; }
     }
 }

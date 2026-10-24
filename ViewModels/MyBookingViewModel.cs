@@ -27,5 +27,9 @@ namespace BeArtGallery.ViewModels
         public string? CancellationReason { get; set; }
 
         public bool CanCancel => Status == BookingStatus.Confirmed && StartDateTime > DateTime.Now;
+
+        public string? QrToken { get; set; }
+
+        public DateTime? CheckedInAt { get; set; }
     }
 }

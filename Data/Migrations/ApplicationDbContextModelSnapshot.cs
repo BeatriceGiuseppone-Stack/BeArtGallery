@@ -417,11 +417,21 @@ namespace BeArtGallery.Data.Migrations
                     b.Property<string>("CancelledByUserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime?>("CheckedInAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CheckedInByUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("GalleryActivityId")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberOfParticipants")
                         .HasColumnType("int");
+
+                    b.Property<string>("QrToken")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -434,7 +444,13 @@ namespace BeArtGallery.Data.Migrations
 
                     b.HasIndex("CancelledByUserId");
 
+                    b.HasIndex("CheckedInByUserId");
+
                     b.HasIndex("GalleryActivityId");
+
+                    b.HasIndex("QrToken")
+                        .IsUnique()
+                        .HasFilter("[QrToken] IS NOT NULL");
 
                     b.HasIndex("UserId");
 
@@ -754,6 +770,11 @@ namespace BeArtGallery.Data.Migrations
                         .HasForeignKey("CancelledByUserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("BeArtGallery.Data.ApplicationUser", "CheckedInByUser")
+                        .WithMany()
+                        .HasForeignKey("CheckedInByUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("BeArtGallery.Models.GalleryActivity", "GalleryActivity")
                         .WithMany("Bookings")
                         .HasForeignKey("GalleryActivityId")
@@ -767,6 +788,8 @@ namespace BeArtGallery.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("CancelledByUser");
+
+                    b.Navigation("CheckedInByUser");
 
                     b.Navigation("GalleryActivity");
 

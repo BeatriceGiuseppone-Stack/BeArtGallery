@@ -1,0 +1,294 @@
+﻿/* =================================================
+   BOOKING CHECK-IN
+   ================================================= */
+
+.booking-checkin-page {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+
+.booking-checkin-heading {
+    margin-bottom: 1rem;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 400;
+    line-height: 1;
+}
+
+
+.booking-checkin-intro {
+    margin-bottom: 3rem;
+    color: var(--gallery-muted);
+    line-height: 1.8;
+}
+
+
+/* =================================================
+   CARD
+   ================================================= */
+
+.booking-checkin-card {
+    overflow: hidden;
+    background: var(--gallery-surface);
+    border: 1px solid var(--gallery-border);
+}
+
+
+.booking-checkin-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 2rem;
+    border-bottom: 1px solid var(--gallery-border);
+}
+
+
+    .booking-checkin-card-header h2 {
+        margin: 0.6rem 0 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 2rem;
+        font-weight: 400;
+    }
+
+
+.booking-checkin-type {
+    color: var(--gallery-accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+
+/* =================================================
+   STATO
+   ================================================= */
+
+.booking-checkin-status {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+    .booking-checkin-status.valid {
+        color: #245b32;
+        background: #dcecdf;
+    }
+
+
+    .booking-checkin-status.invalid {
+        color: #832d2d;
+        background: #f5dddd;
+    }
+
+
+/* =================================================
+   DATI
+   ================================================= */
+
+.booking-checkin-data {
+    padding: 0 2rem;
+}
+
+
+.booking-checkin-data-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--gallery-border);
+}
+
+
+    .booking-checkin-data-row span {
+        color: var(--gallery-muted);
+        font-size: 0.82rem;
+    }
+
+
+    .booking-checkin-data-row strong {
+        text-align: right;
+    }
+
+
+.booking-checkin-participants {
+    font-size: 1.3rem;
+}
+
+
+/* =================================================
+   CONFERMA
+   ================================================= */
+
+.booking-checkin-confirm {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    margin: 2rem;
+    padding: 1.5rem;
+    background: var(--gallery-soft);
+}
+
+
+    .booking-checkin-confirm strong {
+        display: block;
+        margin-bottom: 0.4rem;
+    }
+
+
+    .booking-checkin-confirm p {
+        margin: 0;
+        color: var(--gallery-muted);
+        font-size: 0.85rem;
+    }
+
+
+.booking-checkin-button {
+    white-space: nowrap;
+}
+
+
+/* =================================================
+   GIÀ EFFETTUATO
+   ================================================= */
+
+.booking-already-checked {
+    display: flex;
+    gap: 1rem;
+    margin: 2rem;
+    padding: 1.5rem;
+    color: #245b32;
+    background: #edf5ef;
+    border: 1px solid #b8d5bf;
+}
+
+
+.booking-already-checked-icon {
+    display: flex;
+    flex: 0 0 48px;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: #d8eadc;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+
+.booking-already-checked p {
+    margin: 0.3rem 0;
+}
+
+
+/* =================================================
+   NON VALIDO
+   ================================================= */
+
+.booking-checkin-blocked,
+.booking-checkin-invalid {
+    padding: 2rem;
+    color: #832d2d;
+    background: #fff2f2;
+    border: 1px solid #e4bcbc;
+}
+
+
+.booking-checkin-blocked {
+    margin: 2rem;
+}
+
+
+    .booking-checkin-blocked p,
+    .booking-checkin-invalid p {
+        margin: 0.5rem 0 0;
+    }
+
+
+.booking-checkin-invalid {
+    text-align: center;
+}
+
+
+.booking-checkin-invalid-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1.5rem;
+    border: 2px solid #832d2d;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+
+/* =================================================
+   MESSAGGI
+   ================================================= */
+
+.booking-checkin-message {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 2rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid;
+}
+
+
+    .booking-checkin-message.success {
+        color: #245b32;
+        background: #edf5ef;
+        border-color: #b8d5bf;
+    }
+
+
+    .booking-checkin-message.error {
+        color: #832d2d;
+        background: #fff2f2;
+        border-color: #e4bcbc;
+    }
+
+
+/* =================================================
+   MOBILE
+   ================================================= */
+
+@media (max-width: 575.98px) {
+
+    .booking-checkin-card-header {
+        flex-direction: column;
+    }
+
+
+    .booking-checkin-data-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+
+        .booking-checkin-data-row strong {
+            text-align: left;
+        }
+
+
+    .booking-checkin-confirm {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+
+    .booking-checkin-button {
+        width: 100%;
+    }
+}

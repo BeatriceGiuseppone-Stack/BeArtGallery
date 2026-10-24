@@ -24,32 +24,76 @@ namespace BeArtGallery.Controllers
         }
 
         // GET: /Bookings
+        // GET: /Bookings
         public async Task<IActionResult> Index()
         {
-            var userId = _userManager.GetUserId(User);
+            var userId =
+                _userManager.GetUserId(User);
+
 
             if (string.IsNullOrWhiteSpace(userId))
             {
                 return Challenge();
             }
 
-            var bookings = await _context.Bookings.AsNoTracking().Include(b => b.GalleryActivity).Where(b => b.UserId == userId)
-                .OrderByDescending(b => b.GalleryActivity!.StartDateTime).Select(b => 
-                new MyBookingViewModel
+
+            // =================================================
+            // GENERA IL TOKEN PER LE VECCHIE PRENOTAZIONI
+            // =================================================
+
+            var bookingsWithoutQr =
+                await _context.Bookings
+                    .Where(b =>
+                        b.UserId == userId &&
+                        b.QrToken == null)
+                    .ToListAsync();
+
+
+            if (bookingsWithoutQr.Any())
+            {
+                foreach (var booking in bookingsWithoutQr)
                 {
-                    BookingId = b.Id,
-                    ActivityTitle = b.GalleryActivity != null ? b.GalleryActivity.Title : string.Empty,
-                    ActivityType = b.GalleryActivity!.ActivityType,
-                    StartDateTime = b.GalleryActivity.StartDateTime,
-                    Location = b.GalleryActivity.Location,
-                    NumberOfParticipants = b.NumberOfParticipants,
-                    BookingDate = b.BookingDate,
-                    Status = b.Status,
-                    CancelledAt = b.CancelledAt,
-                    CancellationType = b.CancellationType,
-                    CancellationReason = b.CancellationReason
-                })
-                .ToListAsync();
+                    booking.QrToken =
+                        Guid.NewGuid()
+                            .ToString("N");
+                }
+
+
+                await _context.SaveChangesAsync();
+            }
+
+
+            // =================================================
+            // CARICAMENTO PRENOTAZIONI
+            // =================================================
+
+            var bookings =
+                await _context.Bookings
+                    .AsNoTracking()
+                    .Include(b => b.GalleryActivity)
+                    .Where(b =>
+                        b.UserId == userId)
+                    .OrderByDescending(b =>
+                        b.GalleryActivity!.StartDateTime)
+                    .Select(b =>
+                        new MyBookingViewModel
+                        {
+                            BookingId = b.Id,
+                            ActivityTitle = b.GalleryActivity != null ? b.GalleryActivity.Title : string.Empty,
+                            ActivityType = b.GalleryActivity!.ActivityType,
+                            StartDateTime = b.GalleryActivity.StartDateTime,
+                            Location = b.GalleryActivity.Location,
+                            NumberOfParticipants = b.NumberOfParticipants,
+                            BookingDate = b.BookingDate,
+                            Status = b.Status,
+                            CancelledAt = b.CancelledAt,
+                            CancellationType = b.CancellationType,
+                            CancellationReason = b.CancellationReason,
+                            QrToken = b.QrToken,
+                            CheckedInAt = b.CheckedInAt
+                        })
+                    .ToListAsync();
+
 
             return View(bookings);
         }

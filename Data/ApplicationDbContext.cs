@@ -181,6 +181,17 @@ namespace BeArtGallery.Data
                     s.ArtworkId,
                     s.ScannedAt
                 });
+
+            builder.Entity<Booking>()
+    .HasOne(b => b.CheckedInByUser)
+    .WithMany()
+    .HasForeignKey(b => b.CheckedInByUserId)
+    .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Booking>()
+    .HasIndex(b => b.QrToken)
+    .IsUnique()
+    .HasFilter("[QrToken] IS NOT NULL");
         }
     }
 }
