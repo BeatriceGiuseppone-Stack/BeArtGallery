@@ -30,6 +30,19 @@ namespace BeArtGallery.ViewModels
 
         public decimal FavoriteToInquiryRate { get; set; }
 
+        // =================================================
+        // CHECK-IN E PRESENZE
+        // =================================================
+
+        public int ExpectedVisitors { get; set; }
+
+        public int CheckedInVisitors { get; set; }
+
+        public int VisitorsToArrive { get; set; }
+
+        public int NoShowVisitors { get; set; }
+
+        public double AttendanceRate { get; set; }
 
         public List<DashboardArtworkStatisticViewModel> MostViewedArtworks
         {

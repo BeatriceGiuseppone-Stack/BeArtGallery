@@ -205,6 +205,175 @@
 
         </section>
 
+        @* =================================================
+           PRESENZE E CHECK-IN
+           ================================================= *@
+
+        <section class="dashboard-attendance-section">
+
+            <div class="dashboard-section-heading">
+
+                <div>
+
+                    <span class="gallery-eyebrow">
+                        Accessi in galleria
+                    </span>
+
+                    <h2>
+                        Presenze e check-in
+                    </h2>
+
+                </div>
+
+
+                <p>
+                    Analisi degli ingressi registrati tramite
+                    i QR code delle prenotazioni.
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-attendance-grid">
+
+
+                @* VISITATORI ATTESI *@
+
+                <article class="dashboard-attendance-card">
+
+                    <span class="dashboard-attendance-label">
+                        Visitatori attesi
+                    </span>
+
+                    <strong class="dashboard-attendance-value">
+
+                        @Model.ExpectedVisitors
+
+                    </strong>
+
+                    <small>
+
+                        Persone associate alle
+                        prenotazioni confermate
+
+                    </small>
+
+                </article>
+
+
+                @* CHECK-IN *@
+
+                <article class="dashboard-attendance-card
+                    dashboard-attendance-card-success">
+
+                    <span class="dashboard-attendance-label">
+                        Ingressi registrati
+                    </span>
+
+                    <strong class="dashboard-attendance-value">
+
+                        @Model.CheckedInVisitors
+
+                    </strong>
+
+                    <small>
+
+                        Visitatori che hanno effettuato
+                        il check-in
+
+                    </small>
+
+                </article>
+
+
+                @* DA ARRIVARE *@
+
+                <article class="dashboard-attendance-card">
+
+                    <span class="dashboard-attendance-label">
+                        Da arrivare
+                    </span>
+
+                    <strong class="dashboard-attendance-value">
+
+                        @Model.VisitorsToArrive
+
+                    </strong>
+
+                    <small>
+
+                        Visitatori attesi per
+                        attività non ancora concluse
+
+                    </small>
+
+                </article>
+
+
+                @* NO-SHOW *@
+
+                <article class="dashboard-attendance-card
+                    dashboard-attendance-card-warning">
+
+                    <span class="dashboard-attendance-label">
+                        No-show
+                    </span>
+
+                    <strong class="dashboard-attendance-value">
+
+                        @Model.NoShowVisitors
+
+                    </strong>
+
+                    <small>
+
+                        Visitatori non presentati
+                        ad attività concluse
+
+                    </small>
+
+                </article>
+
+
+                @* TASSO DI PRESENZA *@
+
+                <article class="dashboard-attendance-card
+                    dashboard-attendance-card-highlight">
+
+                    <span class="dashboard-attendance-label">
+                        Tasso di presenza
+                    </span>
+
+                    <div class="dashboard-attendance-rate">
+
+                        <strong class="dashboard-attendance-value">
+
+                            @Model.AttendanceRate%
+
+                        </strong>
+
+                        <div class="dashboard-attendance-progress">
+
+                            <span style="width:
+                                @($"{Math.Min(Model.AttendanceRate, 100).ToString(System.Globalization.CultureInfo.InvariantCulture)}%")">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <small>
+
+                        Rapporto tra visitatori attesi
+                        e ingressi nelle attività concluse
+
+                    </small>
+
+                </article>
+
+            </div>
+
+        </section>
 
         @* =================================================
            GRAFICI

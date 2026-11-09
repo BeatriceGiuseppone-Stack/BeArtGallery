@@ -34,11 +34,130 @@ namespace BeArtGallery.Controllers
                     1)
                 .AddMonths(-5);
 
+            // =================================================
+            // CHECK-IN E PRESENZE
+            // =================================================
+
+            // Prenotazioni confermate
+            var confirmedBookingsForAttendance =
+                await _context.Bookings
+                    .AsNoTracking()
+                    .Include(b => b.GalleryActivity)
+                    .Where(b =>
+                        b.Status == BookingStatus.Confirmed &&
+                        b.GalleryActivity != null)
+                    .ToListAsync();
+
+
+            // =================================================
+            // VISITATORI ATTESI
+            // =================================================
+
+            // Tutte le persone associate
+            // a prenotazioni confermate.
+
+            var expectedVisitors =
+                confirmedBookingsForAttendance
+                    .Sum(b => b.NumberOfParticipants);
+
+
+            // =================================================
+            // CHECK-IN EFFETTUATI
+            // =================================================
+
+            // Numero di persone effettivamente entrate.
+
+            var checkedInVisitors =
+                confirmedBookingsForAttendance
+                    .Where(b =>
+                        b.CheckedInAt.HasValue)
+                    .Sum(b =>
+                        b.NumberOfParticipants);
+
+
+            // =================================================
+            // DA ARRIVARE
+            // =================================================
+
+            // Consideriamo solamente attività
+            // che non sono ancora terminate.
+
+            var visitorsToArrive =
+                confirmedBookingsForAttendance
+                    .Where(b =>
+                        !b.CheckedInAt.HasValue &&
+                        b.GalleryActivity != null &&
+                        b.GalleryActivity.StartDateTime
+                            .AddMinutes(
+                                b.GalleryActivity.DurationMinutes)
+                            > now)
+                    .Sum(b =>
+                        b.NumberOfParticipants);
+
+
+            // =================================================
+            // NO-SHOW
+            // =================================================
+
+            // Una persona viene considerata no-show
+            // solamente dopo la conclusione dell'attività,
+            // non semplicemente dopo l'orario di inizio.
+
+            var noShowVisitors =
+                confirmedBookingsForAttendance
+                    .Where(b =>
+                        !b.CheckedInAt.HasValue &&
+                        b.GalleryActivity != null &&
+                        b.GalleryActivity.StartDateTime
+                            .AddMinutes(
+                                b.GalleryActivity.DurationMinutes)
+                            <= now)
+                    .Sum(b =>
+                        b.NumberOfParticipants);
+
+
+            // =================================================
+            // TASSO DI PRESENZA
+            // =================================================
+
+            // Per il tasso di presenza consideriamo
+            // solamente attività già concluse.
+            // In questo modo gli eventi futuri non abbassano
+            // artificialmente la percentuale.
+
+            // =================================================
+            // TASSO DI PRESENZA
+            // =================================================
+
+            // Rapporto in tempo reale tra
+            // visitatori attesi e visitatori
+            // che hanno effettuato il check-in.
+
+            var attendanceRate =
+                expectedVisitors > 0
+                    ? Math.Round(
+                        (double)checkedInVisitors /
+                        expectedVisitors * 100,
+                        1)
+                    : 0;
 
             var model =
                 new DashboardViewModel();
 
+            // =================================================
+            // CHECK-IN E PRESENZE
+            // =================================================
 
+            model.ExpectedVisitors = expectedVisitors;
+
+            model.CheckedInVisitors = checkedInVisitors;
+
+            model.VisitorsToArrive = visitorsToArrive;
+
+            model.NoShowVisitors = noShowVisitors;
+
+            model.AttendanceRate = attendanceRate;
+             
             // =================================================
             // KPI PRINCIPALI
             // =================================================
