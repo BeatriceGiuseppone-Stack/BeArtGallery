@@ -85,6 +85,33 @@ public class LoginModel : PageModel
         public bool RememberMe { get; set; }
     }
 
+    // Dopo l'accesso non ha senso tornare alle pagine di uscita,
+    // accesso o registrazione: in quel caso si va alla home.
+    private string SafeReturnUrl(string? returnUrl)
+    {
+        var home = Url.Content("~/");
+
+        if (string.IsNullOrWhiteSpace(returnUrl) || !Url.IsLocalUrl(returnUrl))
+        {
+            return home;
+        }
+
+        var path = returnUrl.Split('?')[0].TrimEnd('/');
+
+        string[] excluded =
+        {
+            "/Identity/Account/Logout",
+            "/Identity/Account/Login",
+            "/Identity/Account/Register",
+            "/Identity/Account/AccessDenied",
+            "/Identity/Account/Lockout"
+        };
+
+        return excluded.Any(p => path.Equals(p, StringComparison.OrdinalIgnoreCase))
+            ? home
+            : returnUrl;
+    }
+
     public async Task OnGetAsync(string? returnUrl = null)
     {
         if (!string.IsNullOrEmpty(ErrorMessage))
@@ -92,7 +119,7 @@ public class LoginModel : PageModel
             ModelState.AddModelError(string.Empty, ErrorMessage);
         }
 
-        returnUrl ??= Url.Content("~/");
+        returnUrl = SafeReturnUrl(returnUrl);
 
         // Clear the existing external cookie to ensure a clean login process
         await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -104,7 +131,7 @@ public class LoginModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
-        returnUrl ??= Url.Content("~/");
+        returnUrl = SafeReturnUrl(returnUrl);
 
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 

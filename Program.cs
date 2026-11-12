@@ -20,7 +20,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<ApplicationUser>(
     options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddErrorDescriber<BeArtGallery.Authorization.ItalianIdentityErrorDescriber>();
 
 // Le chiamate alle API non devono essere reindirizzate alla
 // pagina di login (HTML): rispondono con 401 / 403.

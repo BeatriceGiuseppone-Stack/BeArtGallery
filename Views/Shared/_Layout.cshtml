@@ -434,13 +434,14 @@
 
                                             <form asp-area="Identity"
                                                   asp-page="/Account/Logout"
+                                                  asp-route-returnUrl="@Url.Content("~/")"
                                                   method="post"
                                                   class="m-0">
 
                                                 <button type="submit"
                                                         class="dropdown-item gallery-logout-link">
 
-                                                    Logout
+                                                    Esci
 
                                                 </button>
 
