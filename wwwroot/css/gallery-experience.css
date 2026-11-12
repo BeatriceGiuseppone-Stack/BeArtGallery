@@ -259,6 +259,7 @@ h1, h2, h3,
 
 .artwork-catalog-image-wrapper,
 .artist-artwork-image-link,
+.gx-wall-frame,
 .gallery-hero-image-wrapper {
     --gx-x: 50%;
     --gx-y: 30%;
@@ -275,14 +276,16 @@ h1, h2, h3,
 
 /* A riposo l'opera è in penombra, come in una sala con le luci basse */
 .artwork-catalog-image,
-.artist-artwork-image {
+.artist-artwork-image,
+.gx-wall-image {
     filter: brightness(.92) saturate(.92);
     transition: filter .6s var(--gx-ease), transform .9s var(--gx-ease);
 }
 
 /* Cono di luce calda centrato sul cursore, con bordi in ombra */
 .artwork-catalog-image-wrapper::after,
-.artist-artwork-image-link::after {
+.artist-artwork-image-link::after,
+.gx-wall-frame::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -325,7 +328,9 @@ h1, h2, h3,
 
 .artwork-catalog-card:hover .artwork-catalog-image-wrapper::after,
 .artwork-catalog-image-wrapper:focus-visible::after,
-.artist-artwork-card:hover .artist-artwork-image-link::after {
+.artist-artwork-card:hover .artist-artwork-image-link::after,
+.gx-wall-item:hover .gx-wall-frame::after,
+.gx-wall-item:focus-visible .gx-wall-frame::after {
     opacity: 1;
 }
 
@@ -337,7 +342,8 @@ h1, h2, h3,
 }
 
 .artwork-catalog-card:hover .artwork-catalog-image,
-.artist-artwork-card:hover .artist-artwork-image {
+.artist-artwork-card:hover .artist-artwork-image,
+.gx-wall-item:hover .gx-wall-image {
     filter: brightness(1.04) saturate(1);
     transform: scale(1.015);
 }
@@ -1152,6 +1158,388 @@ h1, h2, h3,
 a.gx-link-danger {
     display: inline-block;
 }
+
+/* ---------------------------------------------------------------------
+   Home: contenuti veri della galleria
+   --------------------------------------------------------------------- */
+
+.gx-home-section {
+    padding: 6.5rem 0;
+    background: var(--gx-wall);
+}
+
+.gx-home-section + .gx-home-section:not(.gx-home-dark) {
+    background: var(--gx-paper);
+}
+
+.gx-home-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: 3.5rem;
+}
+
+.gx-home-title {
+    margin: 0;
+    font-family: var(--gx-font-display);
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.1;
+}
+
+.gx-home-more {
+    color: var(--gx-muted);
+    font-size: .95rem;
+    text-decoration: underline;
+    text-decoration-color: var(--gx-line);
+    text-underline-offset: 6px;
+    transition: color .3s, text-decoration-color .3s;
+}
+
+.gx-home-more:hover {
+    color: var(--gx-ink);
+    text-decoration-color: var(--gx-gilt);
+}
+
+/* --- Le opere in sala ------------------------------------------------
+   Allestimento "a linea centrale": i quadri hanno misure diverse ma
+   il loro centro sta alla stessa altezza, come si appendono in galleria.
+   La didascalia sta sotto, come la targhetta a parete. */
+
+.gx-wall {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 7rem 2.5rem;
+    padding-bottom: 5rem;
+}
+
+.gx-wall-item {
+    position: relative;
+    display: block;
+    max-width: 23.5rem;
+    color: var(--gx-ink);
+    text-decoration: none;
+}
+
+.gx-wall-frame {
+    position: relative;
+    isolation: isolate;
+    display: block;
+    padding: .9rem;
+    background: var(--gx-paper);
+    border: 1px solid var(--gx-line);
+    box-shadow: 0 30px 40px -34px rgba(45, 32, 12, .55);
+    transition: transform .6s var(--gx-ease), box-shadow .6s var(--gx-ease);
+}
+
+/* L'immagine mantiene le sue proporzioni; misure diverse per ritmo */
+.gx-wall-image {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 17rem;
+}
+
+.gx-wall-item:nth-child(5n + 1) .gx-wall-image { max-height: 21rem; }
+.gx-wall-item:nth-child(5n + 2) .gx-wall-image { max-height: 14rem; }
+.gx-wall-item:nth-child(5n + 3) .gx-wall-image { max-height: 17rem; }
+.gx-wall-item:nth-child(5n + 4) .gx-wall-image { max-height: 13rem; }
+.gx-wall-item:nth-child(5n + 5) .gx-wall-image { max-height: 16rem; }
+
+.gx-wall-item:hover .gx-wall-frame,
+.gx-wall-item:focus-visible .gx-wall-frame {
+    transform: translateY(-6px);
+    box-shadow: 0 40px 46px -30px rgba(45, 32, 12, .5);
+}
+
+.gx-wall-label {
+    position: absolute;
+    top: calc(100% + 1.1rem);
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .1rem;
+    padding-left: .9rem;
+    border-left: 1px solid var(--gx-line);
+    transition: border-color .5s var(--gx-ease);
+}
+
+.gx-wall-artist {
+    font-family: var(--gx-font-display);
+    font-size: 1.15rem;
+    transition: color .4s;
+}
+
+.gx-wall-title {
+    font-family: var(--gx-font-display);
+    font-size: 1rem;
+    font-style: italic;
+    color: #3b3a37;
+}
+
+.gx-wall-technique {
+    color: var(--gx-muted);
+    font-size: .85rem;
+}
+
+.gx-wall-item:hover .gx-wall-label {
+    border-left-color: var(--gx-gilt);
+}
+
+.gx-wall-item:hover .gx-wall-artist {
+    color: var(--gx-gilt);
+}
+
+/* --- Prossimi appuntamenti: la sala buia --------------------------- */
+
+.gx-home-dark {
+    color: #ece6db;
+    background: var(--gx-ink);
+}
+
+.gx-home-dark .gallery-eyebrow {
+    color: var(--gx-gilt-light);
+}
+
+.gx-home-dark .gx-home-title {
+    color: var(--gx-paper);
+}
+
+.gx-home-dark .gx-home-more {
+    color: #b9b1a4;
+    text-decoration-color: rgba(255, 255, 255, .2);
+}
+
+.gx-home-dark .gx-home-more:hover {
+    color: var(--gx-paper);
+    text-decoration-color: var(--gx-gilt);
+}
+
+.gx-agenda {
+    border-bottom: 1px solid rgba(255, 255, 255, .12);
+}
+
+.gx-agenda-item {
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem 0;
+    color: inherit;
+    text-decoration: none;
+    border-top: 1px solid rgba(255, 255, 255, .12);
+}
+
+.gx-agenda-date {
+    display: flex;
+    flex-direction: column;
+}
+
+.gx-agenda-day {
+    font-family: var(--gx-font-display);
+    font-size: 3.4rem;
+    line-height: .95;
+    color: var(--gx-paper);
+    transition: color .4s;
+}
+
+.gx-agenda-month {
+    font-family: var(--gx-font-display);
+    font-style: italic;
+    color: var(--gx-gilt-light);
+}
+
+.gx-agenda-body {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.gx-agenda-type {
+    font-family: var(--gx-font-display);
+    font-size: .95rem;
+    font-style: italic;
+    color: var(--gx-gilt-light);
+}
+
+.gx-agenda-title {
+    font-family: var(--gx-font-display);
+    font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+    line-height: 1.2;
+    color: var(--gx-paper);
+}
+
+.gx-agenda-meta {
+    display: block;
+    color: #b9b1a4;
+    font-size: .92rem;
+}
+
+.gx-agenda-meta::first-letter {
+    text-transform: uppercase;
+}
+
+.gx-agenda-seats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .75rem;
+    color: #b9b1a4;
+    font-size: .88rem;
+    text-align: right;
+}
+
+.gx-agenda-cta {
+    padding: .6rem 1.4rem;
+    color: var(--gx-paper);
+    font-size: .92rem;
+    border: 1px solid var(--gx-gilt);
+    transition: background-color .4s var(--gx-ease), color .4s var(--gx-ease);
+}
+
+.gx-agenda-item:hover .gx-agenda-day {
+    color: var(--gx-gilt-light);
+}
+
+.gx-agenda-item:hover .gx-agenda-cta,
+.gx-agenda-item:focus-visible .gx-agenda-cta {
+    color: var(--gx-ink);
+    background: var(--gx-gilt-light);
+}
+
+.gx-agenda-empty {
+    max-width: 40rem;
+    margin: 0;
+    color: #b9b1a4;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+/* --- Gli artisti: indice dei nomi ---------------------------------- */
+
+.gx-names {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--gx-line);
+}
+
+.gx-names li {
+    border-bottom: 1px solid var(--gx-line);
+}
+
+.gx-name {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .25rem 1.5rem;
+    padding: 1.5rem 0;
+    color: var(--gx-ink);
+    text-decoration: none;
+    transition: padding-left .5s var(--gx-ease);
+}
+
+.gx-name::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 1.25rem;
+    height: 1px;
+    background: var(--gx-gilt);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .5s var(--gx-ease);
+}
+
+.gx-name-full {
+    font-family: var(--gx-font-display);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    line-height: 1.2;
+    transition: color .4s;
+}
+
+.gx-name-meta {
+    color: var(--gx-muted);
+    font-size: .9rem;
+}
+
+.gx-name:hover,
+.gx-name:focus-visible {
+    padding-left: 2rem;
+}
+
+.gx-name:hover::before,
+.gx-name:focus-visible::before {
+    transform: scaleX(1);
+}
+
+.gx-name:hover .gx-name-full {
+    color: var(--gx-gilt);
+}
+
+@media (max-width: 767.98px) {
+
+    .gx-home-section {
+        padding: 4.5rem 0;
+    }
+
+    .gx-wall {
+        gap: 2.5rem;
+        padding-bottom: 0;
+    }
+
+    .gx-wall-item {
+        width: 100%;
+    }
+
+    .gx-wall-item {
+        max-width: none;
+    }
+
+    .gx-wall-item:nth-child(n) .gx-wall-image {
+        margin: 0 auto;
+        max-height: 24rem;
+    }
+
+    .gx-wall-label {
+        position: static;
+        margin-top: 1rem;
+    }
+
+    .gx-agenda-item {
+        grid-template-columns: 4.5rem minmax(0, 1fr);
+        gap: 1rem 1.25rem;
+    }
+
+    .gx-agenda-day {
+        font-size: 2.4rem;
+    }
+
+    .gx-agenda-seats {
+        grid-column: 2;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    .gx-names {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 /* --- Schermi piccoli ------------------------------------------------- */
 

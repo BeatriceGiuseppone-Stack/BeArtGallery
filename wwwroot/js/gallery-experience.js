@@ -9,6 +9,7 @@
     const selectors = [
         ".artwork-catalog-image-wrapper",
         ".artist-artwork-image-link",
+        ".gx-wall-frame",
         ".gallery-hero-image-wrapper"
     ].join(",");
 
