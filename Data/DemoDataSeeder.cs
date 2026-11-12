@@ -50,93 +50,157 @@ namespace BeArtGallery.Data
 
 
             // =================================================
-            // ARTISTI E OPERE (nomi e opere di fantasia)
+            // ARTISTI E OPERE (artisti di fantasia; le immagini
+            // sono in wwwroot/images/artworks e vanno nel repository)
             // =================================================
 
-            var giulia = new Artist
+            var elena = new Artist
             {
-                FirstName = "Giulia",
-                LastName = "Ferrante",
+                FirstName = "Elena",
+                LastName = "Marchetti",
                 Nationality = "Italiana",
                 BirthDate = new DateOnly(1984, 3, 12),
-                Biography = "Pittrice contemporanea, lavora su paesaggi urbani e luce artificiale."
+                Biography = "Nata a Chioggia, vive e lavora a Venezia. Dopo il diploma all'Accademia di Belle Arti di Venezia si è dedicata alla pittura a olio su lino grezzo, con velature sottili e quasi trasparenti. I suoi quadri partono dalla laguna all'alba e al tramonto, ma la riducono a fasce di colore e luce al confine con l'astrazione."
             };
 
-            var marco = new Artist
+            var tomas = new Artist
             {
-                FirstName = "Marco",
-                LastName = "Delvecchio",
+                FirstName = "Tomás",
+                LastName = "Herrera",
+                Nationality = "Spagnola",
+                BirthDate = new DateOnly(1979, 8, 2),
+                Biography = "Scultore nato a Bilbao, cresciuto tra i cantieri navali della città. Lavora con ferro corten e legno di recupero, unendo materiali industriali e naturali in forme sospese che sembrano sempre sul punto di cadere. Le sue opere sono state esposte in Spagna, Francia e Italia."
+            };
+
+            var aiko = new Artist
+            {
+                FirstName = "Aiko",
+                LastName = "Moriyama",
+                Nationality = "Giapponese",
+                BirthDate = new DateOnly(1990, 1, 25),
+                Biography = "Artista di Kyoto, formata nella calligrafia tradizionale giapponese prima di trasferirsi a Milano nel 2016. Usa inchiostro sumi e foglia d'oro su carta washi fatta a mano: pochi gesti rapidi, molto spazio vuoto. Il suo lavoro racconta il paesaggio come ricordo più che come veduta."
+            };
+
+            var luca = new Artist
+            {
+                FirstName = "Luca",
+                LastName = "Bertoni",
                 Nationality = "Italiana",
-                BirthDate = new DateOnly(1971, 9, 30),
-                Biography = "Scultore e incisore, esplora il rapporto tra materia e memoria."
+                BirthDate = new DateOnly(1976, 6, 30),
+                Biography = "Fotografo milanese, lavora da vent'anni sull'architettura industriale della pianura padana: silos, fornaci, capannoni abbandonati. Scatta all'alba o con la nebbia, in luce piena e senza persone, e stampa in tirature limitate su carta cotone. Le sue serie sono una mappa di un paesaggio che sta scomparendo."
             };
 
-            var ana = new Artist
+            var nadia = new Artist
             {
-                FirstName = "Ana",
-                LastName = "Ribeiro",
-                Nationality = "Portoghese",
-                BirthDate = new DateOnly(1990, 6, 5),
-                Biography = "Artista visiva, unisce fotografia e pittura in tecnica mista."
+                FirstName = "Nadia",
+                LastName = "Okafor",
+                Nationality = "Britannica",
+                BirthDate = new DateOnly(1988, 11, 9),
+                Biography = "Artista londinese di origine nigeriana, laureata alla Central Saint Martins. Unisce tessuti wax africani, cucito e pittura acrilica in grandi tele a tecnica mista. Al centro del suo lavoro ci sono la memoria familiare, la migrazione e l'idea di casa tra due culture."
             };
 
-            context.Artists.AddRange(giulia, marco, ana);
+            var jonas = new Artist
+            {
+                FirstName = "Jonas",
+                LastName = "Lindqvist",
+                Nationality = "Svedese",
+                BirthDate = new DateOnly(1981, 4, 17),
+                Biography = "Ceramista nato a Umeå, nel nord della Svezia, con studio a Stoccolma. Realizza vasi scultorei e piccole installazioni in gres, cotti ad alta temperatura con smalti che ricordano il ghiaccio, la roccia e la neve. Ogni pezzo è unico e porta i segni della lavorazione a mano."
+            };
+
+            context.Artists.AddRange(elena, tomas, aiko, luca, nadia, jonas);
 
             context.Artworks.AddRange(
                 new Artwork
                 {
-                    Title = "Notturno sul porto",
-                    Year = 2019,
-                    Technique = "Olio su tela",
-                    Description = "Il porto di notte, illuminato dalle luci delle gru.",
+                    Title = "Laguna, ore sei",
+                    Year = 2024,
+                    Technique = "Olio su lino",
+                    Description = "La laguna di Chioggia alle sei del mattino, quando acqua e cielo hanno quasi lo stesso colore. Marchetti stende decine di velature sottili di olio su lino grezzo, lasciando affiorare la trama della tela. L'orizzonte è solo una linea più chiara: il resto è luce rosata e grigio perla. È l'opera più grande della serie Maree.",
                     WidthCm = 120,
-                    HeightCm = 80,
-                    Artist = giulia,
-                    AvailabilityStatus = ArtworkAvailabilityStatus.Available
-                },
-                new Artwork
-                {
-                    Title = "Fermata Centrale",
-                    Year = 2021,
-                    Technique = "Acrilico su tela",
-                    Description = "Una pensilina dell'autobus nel momento di massima attesa.",
-                    WidthCm = 90,
                     HeightCm = 90,
-                    Artist = giulia,
-                    AvailabilityStatus = ArtworkAvailabilityStatus.LimitedAvailability
+                    Artist = elena,
+                    AvailabilityStatus = ArtworkAvailabilityStatus.Available,
+                    IsOnDisplay = true,
+                    ImageUrl = "/images/artworks/9cd20632890349e8821c1236e25018e1.png"
                 },
                 new Artwork
                 {
-                    Title = "Radici",
-                    Year = 2015,
-                    Technique = "Bronzo",
-                    Description = "Scultura che intreccia forme vegetali e frammenti di architettura.",
-                    WidthCm = 40,
-                    HeightCm = 110,
-                    Artist = marco,
-                    AvailabilityStatus = ArtworkAvailabilityStatus.Available
+                    Title = "Velature d'inverno",
+                    Year = 2025,
+                    Technique = "Olio su lino",
+                    Description = "Un piccolo formato verticale dipinto durante l'inverno 2025, quando la nebbia copre la laguna per giorni. I colori si riducono al bianco, all'ocra e al grigio, e la forma di una bricola emerge appena dalla foschia. L'opera è già stata acquistata da un collezionista privato.",
+                    WidthCm = 60,
+                    HeightCm = 80,
+                    Artist = elena,
+                    AvailabilityStatus = ArtworkAvailabilityStatus.SoldOut,
+                    IsOnDisplay = true,
+                    ImageUrl = "/images/artworks/f6609b8589cc4307b5f021a99fd9c94e.png"
                 },
                 new Artwork
                 {
-                    Title = "Archivio di famiglia",
-                    Year = 2018,
-                    Technique = "Acquaforte",
-                    Description = "Serie di incisioni ispirate a fotografie d'epoca.",
-                    WidthCm = 50,
-                    HeightCm = 70,
-                    Artist = marco,
-                    AvailabilityStatus = ArtworkAvailabilityStatus.SoldOut
-                },
-                new Artwork
-                {
-                    Title = "Atlantico",
+                    Title = "Equilibrio instabile",
                     Year = 2023,
-                    Technique = "Tecnica mista su carta",
-                    Description = "Fotografia dell'oceano reinterpretata con pittura a strati.",
+                    Technique = "Ferro corten e legno di ulivo",
+                    Description = "Una lastra di ferro corten piegata a mano sostiene un ramo di ulivo recuperato da un uliveto abbattuto in Andalucía. Le due parti si toccano in un solo punto e sembrano sempre sul punto di separarsi. La ruggine del metallo e le venature del legno cambiano con la luce della sala. Scultura da appoggio, alta 110 cm.",
+                    WidthCm = 45,
+                    HeightCm = 110,
+                    Artist = tomas,
+                    AvailabilityStatus = ArtworkAvailabilityStatus.Available,
+                    IsOnDisplay = true,
+                    ImageUrl = "/images/artworks/ea05e27377754f2eb6e172795ef3e69c.png"
+                },
+                new Artwork
+                {
+                    Title = "Il respiro della montagna",
+                    Year = 2025,
+                    Technique = "Inchiostro sumi e foglia d'oro su carta washi",
+                    Description = "Pochi tratti di inchiostro sumi disegnano il profilo di una montagna, lasciando vuota gran parte del foglio. Una sottile linea di foglia d'oro segna il punto in cui la nebbia si apre. Moriyama ha dipinto l'opera in un solo gesto, senza correzioni, su carta washi fatta a mano in Giappone.",
+                    WidthCm = 70,
+                    HeightCm = 100,
+                    Artist = aiko,
+                    AvailabilityStatus = ArtworkAvailabilityStatus.Available,
+                    IsOnDisplay = true,
+                    ImageUrl = "/images/artworks/86d8620a0581423994c8eec43039d2d0.png"
+                },
+                new Artwork
+                {
+                    Title = "Silos #3",
+                    Year = 2022,
+                    Technique = "Stampa fine art a pigmenti su carta cotone, edizione di 7",
+                    Description = "Tre silos di cemento nella campagna di Cremona, fotografati all'alba in una giornata di nebbia. Fa parte della serie Pianura, dedicata agli edifici agricoli e industriali dismessi della Lombardia. Stampa a pigmenti su carta cotone, in edizione di 7 esemplari più 2 prove d'artista: in galleria ne restano pochi.",
                     WidthCm = 100,
                     HeightCm = 70,
-                    Artist = ana,
-                    AvailabilityStatus = ArtworkAvailabilityStatus.Available
+                    Artist = luca,
+                    AvailabilityStatus = ArtworkAvailabilityStatus.LimitedAvailability,
+                    IsOnDisplay = true,
+                    ImageUrl = "/images/artworks/747e5a61ba324ef6a533ac0fa95f7fd3.png"
+                },
+                new Artwork
+                {
+                    Title = "Trame di casa",
+                    Year = 2024,
+                    Technique = "Tecnica mista: tessuto wax, filo e acrilico su tela",
+                    Description = "Una grande tela quadrata in cui ritagli di tessuto wax portati dalla Nigeria dalla madre dell'artista sono cuciti e poi ridipinti con l'acrilico. I motivi geometrici africani si mescolano con la pianta di una casa londinese tracciata a filo. L'opera parla di due case e di come i ricordi si cuciono insieme.",
+                    WidthCm = 150,
+                    HeightCm = 150,
+                    Artist = nadia,
+                    AvailabilityStatus = ArtworkAvailabilityStatus.Available,
+                    IsOnDisplay = true,
+                    ImageUrl = "/images/artworks/cce7da4884824848b8b2e213821e2c15.png"
+                },
+                new Artwork
+                {
+                    Title = "Serie Nord, n. 12",
+                    Year = 2026,
+                    Technique = "Gres smaltato, cottura ad alta temperatura",
+                    Description = "Un vaso scultoreo in gres modellato a mano, con una superficie che ricorda la roccia coperta di ghiaccio. Lo smalto bianco e azzurro è colato durante la cottura a 1280 °C, quindi ogni pezzo della serie è diverso. Non è pensato per i fiori: è un oggetto da guardare.",
+                    WidthCm = 30,
+                    HeightCm = 42,
+                    Artist = jonas,
+                    AvailabilityStatus = ArtworkAvailabilityStatus.Available,
+                    IsOnDisplay = false,
+                    ImageUrl = "/images/artworks/02c22d0fbdb9476580da7233d663fb95.png"
                 });
 
 
@@ -148,8 +212,8 @@ namespace BeArtGallery.Data
 
             var pastVisit = new GalleryActivity
             {
-                Title = "Visita guidata: luce e città",
-                Description = "Percorso guidato tra le opere di Giulia Ferrante.",
+                Title = "Visita guidata: la laguna di Elena Marchetti",
+                Description = "Percorso guidato tra i dipinti della serie Maree.",
                 ActivityType = ActivityType.Visita,
                 StartDateTime = today.AddDays(-10).AddHours(10),
                 DurationMinutes = 60,
@@ -159,8 +223,8 @@ namespace BeArtGallery.Data
 
             var pastEvent = new GalleryActivity
             {
-                Title = "Incontro con l'artista: Marco Delvecchio",
-                Description = "Dialogo con lo scultore sul tema della memoria.",
+                Title = "Incontro con l'artista: Tomás Herrera",
+                Description = "Dialogo con lo scultore su ferro, legno e materiali di recupero.",
                 ActivityType = ActivityType.Evento,
                 StartDateTime = today.AddDays(-3).AddHours(18),
                 DurationMinutes = 90,
@@ -171,7 +235,7 @@ namespace BeArtGallery.Data
             var nextVisit = new GalleryActivity
             {
                 Title = "Visita guidata del sabato",
-                Description = "Visita guidata alla collezione permanente.",
+                Description = "Visita guidata alle opere in sala.",
                 ActivityType = ActivityType.Visita,
                 StartDateTime = today.AddDays(4).AddHours(11),
                 DurationMinutes = 60,
@@ -181,8 +245,8 @@ namespace BeArtGallery.Data
 
             var nextEvent = new GalleryActivity
             {
-                Title = "Inaugurazione mostra \"Atlantico\"",
-                Description = "Vernissage della nuova mostra di Ana Ribeiro.",
+                Title = "Inaugurazione mostra \"Pianura\"",
+                Description = "Vernissage delle fotografie di Luca Bertoni.",
                 ActivityType = ActivityType.Evento,
                 StartDateTime = today.AddDays(12).AddHours(19),
                 DurationMinutes = 120,
@@ -192,8 +256,8 @@ namespace BeArtGallery.Data
 
             var workshop = new GalleryActivity
             {
-                Title = "Laboratorio di incisione",
-                Description = "Laboratorio pratico per adulti, materiali inclusi.",
+                Title = "Laboratorio di inchiostro sumi",
+                Description = "Laboratorio pratico con Aiko Moriyama per adulti, materiali inclusi.",
                 ActivityType = ActivityType.Evento,
                 StartDateTime = today.AddDays(20).AddHours(15),
                 DurationMinutes = 180,
