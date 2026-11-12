@@ -1,7 +1,7 @@
 ﻿using BeArtGallery.Data;
 using BeArtGallery.Dtos;
-using BeArtGallery.Models;
 using BeArtGallery.Models.Enums;
+using BeArtGallery.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,26 +9,45 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeArtGallery.Controllers.Api
 {
+    /// <summary>
+    /// API REST per le prenotazioni del visitatore autenticato.
+    /// </summary>
     [ApiController]
     [Route("api/bookings")]
     [Authorize]
+    [Produces("application/json")]
+    [Tags("Prenotazioni")]
     public class BookingsApiController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IBookingService _bookingService;
+        private readonly TimeProvider _timeProvider;
 
         public BookingsApiController(
             ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IBookingService bookingService,
+            TimeProvider timeProvider)
         {
             _context = context;
             _userManager = userManager;
+            _bookingService = bookingService;
+            _timeProvider = timeProvider;
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [FromBody] CreateBookingRequest request)
+
+        /// <summary>
+        /// Restituisce le prenotazioni dell'utente autenticato,
+        /// dalla più recente alla meno recente.
+        /// </summary>
+        /// <response code="200">Elenco delle prenotazioni.</response>
+        /// <response code="401">Utente non autenticato.</response>
+        [HttpGet("mine")]
+        [ProducesResponseType<IEnumerable<MyBookingDto>>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetMine(
+            CancellationToken cancellationToken)
         {
             string? userId = _userManager.GetUserId(User);
 
@@ -37,152 +56,143 @@ namespace BeArtGallery.Controllers.Api
                 return Unauthorized();
             }
 
-            var activity = await _context.GalleryActivities.Include(a => a.Bookings).FirstOrDefaultAsync(a => a.Id == request.GalleryActivityId);
+            var now = _timeProvider.GetLocalNow().DateTime;
 
-            if (activity == null)
-            {
-                return NotFound(new
-                {
-                    message = "L'attività selezionata non esiste."
-                });
-            }
+            var bookings =
+                await _context.Bookings
+                    .AsNoTracking()
+                    .Where(b =>
+                        b.UserId == userId &&
+                        b.GalleryActivity != null)
+                    .OrderByDescending(b =>
+                        b.GalleryActivity!.StartDateTime)
+                    .Select(b => new MyBookingDto(
+                        b.Id,
+                        b.GalleryActivityId,
+                        b.GalleryActivity!.Title,
+                        b.GalleryActivity.StartDateTime,
+                        b.GalleryActivity.Location,
+                        b.NumberOfParticipants,
+                        b.BookingDate,
+                        b.Status,
+                        b.CheckedInAt,
+                        b.Status == BookingStatus.Confirmed &&
+                        b.GalleryActivity.StartDateTime > now))
+                    .ToListAsync(cancellationToken);
 
-            if (activity.Status == GalleryActivityStatus.Cancelled)
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = "L'attività è stata annullata."
-                });
-            }
-
-            if (!activity.IsActive)
-            {
-                return BadRequest(new
-                {
-                    message = "L'attività non è disponibile."
-                });
-            }
-
-            if (activity.StartDateTime <= DateTime.Now)
-            {
-                return BadRequest(new
-                {
-                    message = "Non è possibile prenotare un'attività già iniziata."
-                });
-            }
-
-            bool alreadyBooked = activity.Bookings.Any(b => b.UserId == userId && b.Status == BookingStatus.Confirmed);
-
-            if (alreadyBooked)
-            {
-                return Conflict(new
-                {
-                    message = "Hai già una prenotazione attiva per questa attività."
-                });
-            }
-
-            int bookedParticipants = activity.Bookings.Where(b => b.Status == BookingStatus.Confirmed).Sum(b => b.NumberOfParticipants);
-
-            int availablePlaces = activity.MaxParticipants - bookedParticipants;
-
-            if (request.NumberOfParticipants > availablePlaces)
-            {
-                return Conflict(new
-                {
-                    message = $"Sono disponibili soltanto {availablePlaces} posti."
-                });
-            }
-
-            var booking = new Booking
-            {
-                GalleryActivityId = activity.Id,
-                UserId = userId,
-                NumberOfParticipants = request.NumberOfParticipants,
-                BookingDate = DateTime.UtcNow,
-                Status = BookingStatus.Confirmed,
-                QrToken = Guid.NewGuid().ToString("N")
-            };
-
-            _context.Bookings.Add(booking);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                success = true,
-                bookingId = booking.Id,
-                message = "Prenotazione effettuata con successo."
-            });
+            return Ok(bookings);
         }
 
-        // POST: /api/bookings/{id}/cancel
+
+        /// <summary>
+        /// Crea una prenotazione per un'attività.
+        /// Richiede l'header RequestVerificationToken (protezione CSRF).
+        /// </summary>
+        /// <response code="200">Prenotazione creata.</response>
+        /// <response code="400">Dati non validi o attività non prenotabile.</response>
+        /// <response code="404">Attività inesistente.</response>
+        /// <response code="409">Posti esauriti, prenotazione già presente o conflitto concorrente.</response>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ProducesResponseType<BookingCreatedResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ApiMessageResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ApiMessageResponse>(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<ApiMessageResponse>(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> Create(
+            [FromBody] CreateBookingRequest request,
+            CancellationToken cancellationToken)
+        {
+            string? userId = _userManager.GetUserId(User);
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized();
+            }
+
+            var result =
+                await _bookingService.CreateAsync(
+                    userId,
+                    request.GalleryActivityId,
+                    request.NumberOfParticipants,
+                    cancellationToken);
+
+            if (!result.Success)
+            {
+                return ToErrorResult(result);
+            }
+
+            return Ok(new BookingCreatedResponse(
+                true,
+                result.Message,
+                result.Booking!.Id));
+        }
+
+
+        /// <summary>
+        /// Annulla una prenotazione dell'utente autenticato
+        /// (solo se l'attività non è ancora iniziata).
+        /// </summary>
+        /// <param name="id">Identificativo della prenotazione.</param>
+        /// <param name="cancellationToken">Token di annullamento della richiesta.</param>
+        /// <response code="200">Prenotazione annullata.</response>
+        /// <response code="400">La prenotazione non può essere annullata.</response>
+        /// <response code="404">Prenotazione inesistente o di un altro utente.</response>
         [HttpPost("{id:int}/cancel")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CancelBooking(int id)
+        [ProducesResponseType<ApiMessageResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ApiMessageResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ApiMessageResponse>(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> CancelBooking(
+            int id,
+            CancellationToken cancellationToken)
         {
             var userId = _userManager.GetUserId(User);
 
             if (string.IsNullOrWhiteSpace(userId))
             {
-                return Unauthorized(new
-                {
-                    success = false,
-                    message = "Utente non autenticato."
-                });
+                return Unauthorized(new ApiMessageResponse(
+                    false,
+                    "Utente non autenticato."));
             }
 
-            var booking = await _context.Bookings.Include(b => b.GalleryActivity).FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
+            var result =
+                await _bookingService.CancelByUserAsync(
+                    userId,
+                    id,
+                    cancellationToken);
 
-            if (booking == null)
+            if (!result.Success)
             {
-                return NotFound(new
-                {
-                    success = false,
-                    message = "Prenotazione non trovata."
-                });
+                return ToErrorResult(result);
             }
 
-            if (booking.Status == BookingStatus.Cancelled)
+            return Ok(new ApiMessageResponse(
+                true,
+                result.Message));
+        }
+
+
+        // Traduce l'esito del servizio nel codice HTTP appropriato.
+        private IActionResult ToErrorResult(
+            BookingOperationResult result)
+        {
+            var body = new ApiMessageResponse(
+                false,
+                result.Message);
+
+            return result.ErrorCode switch
             {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = "La prenotazione è già stata annullata."
-                });
-            }
+                BookingErrorCode.ActivityNotFound or
+                BookingErrorCode.BookingNotFound
+                    => NotFound(body),
 
-            if (booking.GalleryActivity == null)
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = "Attività associata non disponibile."
-                });
-            }
+                BookingErrorCode.AlreadyBooked or
+                BookingErrorCode.NotEnoughPlaces or
+                BookingErrorCode.ConcurrencyConflict
+                    => Conflict(body),
 
-            if (booking.GalleryActivity.StartDateTime <= DateTime.Now)
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = "Non è possibile annullare una prenotazione per un'attività già iniziata o conclusa."
-                });
-            }
-
-            booking.Status = BookingStatus.Cancelled;
-            booking.CancelledAt = DateTime.UtcNow;
-            booking.CancelledByUserId = userId;
-            booking.CancellationType = BookingCancellationType.User;
-            booking.CancellationReason = null;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new
-            {
-                success = true,
-                message = "Prenotazione annullata correttamente."
-            });
+                _ => BadRequest(body)
+            };
         }
     }
 }

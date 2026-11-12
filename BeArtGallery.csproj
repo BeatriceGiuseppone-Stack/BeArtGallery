@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BeArtGallery-2afa608a-6ce8-4701-a3d7-b5f3331be84a</UserSecretsId>
+    <!-- I commenti XML (///) finiscono nella documentazione OpenAPI -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Non segnalare come warning i membri pubblici senza commento XML -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -14,6 +18,10 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.12" />
 
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.12" />
+
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
+
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.1" />
 
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
 
@@ -36,6 +44,15 @@
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
 
 	</ItemGroup>
+
+  <!-- Il progetto di test sta in una sottocartella: va escluso
+       dalla compilazione dell'applicazione web. -->
+  <ItemGroup>
+    <Compile Remove="BeArtGallery.Tests\**" />
+    <Content Remove="BeArtGallery.Tests\**" />
+    <EmbeddedResource Remove="BeArtGallery.Tests\**" />
+    <None Remove="BeArtGallery.Tests\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Pages\Account\" />

@@ -1,0 +1,202 @@
+@model BeArtGallery.ViewModels.VisitFeedbackManagementViewModel
+
+@{
+    ViewData["Title"] = "Feedback dei visitatori";
+
+    var maxCount = Model.RatingDistribution.Length > 0
+        ? Math.Max(1, Model.RatingDistribution.Max())
+        : 1;
+}
+
+@section Styles
+{
+    <link rel="stylesheet"
+          href="~/css/feedback.css"
+          asp-append-version="true" />
+}
+
+<div class="container py-5">
+
+    <div class="gallery-eyebrow mb-3">
+        Gestione
+    </div>
+
+    <h1 class="h2 mb-2">
+        Feedback dei visitatori
+    </h1>
+
+    <p class="text-muted mb-4">
+        Valutazioni lasciate dai visitatori dopo aver partecipato
+        a visite ed eventi.
+    </p>
+
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4 text-center">
+
+                    <div class="text-muted small mb-1">
+                        Valutazione media
+                    </div>
+
+                    <div class="feedback-average">
+                        @Model.AverageRating.ToString("0.0")<small>/5</small>
+                    </div>
+
+                    <div class="text-muted small">
+                        su @Model.TotalFeedbacks
+                        @(Model.TotalFeedbacks == 1 ? "feedback" : "feedback ricevuti")
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-8">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="text-muted small mb-3">
+                        Distribuzione delle valutazioni
+                    </div>
+
+                    @for (var stars = 5; stars >= 1; stars--)
+                    {
+                        var count = Model.RatingDistribution[stars - 1];
+                        var width = (int)Math.Round((double)count / maxCount * 100);
+
+                        <a class="feedback-distribution-row"
+                           asp-action="Index"
+                           asp-route-rating="@stars">
+
+                            <span class="feedback-distribution-label">
+                                @stars ★
+                            </span>
+
+                            <span class="feedback-distribution-bar">
+                                <span style="width: @(width)%"></span>
+                            </span>
+
+                            <span class="feedback-distribution-count">
+                                @count
+                            </span>
+
+                        </a>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    @if (Model.RatingFilter.HasValue)
+    {
+        <div class="alert alert-light d-flex justify-content-between align-items-center">
+
+            <span>
+                Stai visualizzando solo i feedback con
+                <strong>@Model.RatingFilter stelle</strong>.
+            </span>
+
+            <a asp-action="Index"
+               class="btn btn-sm btn-outline-secondary">
+                Mostra tutti
+            </a>
+
+        </div>
+    }
+
+
+    @if (!Model.Feedbacks.Any())
+    {
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body p-5 text-center text-muted">
+                Nessun feedback da mostrare.
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm">
+
+            <div class="table-responsive">
+
+                <table class="table align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Attività</th>
+                            <th>Visitatore</th>
+                            <th>Valutazione</th>
+                            <th>Commento</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var feedback in Model.Feedbacks)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>@feedback.ActivityTitle</strong>
+                                    <div class="text-muted small">
+                                        @feedback.ActivityStartDateTime.ToString("dd/MM/yyyy HH:mm")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    @feedback.UserEmail
+                                </td>
+
+                                <td class="text-nowrap">
+                                    <span class="feedback-stars"
+                                          aria-label="@feedback.Rating su 5">
+                                        @(new string('★', feedback.Rating))@(new string('☆', 5 - feedback.Rating))
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (string.IsNullOrWhiteSpace(feedback.Comment))
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                    else
+                                    {
+                                        @feedback.Comment
+                                    }
+                                </td>
+
+                                <td class="text-nowrap">
+                                    @feedback.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    }
+
+</div>

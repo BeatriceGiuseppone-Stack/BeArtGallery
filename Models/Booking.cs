@@ -46,5 +46,8 @@ namespace BeArtGallery.Models
         public string? CheckedInByUserId { get; set; }
 
         public ApplicationUser? CheckedInByUser { get; set; }
+
+        // Feedback del visitatore (al massimo uno per prenotazione)
+        public VisitFeedback? Feedback { get; set; }
     }
 }

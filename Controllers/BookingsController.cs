@@ -90,7 +90,9 @@ namespace BeArtGallery.Controllers
                             CancellationType = b.CancellationType,
                             CancellationReason = b.CancellationReason,
                             QrToken = b.QrToken,
-                            CheckedInAt = b.CheckedInAt
+                            CheckedInAt = b.CheckedInAt,
+                            HasFeedback = b.Feedback != null,
+                            FeedbackRating = b.Feedback != null ? (int?)b.Feedback.Rating : null
                         })
                     .ToListAsync();
 

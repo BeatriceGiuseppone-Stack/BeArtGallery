@@ -376,6 +376,114 @@
         </section>
 
         @* =================================================
+           SODDISFAZIONE VISITATORI (FEEDBACK)
+           ================================================= *@
+
+        <section class="dashboard-attendance-section">
+
+            <div class="dashboard-section-heading">
+
+                <div>
+
+                    <span class="gallery-eyebrow">
+                        Esperienza di visita
+                    </span>
+
+                    <h2>
+                        Soddisfazione dei visitatori
+                    </h2>
+
+                </div>
+
+
+                <p>
+                    Valutazioni lasciate dai visitatori dopo
+                    il check-in a visite ed eventi.
+                    <a asp-controller="Feedback"
+                       asp-action="Index">
+                        Vedi tutti i feedback
+                    </a>
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-attendance-grid">
+
+                <article class="dashboard-attendance-card
+                    dashboard-attendance-card-highlight">
+
+                    <span class="dashboard-attendance-label">
+                        Valutazione media
+                    </span>
+
+                    <strong class="dashboard-attendance-value">
+
+                        @(Model.TotalFeedbacks > 0
+                            ? Model.AverageRating.ToString("0.0") + "/5"
+                            : "—")
+
+                    </strong>
+
+                    <small>
+                        Media dei voti da 1 a 5 stelle
+                    </small>
+
+                </article>
+
+
+                <article class="dashboard-attendance-card">
+
+                    <span class="dashboard-attendance-label">
+                        Feedback ricevuti
+                    </span>
+
+                    <strong class="dashboard-attendance-value">
+
+                        @Model.TotalFeedbacks
+
+                    </strong>
+
+                    <small>
+                        Un feedback per prenotazione
+                    </small>
+
+                </article>
+
+
+                @foreach (var feedback in Model.LatestFeedbacks.Take(2))
+                {
+                    <article class="dashboard-attendance-card">
+
+                        <span class="dashboard-attendance-label">
+                            @feedback.ActivityTitle
+                        </span>
+
+                        <strong class="dashboard-attendance-value">
+
+                            @(new string('★', feedback.Rating))
+
+                        </strong>
+
+                        <small>
+
+                            @(string.IsNullOrWhiteSpace(feedback.Comment)
+                                ? "Nessun commento"
+                                : feedback.Comment.Length > 90
+                                    ? feedback.Comment.Substring(0, 90) + "…"
+                                    : feedback.Comment)
+
+                        </small>
+
+                    </article>
+                }
+
+            </div>
+
+        </section>
+
+
+        @* =================================================
            GRAFICI
            ================================================= *@
 
@@ -965,7 +1073,9 @@
 
 @section Scripts
 {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    @* Versione fissata: un aggiornamento della libreria
+       non può rompere i grafici senza preavviso. *@
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.6.1">
     </script>
 
     <script src="~/js/dashboard.js"

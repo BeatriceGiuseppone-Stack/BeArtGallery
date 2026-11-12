@@ -11,6 +11,10 @@
     <link rel="stylesheet"
           href="~/css/booking-qr.css"
           asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/feedback.css"
+          asp-append-version="true" />
 }
 
 
@@ -30,6 +34,21 @@
         </p>
 
     </div>
+
+
+    @if (TempData["SuccessMessage"] is string successMessage)
+    {
+        <div class="alert alert-success" role="alert">
+            @successMessage
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] is string errorMessage)
+    {
+        <div class="alert alert-danger" role="alert">
+            @errorMessage
+        </div>
+    }
 
 
     @if (!Model.Any())
@@ -363,6 +382,34 @@
                                             </div>
 
                                         </div>
+
+                                    </div>
+
+                                    @* =========================================
+                                       FEEDBACK SULLA VISITA
+                                       ========================================= *@
+
+                                    <div class="booking-feedback">
+
+                                        @if (booking.HasFeedback)
+                                        {
+                                            <span class="booking-feedback-done">
+                                                La tua valutazione:
+                                                <span class="feedback-stars"
+                                                      aria-label="@booking.FeedbackRating su 5">
+                                                    @(new string('★', booking.FeedbackRating ?? 0))@(new string('☆', 5 - (booking.FeedbackRating ?? 0)))
+                                                </span>
+                                            </span>
+                                        }
+                                        else if (booking.CanLeaveFeedback)
+                                        {
+                                            <a asp-controller="Feedback"
+                                               asp-action="Create"
+                                               asp-route-bookingId="@booking.BookingId"
+                                               class="btn btn-outline-dark btn-sm">
+                                                Lascia un feedback
+                                            </a>
+                                        }
 
                                     </div>
                                 }

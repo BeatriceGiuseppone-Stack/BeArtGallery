@@ -513,6 +513,43 @@ namespace BeArtGallery.Data.Migrations
                     b.ToTable("GalleryActivities");
                 });
 
+            modelBuilder.Entity("BeArtGallery.Models.VisitFeedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique();
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("VisitFeedbacks");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -806,6 +843,25 @@ namespace BeArtGallery.Data.Migrations
                     b.Navigation("CancelledByUser");
                 });
 
+            modelBuilder.Entity("BeArtGallery.Models.VisitFeedback", b =>
+                {
+                    b.HasOne("BeArtGallery.Models.Booking", "Booking")
+                        .WithOne("Feedback")
+                        .HasForeignKey("BeArtGallery.Models.VisitFeedback", "BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BeArtGallery.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -878,6 +934,11 @@ namespace BeArtGallery.Data.Migrations
             modelBuilder.Entity("BeArtGallery.Models.ArtworkInquiry", b =>
                 {
                     b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("BeArtGallery.Models.Booking", b =>
+                {
+                    b.Navigation("Feedback");
                 });
 
             modelBuilder.Entity("BeArtGallery.Models.GalleryActivity", b =>

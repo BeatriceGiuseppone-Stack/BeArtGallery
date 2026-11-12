@@ -44,6 +44,20 @@ namespace BeArtGallery.ViewModels
 
         public double AttendanceRate { get; set; }
 
+        // =================================================
+        // FEEDBACK DEI VISITATORI
+        // =================================================
+
+        public int TotalFeedbacks { get; set; }
+
+        public double AverageRating { get; set; }
+
+        public List<DashboardFeedbackViewModel> LatestFeedbacks
+        {
+            get;
+            set;
+        } = new();
+
         public List<DashboardArtworkStatisticViewModel> MostViewedArtworks
         {
             get;
@@ -160,6 +174,17 @@ namespace BeArtGallery.ViewModels
                     1);
             }
         }
+    }
+
+    public class DashboardFeedbackViewModel
+    {
+        public string ActivityTitle { get; set; } = string.Empty;
+
+        public int Rating { get; set; }
+
+        public string? Comment { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
 
     public class DashboardInsightViewModel

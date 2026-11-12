@@ -31,5 +31,12 @@ namespace BeArtGallery.ViewModels
         public string? QrToken { get; set; }
 
         public DateTime? CheckedInAt { get; set; }
+
+        // Feedback
+        public bool HasFeedback { get; set; }
+
+        public int? FeedbackRating { get; set; }
+
+        public bool CanLeaveFeedback => Status == BookingStatus.Confirmed && CheckedInAt.HasValue && !HasFeedback;
     }
 }

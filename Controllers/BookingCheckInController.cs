@@ -1,6 +1,6 @@
 ﻿using BeArtGallery.Authorization;
 using BeArtGallery.Data;
-using BeArtGallery.Models.Enums;
+using BeArtGallery.Services;
 using BeArtGallery.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,13 +16,17 @@ namespace BeArtGallery.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
 
+        private readonly IBookingService _bookingService;
+
 
         public BookingCheckInController(
             ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IBookingService bookingService)
         {
             _context = context;
             _userManager = userManager;
+            _bookingService = bookingService;
         }
 
 
@@ -134,94 +138,29 @@ namespace BeArtGallery.Controllers
                 return BadRequest();
             }
 
-
-            var booking =
-                await _context.Bookings
-                    .Include(b => b.GalleryActivity)
-                    .FirstOrDefaultAsync(b =>
-                        b.QrToken == token);
-
-
-            if (booking == null)
-            {
-                TempData["CheckInError"] =
-                    "Prenotazione non trovata.";
-
-                return RedirectToAction(
-                    nameof(Scan),
-                    new
-                    {
-                        token
-                    });
-            }
-
-
-            // =================================================
-            // PRENOTAZIONE ANNULLATA
-            // =================================================
-
-            if (booking.Status !=
-                BookingStatus.Confirmed)
-            {
-                TempData["CheckInError"] =
-                    "Non è possibile effettuare il check-in: la prenotazione non è confermata.";
-
-                return RedirectToAction(
-                    nameof(Scan),
-                    new
-                    {
-                        token
-                    });
-            }
-
-
-            // =================================================
-            // QR GIÀ UTILIZZATO
-            // =================================================
-
-            if (booking.CheckedInAt.HasValue)
-            {
-                TempData["CheckInError"] =
-                    "Il check-in per questa prenotazione è già stato effettuato.";
-
-                return RedirectToAction(
-                    nameof(Scan),
-                    new
-                    {
-                        token
-                    });
-            }
-
-
             var currentUserId =
                 _userManager.GetUserId(User);
 
-
-            if (string.IsNullOrWhiteSpace(
-                currentUserId))
+            if (string.IsNullOrWhiteSpace(currentUserId))
             {
                 return Challenge();
             }
 
+            // Le regole del check-in (prenotazione confermata,
+            // QR non ancora utilizzato) sono nel BookingService.
+            var result =
+                await _bookingService.CheckInAsync(
+                    token,
+                    currentUserId);
 
-            // =================================================
-            // REGISTRA INGRESSO
-            // =================================================
-
-            booking.CheckedInAt =
-                DateTime.UtcNow;
-
-
-            booking.CheckedInByUserId =
-                currentUserId;
-
-
-            await _context.SaveChangesAsync();
-
-
-            TempData["CheckInSuccess"] =
-                "Ingresso registrato correttamente.";
-
+            if (result.Success)
+            {
+                TempData["CheckInSuccess"] = result.Message;
+            }
+            else
+            {
+                TempData["CheckInError"] = result.Message;
+            }
 
             return RedirectToAction(
                 nameof(Scan),

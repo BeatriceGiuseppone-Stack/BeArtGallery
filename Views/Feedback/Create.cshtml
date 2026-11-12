@@ -1,0 +1,125 @@
+@model BeArtGallery.ViewModels.VisitFeedbackFormViewModel
+
+@{
+    ViewData["Title"] = "Lascia un feedback";
+}
+
+@section Styles
+{
+    <link rel="stylesheet"
+          href="~/css/feedback.css"
+          asp-append-version="true" />
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="gallery-eyebrow mb-3">
+                Il tuo parere
+            </div>
+
+            <h1 class="h3 mb-2">
+                Com'è andata?
+            </h1>
+
+            <p class="text-muted mb-4">
+                <strong>@Model.ActivityTitle</strong>
+                &middot;
+                @Model.StartDateTime.ToString("dd/MM/yyyy HH:mm")
+            </p>
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <form asp-action="Create"
+                          method="post">
+
+                        <input asp-for="BookingId"
+                               type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <fieldset class="mb-4">
+
+                            <legend class="form-label fs-6">
+                                Valutazione
+                            </legend>
+
+                            @* Le stelle sono radio button: funzionano anche
+                               da tastiera e senza JavaScript. L'ordine 5→1
+                               serve all'effetto "hover" definito nel CSS. *@
+                            <div class="feedback-rating-input">
+
+                                @for (var i = 5; i >= 1; i--)
+                                {
+                                    <input type="radio"
+                                           id="rating-@i"
+                                           name="Rating"
+                                           value="@i"
+                                           checked="@(Model.Rating == i)" />
+
+                                    <label for="rating-@i"
+                                           title="@i su 5">
+                                        ★
+                                        <span class="visually-hidden">@i su 5</span>
+                                    </label>
+                                }
+
+                            </div>
+
+                            <span asp-validation-for="Rating"
+                                  class="text-danger d-block mt-1">
+                            </span>
+
+                        </fieldset>
+
+                        <div class="mb-4">
+
+                            <label asp-for="Comment"
+                                   class="form-label">
+                            </label>
+
+                            <textarea asp-for="Comment"
+                                      class="form-control"
+                                      rows="4"
+                                      maxlength="1000"
+                                      placeholder="Cosa ti è piaciuto? Cosa possiamo migliorare?"></textarea>
+
+                            <span asp-validation-for="Comment"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-dark">
+                            Invia feedback
+                        </button>
+
+                        <a asp-controller="Bookings"
+                           asp-action="Index"
+                           class="btn btn-outline-secondary">
+                            Torna alle prenotazioni
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

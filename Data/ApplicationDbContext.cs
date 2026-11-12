@@ -28,6 +28,8 @@ namespace BeArtGallery.Data
 
         public DbSet<ArtworkQrScan> ArtworkQrScans { get; set; }
 
+        public DbSet<VisitFeedback> VisitFeedbacks { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -192,6 +194,28 @@ namespace BeArtGallery.Data
     .HasIndex(b => b.QrToken)
     .IsUnique()
     .HasFilter("[QrToken] IS NOT NULL");
+
+            // -------------------------------------------------
+            // FEEDBACK VISITE
+            // -------------------------------------------------
+
+            // Relazione 1:1 con la prenotazione:
+            // un solo feedback per prenotazione.
+
+            builder.Entity<VisitFeedback>()
+                .HasOne(f => f.Booking)
+                .WithOne(b => b.Feedback)
+                .HasForeignKey<VisitFeedback>(f => f.BookingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<VisitFeedback>()
+                .HasOne(f => f.User)
+                .WithMany()
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<VisitFeedback>()
+                .HasIndex(f => f.CreatedAt);
         }
     }
 }

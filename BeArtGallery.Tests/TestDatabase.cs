@@ -1,0 +1,133 @@
+using BeArtGallery.Data;
+using BeArtGallery.Models;
+using BeArtGallery.Models.Enums;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+
+namespace BeArtGallery.Tests
+{
+    /// <summary>
+    /// Database SQLite in memoria creato da zero per ogni test.
+    /// La connessione resta aperta finché il test non termina,
+    /// altrimenti SQLite eliminerebbe il database.
+    /// </summary>
+    public sealed class TestDatabase : IDisposable
+    {
+        private readonly SqliteConnection _connection;
+
+        public TestDatabase()
+        {
+            _connection = new SqliteConnection("DataSource=:memory:");
+            _connection.Open();
+
+            using var context = CreateContext();
+            context.Database.EnsureCreated();
+        }
+
+
+        public ApplicationDbContext CreateContext()
+        {
+            var options =
+                new DbContextOptionsBuilder<ApplicationDbContext>()
+                    .UseSqlite(_connection)
+                    .Options;
+
+            return new ApplicationDbContext(options);
+        }
+
+
+        public string AddUser(string id)
+        {
+            using var context = CreateContext();
+
+            context.Users.Add(new ApplicationUser
+            {
+                Id = id,
+                UserName = $"{id}@test.local",
+                Email = $"{id}@test.local"
+            });
+
+            context.SaveChanges();
+
+            return id;
+        }
+
+
+        public int AddActivity(
+            DateTime startDateTime,
+            int maxParticipants = 10,
+            GalleryActivityStatus status = GalleryActivityStatus.Scheduled,
+            bool isActive = true)
+        {
+            using var context = CreateContext();
+
+            var activity = new GalleryActivity
+            {
+                Title = "Visita di prova",
+                ActivityType = ActivityType.Visita,
+                StartDateTime = startDateTime,
+                DurationMinutes = 60,
+                MaxParticipants = maxParticipants,
+                Status = status,
+                IsActive = isActive
+            };
+
+            context.GalleryActivities.Add(activity);
+            context.SaveChanges();
+
+            return activity.Id;
+        }
+
+
+        public Booking AddBooking(
+            int activityId,
+            string userId,
+            int participants,
+            BookingStatus status = BookingStatus.Confirmed,
+            DateTime? checkedInAt = null)
+        {
+            using var context = CreateContext();
+
+            var booking = new Booking
+            {
+                GalleryActivityId = activityId,
+                UserId = userId,
+                NumberOfParticipants = participants,
+                Status = status,
+                QrToken = Guid.NewGuid().ToString("N"),
+                CheckedInAt = checkedInAt
+            };
+
+            context.Bookings.Add(booking);
+            context.SaveChanges();
+
+            return booking;
+        }
+
+
+        public void Dispose()
+        {
+            _connection.Dispose();
+        }
+    }
+
+
+    /// <summary>
+    /// Orologio fisso: rende i test indipendenti dall'ora reale.
+    /// Il fuso "locale" è UTC per semplicità.
+    /// </summary>
+    public sealed class FixedTimeProvider : TimeProvider
+    {
+        private readonly DateTimeOffset _utcNow;
+
+        public FixedTimeProvider(DateTime utcNow)
+        {
+            _utcNow = new DateTimeOffset(
+                DateTime.SpecifyKind(utcNow, DateTimeKind.Utc));
+        }
+
+        public override DateTimeOffset GetUtcNow() => _utcNow;
+
+        public override TimeZoneInfo LocalTimeZone => TimeZoneInfo.Utc;
+    }
+}
