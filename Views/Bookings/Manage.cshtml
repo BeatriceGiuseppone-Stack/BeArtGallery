@@ -5,19 +5,27 @@
     ViewData["Title"] = "Gestione prenotazioni";
 }
 
-<div class="container py-5">
+<div class="container py-5 gx-manage">
 
     <!-- INTESTAZIONE -->
-    <div class="mb-4">
+    <div class="gx-page-head">
 
-        <h1 class="display-6 fw-semibold mb-2">
+        <div>
+
+        <div class="gallery-eyebrow mb-2">
+            Area staff
+        </div>
+
+        <h1 class="gx-page-title">
             Gestione prenotazioni
         </h1>
 
-        <p class="text-muted mb-0">
+        <p class="gx-page-intro">
             Visualizza e filtra le prenotazioni ricevute
             per visite ed eventi.
         </p>
+
+        </div>
 
     </div>
 
@@ -165,13 +173,13 @@
                         <div class="d-flex flex-wrap gap-2">
 
                             <button type="submit"
-                                    class="btn btn-dark">
+                                    class="btn gallery-btn-primary">
                                 Filtra
                             </button>
 
                             <a asp-controller="Bookings"
                                asp-action="Manage"
-                               class="btn btn-outline-secondary">
+                               class="btn gallery-btn-outline">
                                 Azzera filtri
                             </a>
 
@@ -313,13 +321,13 @@
                                     <td>
                                         @if (booking.Status == BookingStatus.Confirmed)
                                         {
-                                            <span class="badge bg-success">
+                                            <span class="gx-tag gx-tag-ok">
                                                 Confermata
                                             </span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-danger">
+                                            <span class="gx-tag gx-tag-alert">
                                                 Annullata
                                             </span>
                                         }
@@ -333,7 +341,7 @@
                                             <a asp-controller="Bookings"
                                                asp-action="CancelByStaff"
                                                asp-route-id="@booking.BookingId"
-                                               class="btn btn-sm btn-outline-danger">
+                                               class="gx-link-danger">
                                                 Annulla
                                             </a>
                                         }

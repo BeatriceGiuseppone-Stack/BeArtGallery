@@ -1,8 +1,12 @@
-﻿@model IEnumerable<BeArtGallery.ViewModels.MyBookingViewModel>
+@model IEnumerable<BeArtGallery.ViewModels.MyBookingViewModel>
+@using System.Globalization
 @using BeArtGallery.Models.Enums
 
 @{
     ViewData["Title"] = "Le mie prenotazioni";
+
+    // Date in italiano (es. "14 novembre", "venerdì")
+    var it = new CultureInfo("it-IT");
 }
 
 
@@ -23,15 +27,36 @@
 
 <div class="container py-5">
 
-    <div class="mb-4">
+    <div class="gx-page-head">
 
-        <h1 class="display-6 fw-semibold mb-2">
-            Le mie prenotazioni
-        </h1>
+        <div>
 
-        <p class="text-muted">
-            Consulta le visite e gli eventi che hai prenotato.
-        </p>
+            <div class="gallery-eyebrow mb-2">
+                Area personale
+            </div>
+
+            <h1 class="gx-page-title">
+                Le mie prenotazioni
+            </h1>
+
+            <p class="gx-page-intro">
+                I tuoi biglietti per visite ed eventi. Il giorno della visita
+                mostra il QR code all'ingresso.
+            </p>
+
+        </div>
+
+        <div class="gx-page-actions">
+
+            <a asp-controller="GalleryActivities"
+               asp-action="Index"
+               class="btn gallery-btn-outline">
+
+                Prenota un'altra visita
+
+            </a>
+
+        </div>
 
     </div>
 
@@ -53,530 +78,334 @@
 
     @if (!Model.Any())
     {
-        <div class="card border-0 shadow-sm">
+        <div class="gx-empty">
 
-            <div class="card-body p-5 text-center">
+            <h2>
+                Non hai ancora effettuato prenotazioni
+            </h2>
 
-                <h2 class="h5 mb-3">
-                    Non hai ancora effettuato prenotazioni
-                </h2>
+            <p>
+                Consulta le visite e gli eventi disponibili
+                e scegli quello a cui vuoi partecipare.
+            </p>
 
-                <p class="text-muted mb-4">
+            <a asp-controller="GalleryActivities"
+               asp-action="Index"
+               class="btn gallery-btn-primary">
 
-                    Consulta le visite e gli eventi disponibili
-                    e scegli quello a cui vuoi partecipare.
+                Scopri visite ed eventi
 
-                </p>
-
-                <a asp-controller="GalleryActivities"
-                   asp-action="Index"
-                   class="btn btn-dark">
-
-                    Scopri visite ed eventi
-
-                </a>
-
-            </div>
+            </a>
 
         </div>
     }
     else
     {
-        <div class="row g-4">
+        <div class="gx-tickets">
 
             @foreach (var booking in Model)
             {
-                <div class="col-lg-6">
+                var isCancelled = booking.Status == BookingStatus.Cancelled;
+                var isUsed = !isCancelled && booking.CheckedInAt.HasValue;
 
-                    <div class="card h-100 border-0 shadow-sm">
+                <article class="gx-ticket @(isCancelled ? "is-void" : "") @(isUsed ? "is-used" : "")">
 
-                        <div class="card-body p-4">
+                    @* =================================================
+                       MATRICE DEL BIGLIETTO: la data
+                       ================================================= *@
+
+                    <div class="gx-ticket-stub" aria-hidden="true">
+
+                        <span class="gx-event-day">@booking.StartDateTime.ToString("dd", it)</span>
+
+                        <span class="gx-event-month">@booking.StartDateTime.ToString("MMMM", it)</span>
+
+                        <span class="gx-event-time">
+                            @booking.StartDateTime.ToString("dddd", it)<br />
+                            ore @booking.StartDateTime.ToString("HH:mm", it)
+                        </span>
+
+                    </div>
 
 
-                            @* =================================================
-                               HEADER
-                               ================================================= *@
+                    <div class="gx-ticket-body">
 
-                            <div class="d-flex justify-content-between
-                                align-items-start gap-3 mb-3">
+                        @* =================================================
+                           HEADER
+                           ================================================= *@
 
+                        <div class="gx-event-tags">
+
+                            @if (booking.ActivityType == ActivityType.Visita)
+                            {
+                                <span class="gx-tag">Visita guidata</span>
+                            }
+                            else
+                            {
+                                <span class="gx-tag">Evento</span>
+                            }
+
+                            @if (isCancelled)
+                            {
+                                <span class="gx-tag gx-tag-alert">Annullata</span>
+                            }
+                            else if (isUsed)
+                            {
+                                <span class="gx-tag gx-tag-ok">Ingresso registrato</span>
+                            }
+                            else
+                            {
+                                <span class="gx-tag gx-tag-ok">Confermata</span>
+                            }
+
+                        </div>
+
+
+                        <h2 class="gx-ticket-title">
+                            @booking.ActivityTitle
+                        </h2>
+
+
+                        @* =================================================
+                           DATI PRENOTAZIONE
+                           ================================================= *@
+
+                        <dl class="gx-event-facts">
+
+                            <div>
+                                <dt>Data</dt>
+                                <dd>@booking.StartDateTime.ToString("dd/MM/yyyy", it), ore @booking.StartDateTime.ToString("HH:mm", it)</dd>
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(booking.Location))
+                            {
                                 <div>
-
-                                    @if (booking.ActivityType == ActivityType.Visita)
-                                    {
-                                        <span class="badge bg-dark mb-2">
-                                            Visita
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-primary mb-2">
-                                            Evento
-                                        </span>
-                                    }
-
-
-                                    <h2 class="h4 mb-0">
-                                        @booking.ActivityTitle
-                                    </h2>
-
-                                </div>
-
-
-                                @if (booking.Status == BookingStatus.Confirmed)
-                                {
-                                    <span class="badge bg-success">
-                                        Confermata
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">
-                                        Annullata
-                                    </span>
-                                }
-
-                            </div>
-
-
-                            @* =================================================
-                               DATI PRENOTAZIONE
-                               ================================================= *@
-
-                            <div class="mb-2">
-
-                                <strong>
-                                    Data:
-                                </strong>
-
-                                @(booking.StartDateTime.ToString("dd/MM/yyyy"))
-
-                            </div>
-
-
-                            <div class="mb-2">
-
-                                <strong>
-                                    Ora:
-                                </strong>
-
-                                @(booking.StartDateTime.ToString("HH:mm"))
-
-                            </div>
-
-
-                            @if (!string.IsNullOrWhiteSpace(
-                                booking.Location))
-                            {
-                                <div class="mb-2">
-
-                                    <strong>
-                                        Luogo:
-                                    </strong>
-
-                                    @booking.Location
-
+                                    <dt>Luogo</dt>
+                                    <dd>@booking.Location</dd>
                                 </div>
                             }
 
-
-                            <div class="mb-2">
-
-                                <strong>
-                                    Partecipanti:
-                                </strong>
-
-                                @booking.NumberOfParticipants
-
+                            <div>
+                                <dt>Partecipanti</dt>
+                                <dd>@booking.NumberOfParticipants</dd>
                             </div>
 
-
-                            <div class="mb-3">
-
-                                <strong>
-                                    Prenotata il:
-                                </strong>
-
-                                @(booking.BookingDate
-                                    .ToLocalTime()
-                                    .ToString("dd/MM/yyyy HH:mm"))
-
+                            <div>
+                                <dt>Prenotata il</dt>
+                                <dd>@(booking.BookingDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm", it))</dd>
                             </div>
 
+                        </dl>
 
-                            @* =================================================
-                               PRENOTAZIONE ANNULLATA
-                               ================================================= *@
 
-                            @if (booking.Status == BookingStatus.Cancelled)
+                        @* =================================================
+                           PRENOTAZIONE ANNULLATA
+                           ================================================= *@
+
+                        @if (isCancelled)
+                        {
+                            var cancelledAtText = booking.CancelledAt.HasValue
+                                ? booking.CancelledAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm", it)
+                                : null;
+
+                            @if (booking.CancellationType == BookingCancellationType.User)
                             {
+                                <div class="gx-notice">
 
-                                @if (booking.CancellationType ==
-                                     BookingCancellationType.User)
-                                {
-                                    <div class="alert alert-secondary mb-3">
+                                    <strong>Prenotazione annullata da te.</strong>
 
-                                        <div class="fw-semibold">
-                                            Prenotazione annullata da te
-                                        </div>
+                                    @if (cancelledAtText != null)
+                                    {
+                                        <span class="gx-notice-meta">Annullata il @cancelledAtText</span>
+                                    }
 
-
-                                        @if (booking.CancelledAt.HasValue)
-                                        {
-                                            <div class="small mt-1">
-
-                                                Annullata il:
-
-                                                @(booking.CancelledAt.Value
-                                                    .ToLocalTime()
-                                                    .ToString("dd/MM/yyyy HH:mm"))
-
-                                            </div>
-                                        }
-
-                                    </div>
-                                }
-                                else if (booking.CancellationType ==
-                                         BookingCancellationType.StaffOrAdmin)
-                                {
-                                    <div class="alert alert-warning mb-3">
-
-                                        <div class="fw-semibold">
-                                            Prenotazione annullata dalla galleria
-                                        </div>
-
-
-                                        @if (!string.IsNullOrWhiteSpace(
-                                            booking.CancellationReason))
-                                        {
-                                            <div class="mt-2">
-
-                                                <strong>
-                                                    Motivo:
-                                                </strong>
-
-                                                @booking.CancellationReason
-
-                                            </div>
-                                        }
-
-
-                                        @if (booking.CancelledAt.HasValue)
-                                        {
-                                            <div class="small mt-2">
-
-                                                Annullata il:
-
-                                                @(booking.CancelledAt.Value
-                                                    .ToLocalTime()
-                                                    .ToString("dd/MM/yyyy HH:mm"))
-
-                                            </div>
-                                        }
-
-                                    </div>
-                                }
-                                else if (booking.CancellationType ==
-                                         BookingCancellationType.ActivityCancelled)
-                                {
-                                    <div class="alert alert-danger mb-3">
-
-                                        <div class="fw-semibold">
-                                            Attività annullata dalla galleria
-                                        </div>
-
-
-                                        <div class="mt-1">
-
-                                            La tua prenotazione è stata
-                                            annullata automaticamente perché
-                                            la visita o l'evento non avrà luogo.
-
-                                        </div>
-
-
-                                        @if (!string.IsNullOrWhiteSpace(
-                                            booking.CancellationReason))
-                                        {
-                                            <div class="mt-2">
-
-                                                <strong>
-                                                    Motivo:
-                                                </strong>
-
-                                                @booking.CancellationReason
-
-                                            </div>
-                                        }
-
-
-                                        @if (booking.CancelledAt.HasValue)
-                                        {
-                                            <div class="small mt-2">
-
-                                                Annullata il:
-
-                                                @(booking.CancelledAt.Value
-                                                    .ToLocalTime()
-                                                    .ToString("dd/MM/yyyy HH:mm"))
-
-                                            </div>
-                                        }
-
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="alert alert-secondary mb-3">
-
-                                        <div class="fw-semibold">
-                                            Prenotazione annullata
-                                        </div>
-
-                                    </div>
-                                }
+                                </div>
                             }
-
-
-                            @* =================================================
-                               BIGLIETTO DIGITALE / QR
-                               ================================================= *@
-
-                            @if (booking.Status == BookingStatus.Confirmed)
+                            else if (booking.CancellationType == BookingCancellationType.StaffOrAdmin)
                             {
-                                @if (booking.CheckedInAt.HasValue)
-                                {
-                                    @* =========================================
-                                       CHECK-IN GIÀ EFFETTUATO
-                                       ========================================= *@
+                                <div class="gx-notice gx-notice-warn">
 
-                                    <div class="booking-checkin-completed">
+                                    <strong>Prenotazione annullata dalla galleria.</strong>
 
-                                        <div class="booking-checkin-icon"
-                                             aria-hidden="true">
+                                    @if (!string.IsNullOrWhiteSpace(booking.CancellationReason))
+                                    {
+                                        <span>Motivo: @booking.CancellationReason</span>
+                                    }
 
-                                            ✓
+                                    @if (cancelledAtText != null)
+                                    {
+                                        <span class="gx-notice-meta">Annullata il @cancelledAtText</span>
+                                    }
 
+                                </div>
+                            }
+                            else if (booking.CancellationType == BookingCancellationType.ActivityCancelled)
+                            {
+                                <div class="gx-notice gx-notice-alert">
+
+                                    <strong>Attività annullata dalla galleria.</strong>
+
+                                    <span>
+                                        La tua prenotazione è stata annullata automaticamente
+                                        perché la visita o l'evento non avrà luogo.
+                                    </span>
+
+                                    @if (!string.IsNullOrWhiteSpace(booking.CancellationReason))
+                                    {
+                                        <span>Motivo: @booking.CancellationReason</span>
+                                    }
+
+                                    @if (cancelledAtText != null)
+                                    {
+                                        <span class="gx-notice-meta">Annullata il @cancelledAtText</span>
+                                    }
+
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="gx-notice">
+                                    <strong>Prenotazione annullata.</strong>
+                                </div>
+                            }
+                        }
+
+
+                        @* =================================================
+                           BIGLIETTO DIGITALE / QR
+                           ================================================= *@
+
+                        @if (booking.Status == BookingStatus.Confirmed)
+                        {
+                            @if (booking.CheckedInAt.HasValue)
+                            {
+                                @* Check-in già effettuato *@
+
+                                <div class="booking-checkin-completed">
+
+                                    <div class="booking-checkin-icon"
+                                         aria-hidden="true">
+                                        ✓
+                                    </div>
+
+                                    <div>
+
+                                        <div class="booking-checkin-title">
+                                            Ingresso registrato
                                         </div>
 
-
-                                        <div>
-
-                                            <div class="booking-checkin-title">
-                                                Ingresso registrato
-                                            </div>
-
-
-                                            <div class="booking-checkin-date">
-
-                                                Check-in effettuato il
-
-                                                <strong>
-
-                                                    @(booking.CheckedInAt.Value
-                                                        .ToLocalTime()
-                                                        .ToString("dd/MM/yyyy 'alle' HH:mm"))
-
-                                                </strong>
-
-                                            </div>
-
+                                        <div class="booking-checkin-date">
+                                            Check-in effettuato il
+                                            <strong>
+                                                @(booking.CheckedInAt.Value
+                                                    .ToLocalTime()
+                                                    .ToString("dd/MM/yyyy 'alle' HH:mm", it))
+                                            </strong>
                                         </div>
 
                                     </div>
 
-                                    @* =========================================
-                                       FEEDBACK SULLA VISITA
-                                       ========================================= *@
+                                </div>
 
-                                    <div class="booking-feedback">
+                                @* Feedback sulla visita *@
 
-                                        @if (booking.HasFeedback)
-                                        {
-                                            <span class="booking-feedback-done">
-                                                La tua valutazione:
-                                                <span class="feedback-stars"
-                                                      aria-label="@booking.FeedbackRating su 5">
-                                                    @(new string('★', booking.FeedbackRating ?? 0))@(new string('☆', 5 - (booking.FeedbackRating ?? 0)))
-                                                </span>
+                                <div class="booking-feedback">
+
+                                    @if (booking.HasFeedback)
+                                    {
+                                        <span class="booking-feedback-done">
+                                            La tua valutazione:
+                                            <span class="feedback-stars"
+                                                  aria-label="@booking.FeedbackRating su 5">
+                                                @(new string('★', booking.FeedbackRating ?? 0))@(new string('☆', 5 - (booking.FeedbackRating ?? 0)))
                                             </span>
-                                        }
-                                        else if (booking.CanLeaveFeedback)
-                                        {
-                                            <a asp-controller="Feedback"
-                                               asp-action="Create"
-                                               asp-route-bookingId="@booking.BookingId"
-                                               class="btn btn-outline-dark btn-sm">
-                                                Lascia un feedback
-                                            </a>
-                                        }
+                                        </span>
+                                    }
+                                    else if (booking.CanLeaveFeedback)
+                                    {
+                                        <a asp-controller="Feedback"
+                                           asp-action="Create"
+                                           asp-route-bookingId="@booking.BookingId"
+                                           class="btn gallery-btn-outline btn-sm">
+                                            Lascia un feedback
+                                        </a>
+                                    }
 
-                                    </div>
-                                }
-                                else if (!string.IsNullOrWhiteSpace(
-                                    booking.QrToken))
-                                {
-                                    @* =========================================
-                                       QR PRENOTAZIONE
-                                       ========================================= *@
+                                </div>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(booking.QrToken))
+                            {
+                                @* QR prenotazione, oltre la linea di strappo *@
 
-                                    <div class="booking-qr-section">
+                                <div class="booking-qr-section">
+
+                                    <div class="booking-qr-content">
+
+                                        <div class="booking-qr-wrapper">
+
+                                            <img src="@Url.Action("Image", "BookingQr", new { id = booking.BookingId })"
+                                                 alt="QR code della prenotazione per @booking.ActivityTitle"
+                                                 class="booking-qr-image" />
+
+                                        </div>
 
                                         <div class="booking-qr-heading">
-
-                                            <div class="gallery-eyebrow mb-2">
-                                                Biglietto digitale
-                                            </div>
-
 
                                             <h3 class="booking-qr-title">
                                                 Il tuo QR di ingresso
                                             </h3>
 
-
                                             <p class="booking-qr-description">
+                                                Mostra questo codice allo staff al momento
+                                                dell'ingresso. Vale per
+                                                @booking.NumberOfParticipants
+                                                @(booking.NumberOfParticipants == 1 ? "persona" : "persone").
+                                            </p>
 
-                                                Mostra questo codice allo staff
-                                                al momento dell'ingresso.
-
+                                            <p class="booking-qr-notice">
+                                                Il QR è personale e associato
+                                                alla tua prenotazione.
                                             </p>
 
                                         </div>
 
-
-                                        <div class="booking-qr-content">
-
-                                            <div class="booking-qr-wrapper">
-
-                                                <img src="@Url.Action(
-                                                         "Image",
-                                                         "BookingQr",
-                                                         new
-                                                         {
-                                                             id = booking.BookingId
-                                                         })"
-                                                     alt="QR code della prenotazione per @booking.ActivityTitle"
-                                                     class="booking-qr-image" />
-
-                                            </div>
-
-
-                                            <div class="booking-qr-info">
-
-                                                <div class="booking-qr-info-item">
-
-                                                    <span>
-                                                        Attività
-                                                    </span>
-
-                                                    <strong>
-                                                        @booking.ActivityTitle
-                                                    </strong>
-
-                                                </div>
-
-
-                                                <div class="booking-qr-info-item">
-
-                                                    <span>
-                                                        Data
-                                                    </span>
-
-                                                    <strong>
-
-                                                        @booking.StartDateTime.ToString("dd/MM/yyyy")
-
-                                                    </strong>
-
-                                                </div>
-
-
-                                                <div class="booking-qr-info-item">
-
-                                                    <span>
-                                                        Ora
-                                                    </span>
-
-                                                    <strong>
-
-                                                        @booking.StartDateTime.ToString("HH:mm")
-
-                                                    </strong>
-
-                                                </div>
-
-
-                                                <div class="booking-qr-info-item">
-
-                                                    <span>
-                                                        Partecipanti
-                                                    </span>
-
-                                                    <strong>
-                                                        @booking.NumberOfParticipants
-                                                    </strong>
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="booking-qr-notice">
-
-                                            <span class="booking-qr-notice-icon"
-                                                  aria-hidden="true">
-
-                                                ◇
-
-                                            </span>
-
-                                            <span>
-
-                                                Questo QR è personale e associato
-                                                alla tua prenotazione.
-
-                                            </span>
-
-                                        </div>
-
                                     </div>
-                                }
-                            }
-
-
-                            @* =================================================
-                               ANNULLAMENTO
-                               ================================================= *@
-
-                            @if (booking.CanCancel)
-                            {
-                                <div class="booking-actions">
-
-                                    <button type="button"
-                                            class="btn btn-outline-danger
-                                        cancel-booking-btn"
-                                            data-booking-id="@booking.BookingId">
-
-                                        Annulla prenotazione
-
-                                    </button>
 
                                 </div>
                             }
+                        }
 
-                        </div>
+
+                        @* =================================================
+                           ANNULLAMENTO
+                           ================================================= *@
+
+                        @if (booking.CanCancel)
+                        {
+                            <div class="booking-actions">
+
+                                <button type="button"
+                                        class="gx-link-danger cancel-booking-btn"
+                                        data-booking-id="@booking.BookingId">
+
+                                    Annulla prenotazione
+
+                                </button>
+
+                            </div>
+                        }
 
                     </div>
 
-                </div>
+                </article>
             }
 
         </div>
     }
 
 </div>
+
+
 
 
 @section Scripts

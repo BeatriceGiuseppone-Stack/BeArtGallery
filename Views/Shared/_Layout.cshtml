@@ -25,6 +25,11 @@
           href="~/css/site.css"
           asp-append-version="true" />
 
+    @* Tema "Luce di sala": faretto sulle opere, arco del logo, nuovi caratteri *@
+    <link rel="stylesheet"
+          href="~/css/gallery-experience.css"
+          asp-append-version="true" />
+
 
     @await RenderSectionAsync(
         "Styles",
@@ -615,6 +620,9 @@
     <script src="~/js/site.js"
             asp-append-version="true">
     </script>
+
+    <script src="~/js/gallery-experience.js"
+            asp-append-version="true"></script>
 
 
     @await RenderSectionAsync(

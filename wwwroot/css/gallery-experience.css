@@ -1,0 +1,1271 @@
+/* =====================================================================
+   BeArtGallery — tema "Luce di sala"
+   ---------------------------------------------------------------------
+   Si carica DOPO site.css e modifica solo l'aspetto, non la struttura.
+   Idea guida: il sito si comporta come una sala espositiva.
+   - le opere sono illuminate da un faretto che segue il cursore;
+   - al passaggio del mouse l'opera viene "incorniciata" (passe-partout);
+   - l'arco del logo diventa la cornice dell'immagine principale.
+   Per tornare allo stile precedente basta rimuovere il <link> nel layout.
+   ===================================================================== */
+
+/* Carattere dei titoli: Libre Caslon, lo stesso stile del logotipo
+   (serif classico con terminali a goccia). Licenza SIL Open Font
+   License, file ospitati sul sito: nessuna richiesta a server esterni.
+   Il corsivo e il grassetto usano la versione "Text" della stessa famiglia. */
+@font-face {
+    font-family: "Libre Caslon Display";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/libre-caslon-display-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Libre Caslon Display";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/libre-caslon-text-latin-400-italic.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Libre Caslon Display";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/libre-caslon-text-latin-700-normal.woff2") format("woff2");
+}
+
+:root {
+    /* Colori del marchio (logo) */
+    --gx-wall: #f5f2ec;        /* parete della sala */
+    --gx-paper: #fffdf9;       /* superfici chiare, passe-partout */
+    --gx-ink: #1f2023;         /* antracite del logotipo */
+    --gx-muted: #6d6860;       /* testo secondario */
+    --gx-gilt: #b8872e;        /* oro dell'arco nel logo */
+    --gx-gilt-light: #e7d3a6;  /* oro chiaro su fondo scuro */
+    --gx-line: #e2dbcf;        /* filetti */
+    --gx-light: 255, 226, 170; /* colore della luce calda (RGB) */
+
+    /* Titoli come il logotipo; testo nel carattere di sistema, come prima */
+    --gx-font-display: "Libre Caslon Display", Georgia, "Times New Roman", serif;
+    --gx-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+    /* Movimento */
+    --gx-ease: cubic-bezier(.2, .7, .2, 1);
+
+    /* Allineamento con le variabili già usate in site.css */
+    --gallery-bg: var(--gx-wall);
+    --gallery-text: var(--gx-ink);
+    --gallery-muted: var(--gx-muted);
+    --gallery-accent: var(--gx-gilt);
+    --gallery-dark: var(--gx-ink);
+    --gallery-border: var(--gx-line);
+}
+
+
+/* ---------------------------------------------------------------------
+   Tipografia
+   --------------------------------------------------------------------- */
+
+h1, h2, h3,
+.gallery-brand,
+.gallery-hero-title,
+.gallery-large-heading,
+.artworks-page-title,
+.artists-page-title,
+.artwork-catalog-title,
+.artist-card-title,
+.gallery-footer-brand {
+    font-family: var(--gx-font-display);
+    font-weight: 400;
+}
+
+/* Il logotipo ha una spaziatura normale: niente lettere schiacciate */
+.gallery-hero-title,
+.gallery-large-heading,
+.artworks-page-title,
+.artists-page-title {
+    letter-spacing: -.015em;
+}
+
+/* Il titolo della home in grassetto (Libre Caslon Text 700) */
+.gallery-hero-title {
+    font-size: clamp(2.4rem, 4.2vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.08;
+}
+
+.artwork-catalog-artist,
+.artist-card-nationality {
+    font-family: var(--gx-font-display);
+    font-style: italic;
+}
+
+/* Le etichette sopra i titoli diventano una didascalia in corsivo,
+   come la targhetta di una sala, invece del maiuscoletto spaziato. */
+.gallery-eyebrow {
+    font-family: var(--gx-font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.05rem;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--gx-gilt);
+}
+
+
+/* ---------------------------------------------------------------------
+   Navigazione: filetto dorato che si disegna al passaggio del mouse
+   --------------------------------------------------------------------- */
+
+.gallery-navbar .nav-link {
+    position: relative;
+    font-size: .98rem;
+    letter-spacing: .01em;
+}
+
+.gallery-main-nav .nav-link:not(.dropdown-toggle)::after {
+    content: "";
+    position: absolute;
+    left: .85rem;
+    right: .85rem;
+    bottom: .2rem;
+    height: 1px;
+    background: var(--gx-gilt);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .45s var(--gx-ease);
+}
+
+.gallery-main-nav .nav-link:hover::after,
+.gallery-main-nav .nav-link:focus-visible::after {
+    transform: scaleX(1);
+}
+
+.gallery-navbar .nav-link:hover,
+.gallery-navbar .nav-link:focus {
+    color: var(--gx-ink);
+}
+
+
+/* ---------------------------------------------------------------------
+   Pulsanti: la luce "sale" dal basso e riempie il pulsante
+   --------------------------------------------------------------------- */
+
+.gallery-btn-primary,
+.gallery-btn-outline {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    letter-spacing: .02em;
+    font-weight: 500;
+    transition: color .4s var(--gx-ease), border-color .4s var(--gx-ease);
+}
+
+.gallery-btn-primary::before,
+.gallery-btn-outline::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--gx-gilt);
+    transform: translateY(101%);
+    transition: transform .45s var(--gx-ease);
+}
+
+.gallery-btn-primary:hover,
+.gallery-btn-primary:focus-visible {
+    background-color: var(--gx-ink);
+    border-color: var(--gx-gilt);
+    color: #fff;
+}
+
+.gallery-btn-outline:hover,
+.gallery-btn-outline:focus-visible {
+    background-color: transparent;
+    border-color: var(--gx-gilt);
+    color: #fff;
+}
+
+.gallery-btn-primary:hover::before,
+.gallery-btn-primary:focus-visible::before,
+.gallery-btn-outline:hover::before,
+.gallery-btn-outline:focus-visible::before {
+    transform: translateY(0);
+}
+
+
+/* ---------------------------------------------------------------------
+   HERO: l'immagine diventa un arco, come nel logo
+   --------------------------------------------------------------------- */
+
+.gallery-hero-image-wrapper {
+    max-width: 440px;
+    isolation: isolate;
+}
+
+.gallery-hero-image {
+    position: relative;
+    z-index: 1;
+    border: 0;
+    border-radius: 999px 999px 0 0;
+}
+
+/* Nessuna cornice decorativa sotto l'immagine: resta solo l'arco
+   e la luce che segue il mouse (annulla il rettangolo di site.css) */
+.gallery-hero-image-wrapper::after {
+    content: none;
+    display: none;
+}
+
+/* "La sala si accende": unico momento animato al caricamento */
+@media (prefers-reduced-motion: no-preference) {
+
+    .gallery-hero-image {
+        animation: gx-lights-on 1.8s var(--gx-ease) both;
+    }
+
+    .gallery-hero-title,
+    .gallery-hero-text,
+    .gallery-hero .gallery-eyebrow,
+    .gallery-hero .d-flex {
+        animation: gx-rise .9s var(--gx-ease) both;
+    }
+
+    .gallery-hero .gallery-eyebrow { animation-delay: .15s; }
+    .gallery-hero-title            { animation-delay: .3s; }
+    .gallery-hero-text             { animation-delay: .5s; }
+    .gallery-hero .d-flex          { animation-delay: .65s; }
+}
+
+@keyframes gx-lights-on {
+    from { filter: brightness(.35) saturate(.6); }
+    to   { filter: brightness(1) saturate(1); }
+}
+
+@keyframes gx-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+}
+
+
+/* ---------------------------------------------------------------------
+   OPERE: faretto che segue il cursore + passe-partout
+   Le coordinate --gx-x / --gx-y sono aggiornate da gallery-experience.js
+   --------------------------------------------------------------------- */
+
+.artwork-catalog-image-wrapper,
+.artist-artwork-image-link,
+.gallery-hero-image-wrapper {
+    --gx-x: 50%;
+    --gx-y: 30%;
+}
+
+.artwork-catalog-image-wrapper,
+.artist-artwork-image-link {
+    position: relative;
+    isolation: isolate;
+    border-color: var(--gx-line);
+    background-color: var(--gx-paper);
+    transition: transform .6s var(--gx-ease), box-shadow .6s var(--gx-ease);
+}
+
+/* A riposo l'opera è in penombra, come in una sala con le luci basse */
+.artwork-catalog-image,
+.artist-artwork-image {
+    filter: brightness(.92) saturate(.92);
+    transition: filter .6s var(--gx-ease), transform .9s var(--gx-ease);
+}
+
+/* Cono di luce calda centrato sul cursore, con bordi in ombra */
+.artwork-catalog-image-wrapper::after,
+.artist-artwork-image-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        radial-gradient(circle 200px at var(--gx-x) var(--gx-y),
+            rgba(var(--gx-light), .55) 0%,
+            rgba(var(--gx-light), .18) 45%,
+            rgba(0, 0, 0, 0) 75%),
+        radial-gradient(circle at var(--gx-x) var(--gx-y),
+            rgba(0, 0, 0, 0) 25%,
+            rgba(20, 14, 6, .55) 100%);
+    mix-blend-mode: overlay;
+    opacity: 0;
+    transition: opacity .5s var(--gx-ease);
+}
+
+/* Passe-partout: un bordo chiaro con filetto dorato "entra" attorno all'opera */
+.artwork-catalog-image-wrapper::before,
+.artist-artwork-image-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border: 0 solid var(--gx-paper);
+    box-shadow: inset 0 0 0 1px rgba(184, 135, 46, 0);
+    transition: border-width .55s var(--gx-ease), box-shadow .55s var(--gx-ease);
+}
+
+.artwork-catalog-card:hover .artwork-catalog-image-wrapper,
+.artwork-catalog-image-wrapper:focus-visible,
+.artist-artwork-card:hover .artist-artwork-image-link {
+    transform: translateY(-6px);
+    /* ombra lunga e morbida, come un quadro appeso a parete */
+    box-shadow: 0 34px 40px -28px rgba(45, 32, 12, .45),
+                0 2px 0 rgba(45, 32, 12, .04);
+}
+
+.artwork-catalog-card:hover .artwork-catalog-image-wrapper::after,
+.artwork-catalog-image-wrapper:focus-visible::after,
+.artist-artwork-card:hover .artist-artwork-image-link::after {
+    opacity: 1;
+}
+
+.artwork-catalog-card:hover .artwork-catalog-image-wrapper::before,
+.artwork-catalog-image-wrapper:focus-visible::before,
+.artist-artwork-card:hover .artist-artwork-image-link::before {
+    border-width: 14px;
+    box-shadow: inset 0 0 0 1px rgba(184, 135, 46, .75);
+}
+
+.artwork-catalog-card:hover .artwork-catalog-image,
+.artist-artwork-card:hover .artist-artwork-image {
+    filter: brightness(1.04) saturate(1);
+    transform: scale(1.015);
+}
+
+/* Le etichette di disponibilità restano sopra luce e cornice */
+.artwork-catalog-availability-badge {
+    z-index: 3;
+}
+
+/* Il titolo dell'opera prende il colore dell'oro quando la si guarda */
+.artwork-catalog-title a {
+    background-image: linear-gradient(var(--gx-gilt), var(--gx-gilt));
+    background-size: 0 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size .5s var(--gx-ease), color .3s;
+}
+
+.artwork-catalog-card:hover .artwork-catalog-title a {
+    background-size: 100% 1px;
+    color: var(--gx-ink);
+}
+
+/* Anche l'immagine della home riceve il faretto */
+.gallery-hero-image-wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: 999px 999px 0 0;
+    background: radial-gradient(circle 200px at var(--gx-x) var(--gx-y),
+        rgba(var(--gx-light), .35), rgba(0, 0, 0, 0) 70%);
+    mix-blend-mode: soft-light;
+    opacity: 0;
+    transition: opacity .5s var(--gx-ease);
+}
+
+.gallery-hero-image-wrapper:hover::before {
+    opacity: 1;
+}
+
+
+/* ---------------------------------------------------------------------
+   Schede (servizi della home, artisti, attività)
+   Discrete: si sollevano appena e un filetto dorato attraversa il bordo
+   --------------------------------------------------------------------- */
+
+.gallery-feature-card,
+.artist-card,
+.gallery-activity-card {
+    position: relative;
+    border-color: var(--gx-line);
+    background-color: var(--gx-paper);
+    transition: transform .5s var(--gx-ease), box-shadow .5s var(--gx-ease);
+}
+
+.gallery-feature-card::before,
+.artist-card::before,
+.gallery-activity-card::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    height: 2px;
+    background: var(--gx-gilt);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform .6s var(--gx-ease);
+    z-index: 1;
+}
+
+.gallery-feature-card:hover,
+.artist-card:hover,
+.gallery-activity-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 26px 40px -30px rgba(45, 32, 12, .5);
+}
+
+.gallery-feature-card:hover::before,
+.artist-card:hover::before,
+.gallery-activity-card:hover::before,
+.gallery-feature-card:focus-within::before,
+.artist-card:focus-within::before,
+.gallery-activity-card:focus-within::before {
+    transform: scaleX(1);
+}
+
+.gallery-feature-number {
+    font-family: var(--gx-font-display);
+    font-size: 2.4rem;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0;
+    line-height: 1;
+    color: var(--gx-line);
+    transition: color .5s var(--gx-ease);
+}
+
+.gallery-feature-card:hover .gallery-feature-number {
+    color: var(--gx-gilt);
+}
+
+.gallery-feature-card a {
+    font-weight: 500;
+}
+
+
+/* ---------------------------------------------------------------------
+   Footer
+   --------------------------------------------------------------------- */
+
+.gallery-footer-title {
+    font-family: var(--gx-font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.05rem;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--gx-gilt-light);
+}
+
+.gallery-footer a:hover,
+.gallery-footer a:focus {
+    color: var(--gx-gilt-light);
+}
+
+
+/* ---------------------------------------------------------------------
+   Visite, eventi e prenotazioni
+   Il calendario è impaginato come il programma stampato di una mostra:
+   righe separate da filetti, data in grande, nessuna "scheda" a riquadro.
+   Le prenotazioni sono biglietti d'ingresso con matrice e linea di strappo.
+   --------------------------------------------------------------------- */
+
+.gx-page-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--gx-line);
+}
+
+.gx-page-title {
+    margin: 0 0 .75rem;
+    font-family: var(--gx-font-display);
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    font-weight: 400;
+    line-height: 1.05;
+    color: var(--gx-ink);
+}
+
+.gx-page-intro {
+    max-width: 38rem;
+    margin: 0;
+    color: var(--gx-muted);
+    line-height: 1.7;
+}
+
+.gx-page-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+}
+
+.gx-filter-note {
+    margin: -1rem 0 1.5rem;
+    color: var(--gx-muted);
+    font-size: .9rem;
+    font-style: italic;
+}
+
+.gx-empty {
+    max-width: 40rem;
+    margin: 1rem auto;
+    padding: 3.5rem 2rem;
+    text-align: center;
+    background: var(--gx-paper);
+    border: 1px solid var(--gx-line);
+}
+
+.gx-empty h2 {
+    margin-bottom: .9rem;
+    font-family: var(--gx-font-display);
+    font-size: 1.7rem;
+    font-weight: 400;
+}
+
+.gx-empty p {
+    margin: 0 auto 1.75rem;
+    max-width: 30rem;
+    color: var(--gx-muted);
+    line-height: 1.7;
+}
+
+/* --- Il programma ---------------------------------------------------- */
+
+.gx-program {
+    border-bottom: 1px solid var(--gx-line);
+}
+
+.gx-event {
+    position: relative;
+    display: grid;
+    grid-template-columns: 10rem minmax(0, 1fr);
+    gap: 2.5rem;
+    padding: 2.5rem 0 2.5rem 1.25rem;
+    border-top: 1px solid var(--gx-line);
+}
+
+/* Filetto d'oro che "si accende" a sinistra della riga */
+/* La prima riga poggia già sul filetto dell'intestazione */
+.gx-event:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.gx-event:first-child::before {
+    top: 0;
+}
+
+.gx-event::before {
+    content: "";
+    position: absolute;
+    top: 2.5rem;
+    bottom: 2.5rem;
+    left: 0;
+    width: 2px;
+    background: var(--gx-gilt);
+    transform: scaleY(0);
+    transform-origin: top center;
+    transition: transform .6s var(--gx-ease);
+}
+
+.gx-event:hover::before,
+.gx-event:focus-within::before {
+    transform: scaleY(1);
+}
+
+.gx-event-date {
+    display: flex;
+    flex-direction: column;
+    color: var(--gx-ink);
+    text-decoration: none;
+}
+
+.gx-event-day {
+    font-family: var(--gx-font-display);
+    font-size: 4.2rem;
+    font-weight: 400;
+    line-height: .9;
+    color: var(--gx-ink);
+    transition: color .5s var(--gx-ease);
+}
+
+.gx-event-month {
+    margin-top: .35rem;
+    font-family: var(--gx-font-display);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--gx-ink);
+}
+
+.gx-event-time {
+    margin-top: .6rem;
+    color: var(--gx-muted);
+    font-size: .88rem;
+    line-height: 1.5;
+}
+
+.gx-event-time::first-letter {
+    text-transform: uppercase;
+}
+
+.gx-event:hover .gx-event-day,
+.gx-event:focus-within .gx-event-day {
+    color: var(--gx-gilt);
+}
+
+.gx-event-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .25rem .75rem;
+    margin-bottom: .6rem;
+}
+
+.gx-tag {
+    font-family: var(--gx-font-display);
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--gx-gilt);
+}
+
+.gx-tag + .gx-tag {
+    padding-left: .75rem;
+    border-left: 1px solid var(--gx-line);
+}
+
+.gx-tag-alert { color: #9b2c2c; }
+.gx-tag-muted { color: var(--gx-muted); }
+.gx-tag-ok    { color: #3f6b4a; }
+
+.gx-event-title {
+    margin: 0 0 .75rem;
+    font-family: var(--gx-font-display);
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    font-weight: 400;
+    line-height: 1.15;
+}
+
+.gx-event-title a {
+    color: var(--gx-ink);
+    text-decoration: none;
+    background-image: linear-gradient(var(--gx-gilt), var(--gx-gilt));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0 1px;
+    transition: background-size .6s var(--gx-ease);
+}
+
+.gx-event-title a:hover,
+.gx-event-title a:focus-visible {
+    background-size: 100% 1px;
+}
+
+.gx-event-text {
+    display: -webkit-box;
+    max-width: 62ch;
+    margin: 0 0 1.25rem;
+    overflow: hidden;
+    color: var(--gx-muted);
+    line-height: 1.75;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.gx-event-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 2.5rem;
+    margin: 0 0 1.25rem;
+}
+
+.gx-event-facts dt {
+    margin-bottom: .1rem;
+    color: var(--gx-muted);
+    font-size: .8rem;
+    font-weight: 400;
+}
+
+.gx-event-facts dd {
+    margin: 0;
+    color: var(--gx-ink);
+    font-size: .95rem;
+}
+
+/* Posti: una barra sottile come una linea di matita */
+.gx-seats {
+    max-width: 22rem;
+}
+
+.gx-seats-label {
+    margin: 0 0 .45rem;
+    color: var(--gx-muted);
+    font-size: .9rem;
+}
+
+.gx-seats-label strong {
+    color: var(--gx-ink);
+    font-weight: 500;
+}
+
+.gx-seats-bar {
+    height: 2px;
+    background: var(--gx-line);
+}
+
+.gx-seats-bar span {
+    display: block;
+    height: 100%;
+    background: var(--gx-gilt);
+    transition: width .8s var(--gx-ease);
+}
+
+.gx-event-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.75rem;
+    margin-top: 1.75rem;
+}
+
+.gx-staff-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.25rem;
+    padding-left: 1.75rem;
+    border-left: 1px solid var(--gx-line);
+}
+
+.gx-staff-actions a {
+    color: var(--gx-muted);
+    font-size: .9rem;
+    text-decoration: underline;
+    text-decoration-color: var(--gx-line);
+    text-underline-offset: 4px;
+    transition: color .3s, text-decoration-color .3s;
+}
+
+.gx-staff-actions a:hover {
+    color: var(--gx-ink);
+    text-decoration-color: var(--gx-gilt);
+}
+
+.gx-staff-actions a.is-danger:hover {
+    color: #9b2c2c;
+    text-decoration-color: #9b2c2c;
+}
+
+/* Attività concluse o annullate: la riga resta leggibile ma "a luci spente" */
+.gx-event.is-closed .gx-event-date {
+    opacity: .5;
+}
+
+.gx-event.is-closed .gx-event-title a {
+    color: var(--gx-muted);
+}
+
+.gx-notice {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+    max-width: 40rem;
+    margin: 0 0 1rem;
+    padding: .8rem 1rem;
+    font-size: .92rem;
+    line-height: 1.6;
+    background: var(--gx-paper);
+    border-left: 2px solid var(--gx-line);
+}
+
+.gx-notice strong { font-weight: 500; }
+.gx-notice-alert  { border-left-color: #9b2c2c; background: #fbf4f2; }
+.gx-notice-warn   { border-left-color: var(--gx-gilt); background: #fbf6ec; }
+
+.gx-notice-meta {
+    color: var(--gx-muted);
+    font-size: .82rem;
+}
+
+/* --- Dettaglio attività -------------------------------------------- */
+
+.gx-back-link {
+    display: inline-block;
+    margin-bottom: 2.5rem;
+    color: var(--gx-muted);
+    font-size: .92rem;
+    text-decoration: none;
+    transition: color .3s;
+}
+
+.gx-back-link:hover {
+    color: var(--gx-gilt);
+}
+
+.gx-detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 22rem;
+    gap: 4rem;
+    align-items: start;
+}
+
+.gx-detail-title {
+    margin: 0 0 1rem;
+    font-family: var(--gx-font-display);
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.05;
+}
+
+.gx-detail-when {
+    margin: 0 0 2rem;
+    font-family: var(--gx-font-display);
+    font-size: 1.4rem;
+    font-style: italic;
+    color: var(--gx-ink);
+}
+
+.gx-detail-when::first-letter {
+    text-transform: uppercase;
+}
+
+.gx-detail-when span {
+    display: block;
+    margin-top: .25rem;
+    font-family: var(--gx-font-body);
+    font-size: .95rem;
+    font-style: normal;
+    color: var(--gx-muted);
+}
+
+.gx-detail-lead {
+    max-width: 62ch;
+    margin: 0 0 2.5rem;
+    font-size: 1.12rem;
+    line-height: 1.8;
+    color: #3b3a37;
+}
+
+.gx-detail-facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    max-width: 36rem;
+    margin: 0;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--gx-line);
+}
+
+.gx-detail-facts dt {
+    margin-bottom: .2rem;
+    color: var(--gx-muted);
+    font-size: .82rem;
+    font-weight: 400;
+}
+
+.gx-detail-facts dd {
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* La biglietteria: resta in vista mentre si legge la descrizione */
+.gx-ticket-desk {
+    position: sticky;
+    top: 6rem;
+    padding: 2.25rem 2rem 2rem;
+    background: var(--gx-paper);
+    border: 1px solid var(--gx-line);
+    box-shadow: 0 30px 50px -40px rgba(45, 32, 12, .45);
+}
+
+/* La data dentro l'arco del logo: lo stesso segno dell'immagine in home */
+.gx-ticket-desk-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 7.5rem;
+    margin: 0 auto 1.75rem;
+    padding: 1.6rem .5rem .9rem;
+    border: 1px solid var(--gx-gilt);
+    border-bottom: 0;
+    border-radius: 999px 999px 0 0;
+}
+
+.gx-ticket-desk-date .gx-event-day {
+    font-size: 3.4rem;
+}
+
+.gx-ticket-desk-title {
+    margin: 0 0 1.25rem;
+    font-family: var(--gx-font-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    text-align: center;
+}
+
+.gx-ticket-desk .gx-seats {
+    max-width: none;
+    margin-bottom: 1.5rem;
+}
+
+.gx-ticket-desk-note {
+    margin: 0 0 1.25rem;
+    color: var(--gx-muted);
+    font-size: .95rem;
+    line-height: 1.65;
+}
+
+.gx-field-label {
+    color: var(--gx-muted);
+    font-size: .85rem;
+}
+
+.gx-field {
+    border-color: var(--gx-line);
+    border-radius: 0;
+    background: #fff;
+}
+
+.gx-field:focus {
+    border-color: var(--gx-gilt);
+    box-shadow: none;
+}
+
+/* --- Le mie prenotazioni: biglietti --------------------------------- */
+
+.gx-tickets {
+    display: grid;
+    gap: 1.75rem;
+    max-width: 58rem;
+}
+
+.gx-ticket {
+    --gx-stub: 9.5rem;
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--gx-stub) minmax(0, 1fr);
+    background: var(--gx-paper);
+    border: 1px solid var(--gx-line);
+    transition: transform .5s var(--gx-ease), box-shadow .5s var(--gx-ease);
+}
+
+.gx-ticket:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 26px 40px -30px rgba(45, 32, 12, .5);
+}
+
+/* Le due tacche semicircolari della linea di strappo */
+.gx-ticket::before,
+.gx-ticket::after {
+    content: "";
+    position: absolute;
+    left: var(--gx-stub);
+    width: 1.2rem;
+    height: 1.2rem;
+    background: var(--gallery-bg, var(--gx-wall));
+    border: 1px solid var(--gx-line);
+    border-radius: 50%;
+    transform: translateX(-50%);
+}
+
+.gx-ticket::before { top: -.6rem; clip-path: inset(calc(50% - 1px) 0 0 0); }
+.gx-ticket::after  { bottom: -.6rem; clip-path: inset(0 0 calc(50% - 1px) 0); }
+
+.gx-ticket-stub {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    text-align: center;
+    background: var(--gx-wall);
+    border-right: 1px dashed #cfc5b4;
+}
+
+.gx-ticket:hover .gx-event-day {
+    color: var(--gx-gilt);
+}
+
+.gx-ticket-body {
+    padding: 2rem 2.25rem;
+}
+
+.gx-ticket-title {
+    margin: 0 0 1.25rem;
+    font-family: var(--gx-font-display);
+    font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.gx-ticket.is-void .gx-ticket-stub {
+    opacity: .55;
+}
+
+.gx-ticket.is-void .gx-ticket-title {
+    color: var(--gx-muted);
+}
+
+.gx-ticket.is-void:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* QR: oltre una seconda linea tratteggiata, come il tagliando di controllo */
+.gx-ticket .booking-qr-section {
+    margin-top: 1.75rem;
+    padding-top: 1.75rem;
+    border-top: 1px dashed #cfc5b4;
+}
+
+.gx-ticket .booking-qr-content {
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 1.75rem;
+    padding: 0;
+    background: transparent;
+    border: 0;
+}
+
+.gx-ticket .booking-qr-wrapper {
+    border-color: var(--gx-line);
+}
+
+.gx-ticket .booking-qr-heading {
+    margin: 0;
+}
+
+.gx-ticket .booking-qr-title {
+    margin-bottom: .5rem;
+    font-family: var(--gx-font-display);
+    font-size: 1.35rem;
+}
+
+.gx-ticket .booking-qr-description {
+    font-size: .92rem;
+}
+
+.gx-ticket .booking-qr-notice {
+    display: block;
+    margin: .75rem 0 0;
+    font-size: .8rem;
+    font-style: italic;
+}
+
+.gx-ticket .booking-checkin-completed {
+    margin-top: 1.5rem;
+    padding: 1.1rem 1.25rem;
+    background: #f1f5ef;
+    border: 0;
+    border-left: 2px solid #3f6b4a;
+}
+
+.gx-ticket .booking-checkin-icon {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+}
+
+.gx-ticket .feedback-stars {
+    color: var(--gx-gilt);
+}
+
+.gx-link-danger {
+    padding: 0;
+    color: #9b2c2c;
+    font-size: .9rem;
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    text-decoration-color: rgba(155, 44, 44, .35);
+    text-underline-offset: 4px;
+    transition: text-decoration-color .3s;
+}
+
+.gx-link-danger:hover {
+    text-decoration-color: #9b2c2c;
+}
+
+.gx-link-danger:disabled {
+    color: var(--gx-muted);
+    text-decoration: none;
+}
+
+/* --- Gestione prenotazioni (staff) --------------------------------- */
+
+.gx-manage .card {
+    background: var(--gx-paper);
+    border: 1px solid var(--gx-line) !important;
+    border-radius: 0;
+    box-shadow: none !important;
+}
+
+.gx-manage .form-label {
+    color: var(--gx-muted);
+    font-size: .85rem;
+}
+
+.gx-manage .form-control,
+.gx-manage .form-select {
+    border-color: var(--gx-line);
+    border-radius: 0;
+}
+
+.gx-manage .form-control:focus,
+.gx-manage .form-select:focus {
+    border-color: var(--gx-gilt);
+    box-shadow: none;
+}
+
+.gx-manage .table {
+    --bs-table-bg: transparent;
+}
+
+.gx-manage .table thead th {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color: var(--gx-muted);
+    font-size: .82rem;
+    font-weight: 400;
+    background: var(--gx-wall);
+    border-bottom: 1px solid var(--gx-line);
+}
+
+.gx-manage .table td {
+    border-color: var(--gx-line);
+}
+
+.gx-manage .table tbody tr {
+    transition: background-color .3s;
+}
+
+.gx-manage .table tbody tr:hover {
+    background-color: rgba(var(--gx-light), .18);
+}
+
+a.gx-link-danger {
+    display: inline-block;
+}
+
+/* --- Schermi piccoli ------------------------------------------------- */
+
+@media (max-width: 991.98px) {
+
+    .gx-detail {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .gx-ticket-desk {
+        position: static;
+    }
+}
+
+@media (max-width: 575.98px) {
+
+    /* Le righe con gutter g-5 sporgevano dallo schermo sui telefoni */
+    .row.g-5 {
+        --bs-gutter-x: 1.5rem;
+    }
+
+    .gx-event {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding-left: 1rem;
+    }
+
+    .gx-event-date {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: .2rem .6rem;
+    }
+
+    .gx-event-day {
+        font-size: 2.6rem;
+    }
+
+    .gx-event-time {
+        flex-basis: 100%;
+        margin-top: 0;
+    }
+
+    .gx-staff-actions {
+        padding-left: 0;
+        border-left: 0;
+    }
+
+    .gx-ticket {
+        grid-template-columns: 1fr;
+    }
+
+    .gx-ticket::before,
+    .gx-ticket::after {
+        display: none;
+    }
+
+    .gx-ticket-stub {
+        flex-direction: row;
+        gap: .6rem;
+        align-items: baseline;
+        justify-content: flex-start;
+        padding: 1.25rem 1.5rem;
+        border-right: 0;
+        border-bottom: 1px dashed #cfc5b4;
+    }
+
+    .gx-ticket-stub .gx-event-day {
+        font-size: 2.4rem;
+    }
+
+    .gx-ticket-stub .gx-event-time br {
+        display: none;
+    }
+
+    .gx-ticket-body {
+        padding: 1.5rem;
+    }
+
+    .gx-ticket .booking-qr-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ---------------------------------------------------------------------
+   Accessibilità
+   --------------------------------------------------------------------- */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--gx-gilt);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+    }
+}
+
+/* Su schermi touch non c'è un cursore da seguire: niente faretto mobile */
+@media (hover: none) {
+
+    .artwork-catalog-image,
+    .artist-artwork-image {
+        filter: none;
+    }
+}
