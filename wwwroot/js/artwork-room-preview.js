@@ -264,6 +264,9 @@
             "active"
         );
 
+        freePreviewButton.setAttribute("aria-pressed", "true");
+        realScaleButton.setAttribute("aria-pressed", "false");
+
 
         freeModeHint.classList.remove(
             "d-none"
@@ -330,6 +333,9 @@
             freePreviewButton.classList.remove(
                 "active"
             );
+
+            realScaleButton.setAttribute("aria-pressed", "true");
+            freePreviewButton.setAttribute("aria-pressed", "false");
 
 
             freeModeHint.classList.add(
@@ -595,6 +601,75 @@
     canvas.addEventListener(
         "pointercancel",
         stopInteraction);
+
+
+    /* =================================================
+       TASTIERA
+       Frecce: spostano l'opera (con Maiusc di più).
+       + e -: ingrandiscono o riducono l'opera.
+       ================================================= */
+
+    canvas.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (!artwork.width ||
+                !artwork.height ||
+                calibrationMode) {
+                return;
+            }
+
+            const step =
+                event.shiftKey ? 25 : 5;
+
+            let handled = true;
+
+            switch (event.key) {
+
+                case "ArrowLeft":
+                    artwork.x -= step;
+                    break;
+
+                case "ArrowRight":
+                    artwork.x += step;
+                    break;
+
+                case "ArrowUp":
+                    artwork.y -= step;
+                    break;
+
+                case "ArrowDown":
+                    artwork.y += step;
+                    break;
+
+                case "+":
+                case "=":
+                    resizeArtwork({
+                        x: artwork.x + artwork.width * 1.05
+                    });
+                    break;
+
+                case "-":
+                case "_":
+                    resizeArtwork({
+                        x: artwork.x + artwork.width * 0.95
+                    });
+                    break;
+
+                default:
+                    handled = false;
+            }
+
+            if (!handled) {
+                return;
+            }
+
+            event.preventDefault();
+
+            keepArtworkInsideCanvas();
+
+            redraw();
+        });
 
 
     function stopInteraction(event) {

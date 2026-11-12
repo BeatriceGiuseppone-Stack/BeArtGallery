@@ -1,74 +1,88 @@
 @model BeArtGallery.Models.Artist
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Elimina artista";
 }
 
-<h1>Delete</h1>
+<div class="container py-5">
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>BeArtGallery.Models.Artist</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nationality)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nationality)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BirthDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BirthDate)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeathDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeathDate)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Biography)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Biography)
-        </dd>
-    </dl>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Artworks)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Artworks)
-        </dd>
-    </dl>
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    <a asp-action="Details"
+       asp-route-id="@Model.Id"
+       class="gx-back-link">
+        ← Torna all'artista
+    </a>
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-7">
+
+            <div class="gx-form-card">
+
+                <div class="gallery-eyebrow mb-2">
+                    Artisti
+                </div>
+
+                <h1 class="gx-form-title">
+                    Eliminare questo artista?
+                </h1>
+
+                <p class="gx-page-intro mb-4">
+                    La scheda dell'artista verrà rimossa definitivamente.
+                    L'operazione non si può annullare.
+                </p>
+
+                <dl class="gx-confirm-list">
+
+                    <dt>Nome</dt>
+                    <dd>@Model.FirstName @Model.LastName</dd>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Nationality))
+                    {
+                        <dt>Nazionalità</dt>
+                        <dd>@Model.Nationality</dd>
+                    }
+
+                    @if (Model.BirthDate.HasValue)
+                    {
+                        <dt>Nascita</dt>
+                        <dd>@Model.BirthDate.Value.ToString("dd/MM/yyyy")</dd>
+                    }
+
+                    @if (Model.DeathDate.HasValue)
+                    {
+                        <dt>Morte</dt>
+                        <dd>@Model.DeathDate.Value.ToString("dd/MM/yyyy")</dd>
+                    }
+
+                    <dt>Opere in catalogo</dt>
+                    <dd>@Model.Artworks.Count</dd>
+
+                </dl>
+
+                <form asp-action="Delete" method="post">
+
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="d-flex flex-wrap gap-2">
+
+                        <button type="submit"
+                                class="btn gallery-btn-danger">
+                            Elimina definitivamente
+                        </button>
+
+                        <a asp-action="Index"
+                           class="btn gallery-btn-outline">
+                            Annulla
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>

@@ -54,7 +54,7 @@ public class ChangePasswordModel : PageModel
         /// </summary>
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Current password")]
+        [Display(Name = "Password attuale")]
         public string OldPassword { get; set; } = default!;
 
         /// <summary>
@@ -62,9 +62,9 @@ public class ChangePasswordModel : PageModel
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "La {0} deve avere almeno {2} e al massimo {1} caratteri.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "New password")]
+        [Display(Name = "Nuova password")]
         public string NewPassword { get; set; } = default!;
 
         /// <summary>
@@ -72,8 +72,8 @@ public class ChangePasswordModel : PageModel
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm new password")]
-        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [Display(Name = "Conferma nuova password")]
+        [Compare("NewPassword", ErrorMessage = "La nuova password e la conferma non coincidono.")]
         public string? ConfirmPassword { get; set; }
     }
 
@@ -119,7 +119,7 @@ public class ChangePasswordModel : PageModel
 
         await _signInManager.RefreshSignInAsync(user);
         _logger.LogInformation("User changed their password successfully.");
-        StatusMessage = "Your password has been changed.";
+        StatusMessage = "La password è stata cambiata.";
 
         return RedirectToPage();
     }

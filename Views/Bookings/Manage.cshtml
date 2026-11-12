@@ -22,7 +22,7 @@
 
         <p class="gx-page-intro">
             Visualizza e filtra le prenotazioni ricevute
-            per visite ed eventi.
+            per gli eventi.
         </p>
 
         </div>
@@ -58,11 +58,11 @@
                     <!-- ATTIVITÀ -->
                     <div class="col-lg-3 col-md-6">
 
-                        <label class="form-label">
+                        <label class="form-label" for="filter-activityId">
                             Attività
                         </label>
 
-                        <select name="activityId"
+                        <select id="filter-activityId" name="activityId"
                                 class="form-select">
 
                             <option value="">
@@ -91,11 +91,11 @@
                     <!-- STATO -->
                     <div class="col-lg-2 col-md-6">
 
-                        <label class="form-label">
+                        <label class="form-label" for="filter-status">
                             Stato
                         </label>
 
-                        <select name="status"
+                        <select id="filter-status" name="status"
                                 class="form-select">
 
                             <option value="">
@@ -137,33 +137,33 @@
                     <!-- DATA DA -->
                     <div class="col-lg-2 col-md-6">
 
-                        <label class="form-label">
+                        <label class="form-label" for="filter-fromDate">
                             Dal
                         </label>
 
-                        <input type="date" name="fromDate" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+                        <input type="date" id="filter-fromDate" name="fromDate" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" class="form-control" />
 
                     </div>
 
                     <!-- DATA A -->
                     <div class="col-lg-2 col-md-6">
 
-                        <label class="form-label">
+                        <label class="form-label" for="filter-toDate">
                             Al
                         </label>
 
-                        <input type="date" name="toDate" value="@(Model.ToDate?.ToString("yyyy-MM-dd"))" class="form-control" />
+                        <input type="date" id="filter-toDate" name="toDate" value="@(Model.ToDate?.ToString("yyyy-MM-dd"))" class="form-control" />
 
                     </div>
 
                     <!-- EMAIL VISITATORE -->
                     <div class="col-lg-3 col-md-6">
 
-                        <label class="form-label">
+                        <label class="form-label" for="filter-userEmail">
                             Email visitatore
                         </label>
 
-                        <input type="text" name="userEmail" value="@Model.UserEmail" class="form-control" placeholder="Cerca per email..." />
+                        <input type="text" id="filter-userEmail" name="userEmail" value="@Model.UserEmail" class="form-control" placeholder="Cerca per email..." />
 
                     </div>
 

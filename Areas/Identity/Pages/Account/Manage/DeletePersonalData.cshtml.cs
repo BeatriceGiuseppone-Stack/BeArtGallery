@@ -81,7 +81,7 @@ public class DeletePersonalDataModel : PageModel
         {
             if (!await _userManager.CheckPasswordAsync(user, Input.Password))
             {
-                ModelState.AddModelError(string.Empty, "Incorrect password.");
+                ModelState.AddModelError(string.Empty, "Password non corretta.");
                 return Page();
             }
         }

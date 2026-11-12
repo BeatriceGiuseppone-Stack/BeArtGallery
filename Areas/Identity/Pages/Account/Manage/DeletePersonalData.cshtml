@@ -1,33 +1,76 @@
 @page
 @model DeletePersonalDataModel
+
 @{
-    ViewData["Title"] = "Delete Personal Data";
+    ViewData["Title"] = "Elimina account";
     ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
-<h3>@ViewData["Title"]</h3>
+<div class="account-content">
 
-<div class="alert alert-warning" role="alert">
-    <p>
-        <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
-    </p>
-</div>
+    <div class="gallery-eyebrow mb-2">
+        Dati personali
+    </div>
 
-<div>
-    <form id="delete-user" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <h2 class="account-section-title">
+        Eliminare il tuo account?
+    </h2>
+
+    <div class="gx-notice gx-notice-alert mb-4" style="max-width: 36rem;">
+        <strong>L'operazione non si può annullare.</strong>
+        <span>Il tuo account e i dati collegati verranno rimossi definitivamente.</span>
+    </div>
+
+    <form id="delete-user"
+          method="post"
+          style="max-width: 32rem;">
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-4"
+             role="alert">
+        </div>
+
         @if (Model.RequirePassword)
         {
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Please enter your password." />
-                <label asp-for="Input.Password" class="form-label"></label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            <div class="mb-4">
+
+                <label asp-for="Input.Password"
+                       class="form-label gallery-form-label">
+                    Password
+                </label>
+
+                <input asp-for="Input.Password"
+                       class="form-control gallery-form-control"
+                       autocomplete="current-password"
+                       aria-required="true" />
+
+                <span asp-validation-for="Input.Password"
+                      class="text-danger small">
+                </span>
+
             </div>
         }
-        <button class="w-100 btn btn-lg btn-danger" type="submit">Delete data and close my account</button>
+
+        <div class="d-flex flex-wrap gap-2">
+
+            <button class="btn gallery-btn-danger"
+                    type="submit">
+                Elimina dati e chiudi l'account
+            </button>
+
+            <a asp-page="./PersonalData"
+               class="btn gallery-btn-outline">
+                Annulla
+            </a>
+
+        </div>
+
     </form>
+
 </div>
 
 @section Scripts {
+
     <partial name="_ValidationScriptsPartial" />
+
 }

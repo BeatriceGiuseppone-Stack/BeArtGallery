@@ -490,7 +490,7 @@ namespace BeArtGallery.Services
                     Description =
                         "Le prossime attività hanno raggiunto un'occupazione media del " +
                         $"{model.OccupancyRate}%. " +
-                        "La domanda per visite ed eventi è elevata."
+                        "La domanda per gli eventi è elevata."
                 });
             }
 

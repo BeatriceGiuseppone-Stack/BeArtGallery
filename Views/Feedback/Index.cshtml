@@ -17,18 +17,26 @@
 
 <div class="container py-5">
 
-    <div class="gallery-eyebrow mb-3">
-        Gestione
+    <div class="gx-page-head">
+
+        <div>
+
+            <div class="gallery-eyebrow mb-2">
+                Gestione
+            </div>
+
+            <h1 class="gx-page-title">
+                Feedback dei visitatori
+            </h1>
+
+            <p class="gx-page-intro">
+                Valutazioni lasciate dai visitatori dopo aver partecipato
+                agli eventi.
+            </p>
+
+        </div>
+
     </div>
-
-    <h1 class="h2 mb-2">
-        Feedback dei visitatori
-    </h1>
-
-    <p class="text-muted mb-4">
-        Valutazioni lasciate dai visitatori dopo aver partecipato
-        a visite ed eventi.
-    </p>
 
 
     <div class="row g-4 mb-4">
@@ -104,7 +112,7 @@
 
     @if (Model.RatingFilter.HasValue)
     {
-        <div class="alert alert-light d-flex justify-content-between align-items-center">
+        <div class="gx-notice mb-4 d-flex flex-row justify-content-between align-items-center">
 
             <span>
                 Stai visualizzando solo i feedback con
@@ -112,7 +120,7 @@
             </span>
 
             <a asp-action="Index"
-               class="btn btn-sm btn-outline-secondary">
+               class="btn btn-sm gallery-btn-outline">
                 Mostra tutti
             </a>
 

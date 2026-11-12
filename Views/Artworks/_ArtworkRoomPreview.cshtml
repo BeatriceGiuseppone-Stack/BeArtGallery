@@ -137,7 +137,8 @@
                             data-artwork-image="@Model.ImageUrl"
                             data-artwork-width="@Model.WidthCm"
                             data-artwork-height="@Model.HeightCm"
-                            aria-label="Anteprima dell'opera nella stanza">
+                            tabindex="0"
+                            aria-label="Anteprima dell'opera nella stanza. Usa le frecce per spostare l'opera e i tasti più e meno per ridimensionarla.">
                     </canvas>
 
                 </div>
@@ -154,6 +155,11 @@
                     <span>
                         Usa il quadratino in basso a destra
                         per ridimensionarla.
+                    </span>
+
+                    <span>
+                        Da tastiera: frecce per spostarla,
+                        + e − per ridimensionarla.
                     </span>
 
                 </div>
@@ -197,6 +203,7 @@
 
                             <button type="button"
                                     id="freePreviewMode"
+                                    aria-pressed="true"
                                     class="room-preview-mode-button active">
 
                                 <span class="room-preview-mode-title">
@@ -212,6 +219,7 @@
 
                             <button type="button"
                                     id="realScaleMode"
+                                    aria-pressed="false"
                                     class="room-preview-mode-button">
 
                                 <span class="room-preview-mode-title">

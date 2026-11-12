@@ -45,6 +45,10 @@
 
 <body>
 
+    @* Collegamento per chi naviga da tastiera: salta il menu *@
+    <a class="gx-skip-link" href="#main-content">Vai al contenuto</a>
+
+
     <header>
 
         <nav class="navbar navbar-expand-lg gallery-navbar">
@@ -129,7 +133,7 @@
                         </li>
 
 
-                        @* Visite ed eventi *@
+                        @* Eventi *@
 
                         <li class="nav-item">
 
@@ -137,7 +141,7 @@
                                asp-controller="GalleryActivities"
                                asp-action="Index">
 
-                                Visite ed eventi
+                                Eventi
 
                             </a>
 
@@ -504,7 +508,7 @@
        CONTENUTO PAGINA
        ================================================= *@
 
-    <main role="main">
+    <main role="main" id="main-content" tabindex="-1">
 
         @RenderBody()
 
@@ -532,7 +536,7 @@
 
                     <p class="gallery-footer-text">
 
-                        Arte, visite ed esperienze culturali
+                        Arte, eventi ed esperienze culturali
                         in un unico spazio digitale.
 
                     </p>
@@ -560,7 +564,7 @@
                     <a asp-controller="GalleryActivities"
                        asp-action="Index">
 
-                        Visite ed eventi
+                        Eventi
 
                     </a>
 

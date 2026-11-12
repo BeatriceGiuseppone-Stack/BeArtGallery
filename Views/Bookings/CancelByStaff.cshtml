@@ -8,7 +8,7 @@
 
     <div class="mb-4">
         <a asp-action="Manage"
-           class="text-decoration-none text-dark">
+           class="gx-back-link">
             ← Torna alla gestione prenotazioni
         </a>
     </div>
@@ -17,15 +17,19 @@
 
         <div class="col-lg-6">
 
-            <div class="card border-0 shadow-sm">
+            <div class="gx-form-card">
 
-                <div class="card-body p-4">
+                <div>
 
-                    <h1 class="h3 mb-3">
+                    <div class="gallery-eyebrow mb-2">
+                        Gestione prenotazioni
+                    </div>
+
+                    <h1 class="gx-form-title">
                         Annulla prenotazione
                     </h1>
 
-                    <div class="alert alert-light border">
+                    <div class="gx-notice mb-4">
 
                         <div>
                             <strong>Utente:</strong>
@@ -75,12 +79,12 @@
                         <div class="d-flex gap-2">
 
                             <button type="submit"
-                                    class="btn btn-danger">
+                                    class="btn gallery-btn-danger">
                                 Conferma annullamento
                             </button>
 
                             <a asp-action="Manage"
-                               class="btn btn-outline-secondary">
+                               class="btn gallery-btn-outline">
                                 Annulla
                             </a>
 

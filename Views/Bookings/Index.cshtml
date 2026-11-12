@@ -40,7 +40,7 @@
             </h1>
 
             <p class="gx-page-intro">
-                I tuoi biglietti per visite ed eventi. Il giorno della visita
+                I tuoi biglietti per gli eventi della galleria. Il giorno della visita
                 mostra il QR code all'ingresso.
             </p>
 
@@ -52,7 +52,7 @@
                asp-action="Index"
                class="btn gallery-btn-outline">
 
-                Prenota un'altra visita
+                Prenota un altro evento
 
             </a>
 
@@ -85,7 +85,7 @@
             </h2>
 
             <p>
-                Consulta le visite e gli eventi disponibili
+                Consulta gli eventi in programma
                 e scegli quello a cui vuoi partecipare.
             </p>
 
@@ -93,7 +93,7 @@
                asp-action="Index"
                class="btn gallery-btn-primary">
 
-                Scopri visite ed eventi
+                Scopri gli eventi
 
             </a>
 
@@ -247,7 +247,7 @@
 
                                     <span>
                                         La tua prenotazione è stata annullata automaticamente
-                                        perché la visita o l'evento non avrà luogo.
+                                        perché l'evento non avrà luogo.
                                     </span>
 
                                     @if (!string.IsNullOrWhiteSpace(booking.CancellationReason))

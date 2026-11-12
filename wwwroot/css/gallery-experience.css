@@ -44,6 +44,7 @@
     --gx-ink: #1f2023;         /* antracite del logotipo */
     --gx-muted: #6d6860;       /* testo secondario */
     --gx-gilt: #b8872e;        /* oro dell'arco nel logo */
+    --gx-gilt-text: #876219;   /* oro scurito per i testi: contrasto AA su fondo chiaro */
     --gx-gilt-light: #e7d3a6;  /* oro chiaro su fondo scuro */
     --gx-line: #e2dbcf;        /* filetti */
     --gx-light: 255, 226, 170; /* colore della luce calda (RGB) */
@@ -59,7 +60,7 @@
     --gallery-bg: var(--gx-wall);
     --gallery-text: var(--gx-ink);
     --gallery-muted: var(--gx-muted);
-    --gallery-accent: var(--gx-gilt);
+    --gallery-accent: var(--gx-gilt-text);
     --gallery-dark: var(--gx-ink);
     --gallery-border: var(--gx-line);
 }
@@ -113,7 +114,7 @@ h1, h2, h3,
     font-size: 1.05rem;
     letter-spacing: 0;
     text-transform: none;
-    color: var(--gx-gilt);
+    color: var(--gx-gilt-text);
 }
 
 
@@ -171,7 +172,7 @@ h1, h2, h3,
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: var(--gx-gilt);
+    background: var(--gx-gilt-text);
     transform: translateY(101%);
     transition: transform .45s var(--gx-ease);
 }
@@ -445,7 +446,7 @@ h1, h2, h3,
 }
 
 .gallery-feature-card:hover .gallery-feature-number {
-    color: var(--gx-gilt);
+    color: var(--gx-gilt-text);
 }
 
 .gallery-feature-card a {
@@ -624,7 +625,7 @@ h1, h2, h3,
 
 .gx-event:hover .gx-event-day,
 .gx-event:focus-within .gx-event-day {
-    color: var(--gx-gilt);
+    color: var(--gx-gilt-text);
 }
 
 .gx-event-tags {
@@ -639,7 +640,7 @@ h1, h2, h3,
     font-family: var(--gx-font-display);
     font-size: 1rem;
     font-style: italic;
-    color: var(--gx-gilt);
+    color: var(--gx-gilt-text);
 }
 
 .gx-tag + .gx-tag {
@@ -811,7 +812,7 @@ h1, h2, h3,
 }
 
 .gx-back-link:hover {
-    color: var(--gx-gilt);
+    color: var(--gx-gilt-text);
 }
 
 .gx-detail {
@@ -995,7 +996,7 @@ h1, h2, h3,
 }
 
 .gx-ticket:hover .gx-event-day {
-    color: var(--gx-gilt);
+    color: var(--gx-gilt-text);
 }
 
 .gx-ticket-body {
@@ -1079,7 +1080,7 @@ h1, h2, h3,
 }
 
 .gx-ticket .feedback-stars {
-    color: var(--gx-gilt);
+    color: var(--gx-gilt-text);
 }
 
 .gx-link-danger {
@@ -1293,7 +1294,7 @@ a.gx-link-danger {
 }
 
 .gx-wall-item:hover .gx-wall-artist {
-    color: var(--gx-gilt);
+    color: var(--gx-gilt-text);
 }
 
 /* --- Prossimi appuntamenti: la sala buia --------------------------- */
@@ -1486,7 +1487,7 @@ a.gx-link-danger {
 }
 
 .gx-name:hover .gx-name-full {
-    color: var(--gx-gilt);
+    color: var(--gx-gilt-text);
 }
 
 @media (max-width: 767.98px) {
@@ -1540,6 +1541,334 @@ a.gx-link-danger {
     }
 }
 
+
+/* ---------------------------------------------------------------------
+   Componenti Bootstrap nello stile della galleria
+   Così anche le pagine di servizio (moduli, conferme, tabelle) hanno
+   lo stesso aspetto del resto del sito.
+   --------------------------------------------------------------------- */
+
+main .card {
+    background: var(--gx-paper);
+    border: 1px solid var(--gx-line) !important;
+    border-radius: 0;
+    box-shadow: none !important;
+}
+
+main .alert {
+    border: 0;
+    border-left: 2px solid var(--gx-line);
+    border-radius: 0;
+    font-size: .95rem;
+}
+
+main .alert-success { background: #f1f5ef; border-left-color: #3f6b4a; color: #2d4a35; }
+main .alert-danger  { background: #fbf4f2; border-left-color: #9b2c2c; color: #6f2020; }
+main .alert-warning { background: #fbf6ec; border-left-color: var(--gx-gilt); color: #5c4519; }
+main .alert-info    { background: #f3f3f1; border-left-color: var(--gx-muted); color: var(--gx-ink); }
+main .alert-light,
+main .alert-secondary { background: var(--gx-paper); border-left-color: var(--gx-line); color: var(--gx-ink); }
+
+main .form-control,
+main .form-select {
+    border-color: var(--gx-line);
+    border-radius: 0;
+}
+
+main .form-control:focus,
+main .form-select:focus,
+main .form-check-input:focus {
+    border-color: var(--gx-gilt);
+    box-shadow: 0 0 0 .2rem rgba(184, 135, 46, .15);
+}
+
+main .form-check-input:checked {
+    background-color: var(--gx-ink);
+    border-color: var(--gx-ink);
+}
+
+main .form-label {
+    color: var(--gx-muted);
+    font-size: .88rem;
+}
+
+main .table {
+    --bs-table-bg: transparent;
+    margin-bottom: 0;
+}
+
+main .table thead th {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    color: var(--gx-muted);
+    font-size: .82rem;
+    font-weight: 400;
+    background: var(--gx-wall);
+    border-bottom: 1px solid var(--gx-line);
+}
+
+main .table td {
+    border-color: var(--gx-line);
+}
+
+main .table tbody tr {
+    transition: background-color .3s;
+}
+
+main .table tbody tr:hover {
+    background-color: rgba(var(--gx-light), .16);
+}
+
+/* Etichette: corsivo nei colori del marchio, al posto delle pillole colorate */
+main .badge {
+    padding: 0;
+    font-family: var(--gx-font-display);
+    font-size: .95rem;
+    font-style: italic;
+    font-weight: 400;
+    background: none !important;
+    border-radius: 0;
+    color: var(--gx-gilt-text);
+}
+
+main .badge.bg-success { color: #3f6b4a; }
+main .badge.bg-danger  { color: #9b2c2c; }
+main .badge.bg-secondary,
+main .badge.bg-light   { color: var(--gx-muted); }
+main .badge.bg-warning { color: #8a6418; }
+
+/* Pulsanti Bootstrap rimasti: stessa forma dei pulsanti del sito */
+main .btn {
+    border-radius: 0;
+}
+
+main .btn-dark,
+main .btn-primary {
+    color: #fff;
+    background: var(--gx-ink);
+    border-color: var(--gx-ink);
+}
+
+main .btn-dark:hover,
+main .btn-primary:hover {
+    color: #fff;
+    background: var(--gx-gilt-text);
+    border-color: var(--gx-gilt-text);
+}
+
+main .btn-outline-dark,
+main .btn-outline-secondary {
+    color: var(--gx-ink);
+    border-color: var(--gx-ink);
+}
+
+main .btn-outline-dark:hover,
+main .btn-outline-secondary:hover {
+    color: #fff;
+    background: var(--gx-ink);
+    border-color: var(--gx-ink);
+}
+
+main .btn-danger {
+    color: #fff;
+    background: #9b2c2c;
+    border-color: #9b2c2c;
+}
+
+main .btn-outline-danger {
+    color: #9b2c2c;
+    border-color: #9b2c2c;
+}
+
+main .btn-outline-danger:hover,
+main .btn-danger:hover {
+    color: #fff;
+    background: #7c2020;
+    border-color: #7c2020;
+}
+
+/* Riquadro per le conferme (annullare, eliminare) */
+.gx-confirm-list {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: .6rem 1.5rem;
+    margin: 0 0 2rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--gx-line);
+    border-bottom: 1px solid var(--gx-line);
+}
+
+.gx-confirm-list dt {
+    color: var(--gx-muted);
+    font-size: .85rem;
+    font-weight: 400;
+}
+
+.gx-confirm-list dd {
+    margin: 0;
+}
+
+/* Pagine semplici (privacy, errori, accesso negato) */
+.gx-prose {
+    max-width: 44rem;
+}
+
+.gx-prose h2 {
+    margin: 2.5rem 0 .75rem;
+    font-family: var(--gx-font-display);
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+.gx-prose p,
+.gx-prose li {
+    color: #3b3a37;
+    line-height: 1.8;
+}
+
+/* --- Gestione utenti (admin) --------------------------------------- */
+
+.gx-roster-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem 1.25rem;
+    margin: 0 0 1.25rem;
+    color: var(--gx-muted);
+    font-size: .92rem;
+}
+
+.gx-roster-summary span + span {
+    padding-left: 1.25rem;
+    border-left: 1px solid var(--gx-line);
+}
+
+.gx-roster {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--gx-paper);
+    border: 1px solid var(--gx-line);
+}
+
+.gx-roster-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem 2rem;
+    padding: 1.25rem 1.75rem;
+    border-top: 1px solid var(--gx-line);
+    transition: background-color .3s;
+}
+
+.gx-roster-row:first-child {
+    border-top: 0;
+}
+
+.gx-roster-row:hover {
+    background-color: rgba(var(--gx-light), .14);
+}
+
+.gx-roster-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+}
+
+/* Iniziale dentro l'arco del logo */
+.gx-monogram {
+    display: flex;
+    flex: 0 0 2.6rem;
+    align-items: flex-end;
+    justify-content: center;
+    width: 2.6rem;
+    height: 3rem;
+    padding-bottom: .35rem;
+    font-family: var(--gx-font-display);
+    font-size: 1.35rem;
+    line-height: 1;
+    color: var(--gx-ink);
+    border: 1px solid var(--gx-gilt);
+    border-bottom: 0;
+    border-radius: 999px 999px 0 0;
+    transition: background-color .4s, color .4s;
+}
+
+.gx-roster-row:hover .gx-monogram {
+    color: var(--gx-paper);
+    background: var(--gx-gilt-text);
+}
+
+.gx-roster-email {
+    overflow: hidden;
+    font-size: 1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gx-roster-user .gx-tag {
+    font-size: .92rem;
+}
+
+.gx-roster-role {
+    display: flex;
+    gap: .5rem;
+}
+
+.gx-roster-role .form-select {
+    max-width: 11rem;
+}
+
+.gx-roster-role .btn {
+    white-space: nowrap;
+}
+
+.gx-roster-actions a {
+    color: var(--gx-muted);
+    font-size: .9rem;
+    text-decoration: underline;
+    text-decoration-color: var(--gx-line);
+    text-underline-offset: 4px;
+    white-space: nowrap;
+    transition: color .3s, text-decoration-color .3s;
+}
+
+.gx-roster-actions a:hover {
+    color: var(--gx-ink);
+    text-decoration-color: var(--gx-gilt);
+}
+
+/* Moduli dell'amministrazione (nuovo utente, reimposta password) */
+.gx-form-card {
+    padding: 2.5rem;
+    background: var(--gx-paper);
+    border: 1px solid var(--gx-line);
+    border-top: 2px solid var(--gx-gilt);
+}
+
+.gx-form-title {
+    margin: 0 0 .75rem;
+    font-family: var(--gx-font-display);
+    font-size: clamp(1.9rem, 3vw, 2.4rem);
+    font-weight: 400;
+    line-height: 1.15;
+}
+
+.gx-form-card .text-danger {
+    font-size: .88rem;
+}
+
+@media (max-width: 767.98px) {
+
+    .gx-roster-row {
+        grid-template-columns: 1fr;
+        padding: 1.25rem;
+    }
+
+    .gx-form-card {
+        padding: 1.75rem 1.25rem;
+    }
+}
 
 /* --- Schermi piccoli ------------------------------------------------- */
 
@@ -1632,11 +1961,57 @@ a.gx-link-danger {
 
 a:focus-visible,
 button:focus-visible,
+canvas:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-    outline: 2px solid var(--gx-gilt);
+    outline: 2px solid var(--gx-gilt-text);
     outline-offset: 3px;
+}
+
+/* Collegamento "Vai al contenuto": compare solo quando riceve il focus */
+.gx-skip-link {
+    position: absolute;
+    top: .75rem;
+    left: .75rem;
+    z-index: 2000;
+    padding: .7rem 1.2rem;
+    color: #fff;
+    background: var(--gx-ink);
+    transform: translateY(-200%);
+    transition: transform .2s;
+}
+
+.gx-skip-link:focus {
+    color: #fff;
+    transform: translateY(0);
+}
+
+main:focus {
+    outline: none;
+}
+
+/* Il focus da tastiera deve vedersi anche sulle righe-link e sui riquadri */
+.gx-wall-item:focus-visible,
+.gx-agenda-item:focus-visible,
+.gx-name:focus-visible,
+.gx-event-date:focus-visible,
+.gx-home-more:focus-visible {
+    outline: 2px solid var(--gx-gilt-text);
+    outline-offset: 4px;
+}
+
+.gx-home-dark a:focus-visible {
+    outline-color: var(--gx-gilt-light);
+}
+
+.gx-wall-item:focus-visible .gx-wall-label {
+    border-left-color: var(--gx-gilt);
+}
+
+.gx-agenda-item:focus-visible .gx-agenda-day {
+    color: var(--gx-gilt-light);
 }
 
 @media (prefers-reduced-motion: reduce) {

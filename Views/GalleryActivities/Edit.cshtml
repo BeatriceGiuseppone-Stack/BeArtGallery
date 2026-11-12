@@ -9,22 +9,26 @@
 
     <div class="mb-4">
         <a asp-action="Index"
-           class="text-decoration-none text-dark">
-            ← Torna a visite ed eventi
+           class="gx-back-link">
+            ← Torna agli eventi
         </a>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-7 col-md-9">
 
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4">
+            <div class="gx-form-card">
+                <div>
 
-                    <h1 class="h3 mb-2">
+                    <div class="gallery-eyebrow mb-2">
+                        Eventi
+                    </div>
+
+                    <h1 class="gx-form-title">
                         Modifica visita o evento
                     </h1>
 
-                    <p class="text-muted mb-4">
+                    <p class="gx-page-intro mb-4">
                         Aggiorna le informazioni dell'attività selezionata.
                     </p>
 
@@ -164,12 +168,12 @@
                         <div class="d-flex gap-2">
 
                             <button type="submit"
-                                    class="btn btn-primary">
+                                    class="btn gallery-btn-primary">
                                 Salva modifiche
                             </button>
 
                             <a asp-action="Index"
-                               class="btn btn-outline-secondary">
+                               class="btn gallery-btn-outline">
                                 Annulla
                             </a>
 

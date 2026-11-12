@@ -10,15 +10,19 @@
 
         <div class="col-lg-7">
 
-            <div class="card border-0 shadow-sm">
+            <div class="gx-form-card">
 
-                <div class="card-body p-4">
+                <div>
 
-                    <h1 class="h3 mb-3">
+                    <div class="gallery-eyebrow mb-2">
+                        Eventi
+                    </div>
+
+                    <h1 class="gx-form-title">
                         Annulla attività
                     </h1>
 
-                    <div class="alert alert-warning">
+                    <div class="gx-notice gx-notice-warn mb-4">
 
                         <strong>@Model.Title</strong>
 
@@ -71,12 +75,12 @@
                         </div>
 
                         <button type="submit"
-                                class="btn btn-danger">
+                                class="btn gallery-btn-danger">
                             Annulla attività
                         </button>
 
                         <a asp-action="Index"
-                           class="btn btn-outline-secondary">
+                           class="btn gallery-btn-outline">
                             Torna indietro
                         </a>
 

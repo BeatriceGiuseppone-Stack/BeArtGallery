@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeArtGallery.Controllers.Api
 {
     /// <summary>
-    /// API REST pubblica per consultare visite ed eventi della galleria.
+    /// API REST pubblica per consultare gli eventi della galleria.
     /// </summary>
     [ApiController]
     [Route("api/activities")]

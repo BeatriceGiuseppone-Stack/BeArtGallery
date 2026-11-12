@@ -1,6 +1,81 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+@{
+    ViewData["Title"] = "Privacy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-5">
+
+    <div class="gx-page-head">
+
+        <div>
+
+            <div class="gallery-eyebrow mb-2">
+                Informativa
+            </div>
+
+            <h1 class="gx-page-title">
+                Privacy
+            </h1>
+
+            <p class="gx-page-intro">
+                Come BeArtGallery tratta i dati di chi usa il sito.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="gx-prose">
+
+        <h2>Quali dati raccogliamo</h2>
+
+        <p>
+            Per creare un account chiediamo un indirizzo email e una password,
+            che viene salvata solo in forma cifrata. Quando usi il sito
+            conserviamo le informazioni necessarie ai servizi che richiedi:
+            prenotazioni agli eventi, ingressi registrati, opere salvate tra i
+            preferiti, richieste di informazioni sulle opere e valutazioni
+            lasciate dopo una visita.
+        </p>
+
+        <h2>Perché li usiamo</h2>
+
+        <p>
+            I dati servono solo a far funzionare questi servizi: gestire le
+            prenotazioni e i posti disponibili, permettere allo staff di
+            registrare l'ingresso con il QR code, rispondere alle richieste e
+            migliorare il programma degli eventi. Lo staff vede i dati delle
+            prenotazioni e dei feedback solo in forma aggregata nella dashboard
+            o per svolgere il proprio lavoro.
+        </p>
+
+        <h2>Cookie</h2>
+
+        <p>
+            Il sito usa soltanto cookie tecnici: quello che mantiene l'accesso
+            al tuo account e quello che protegge i moduli da invii non
+            autorizzati. Non usiamo cookie di profilazione né strumenti di
+            tracciamento pubblicitario. I caratteri tipografici sono ospitati
+            sul nostro server, quindi la loro visualizzazione non invia dati
+            a servizi esterni.
+        </p>
+
+        <h2>I tuoi diritti</h2>
+
+        <p>
+            Dall'area personale puoi consultare e scaricare i tuoi dati,
+            modificare email e password oppure eliminare definitivamente il
+            tuo account.
+        </p>
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-area="Identity"
+               asp-page="/Account/Manage/PersonalData"
+               class="btn gallery-btn-outline mt-2">
+                Vai ai tuoi dati personali
+            </a>
+        }
+
+    </div>
+
+</div>

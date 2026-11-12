@@ -1,21 +1,52 @@
 @page
 @model LogoutModel
+
 @{
-    ViewData["Title"] = "Log out";
+    ViewData["Title"] = "Esci";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    @{
-        if (User.Identity?.IsAuthenticated ?? false)
+<div class="container py-5">
+
+    <div class="gx-prose">
+
+        <div class="gallery-eyebrow mb-2">
+            Il tuo account
+        </div>
+
+        @if (User.Identity?.IsAuthenticated ?? false)
         {
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
+            <h1 class="gx-page-title">
+                Vuoi uscire?
+            </h1>
+
+            <form asp-area="Identity"
+                  asp-page="/Account/Logout"
+                  asp-route-returnUrl="@Url.Page("/", new { area = "" })"
+                  method="post">
+
+                <button type="submit"
+                        class="btn gallery-btn-primary mt-3">
+                    Esci dall'account
+                </button>
+
             </form>
         }
         else
         {
-            <p>You have successfully logged out of the application.</p>
+            <h1 class="gx-page-title">
+                Sei uscito dal tuo account
+            </h1>
+
+            <p>
+                A presto in galleria.
+            </p>
+
+            <a href="~/"
+               class="btn gallery-btn-outline mt-3">
+                Torna alla home
+            </a>
         }
-    }
-</header>
+
+    </div>
+
+</div>
