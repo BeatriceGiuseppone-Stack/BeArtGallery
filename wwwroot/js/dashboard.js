@@ -44,6 +44,9 @@ function createBookingsChart(data) {
     }
 
 
+    describeChart(canvas, "Prenotazioni negli ultimi 6 mesi", data);
+
+
     new Chart(
         canvas,
         {
@@ -167,6 +170,13 @@ function createInquiriesChart(data) {
     }
 
 
+    describeChart(canvas, "Richieste di informazioni", [
+        { Label: "Nuove", Value: data.newCount },
+        { Label: "In lavorazione", Value: data.inProgressCount },
+        { Label: "Chiuse", Value: data.closedCount }
+    ]);
+
+
     new Chart(
         canvas,
         {
@@ -226,4 +236,21 @@ function createInquiriesChart(data) {
 
         });
 
+}
+
+
+// Descrive il grafico a parole per i lettori di schermo:
+// il canvas da solo non è leggibile.
+function describeChart(canvas, title, data) {
+
+    const values =
+        data
+            .map(item => item.Label + ": " + item.Value)
+            .join(", ");
+
+    canvas.setAttribute("role", "img");
+
+    canvas.setAttribute(
+        "aria-label",
+        title + ". " + values + ".");
 }

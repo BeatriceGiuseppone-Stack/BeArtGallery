@@ -1970,8 +1970,30 @@ textarea:focus-visible {
     outline-offset: 3px;
 }
 
+/* Testi dorati su fondo scuro (pannelli laterali dei moduli) */
+.gallery-form-side .gallery-eyebrow,
+.gallery-form-side-number {
+    color: var(--gx-gilt-light);
+}
+
+/* Stelle dei feedback e testo secondario: contrasto sufficiente */
+.feedback-stars {
+    color: var(--gx-gilt-text);
+}
+
+main .text-secondary,
+main .text-muted {
+    color: var(--gx-muted) !important;
+}
+
+main .btn-link {
+    color: var(--gx-ink);
+    text-decoration-color: var(--gx-gilt);
+    text-underline-offset: 4px;
+}
+
 /* Collegamento "Vai al contenuto": compare solo quando riceve il focus */
-.gx-skip-link {
+body a.gx-skip-link {
     position: absolute;
     top: .75rem;
     left: .75rem;
@@ -1983,7 +2005,7 @@ textarea:focus-visible {
     transition: transform .2s;
 }
 
-.gx-skip-link:focus {
+body a.gx-skip-link:focus {
     color: #fff;
     transform: translateY(0);
 }

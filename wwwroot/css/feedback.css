@@ -3,7 +3,7 @@
    ================================================= */
 
 .feedback-stars {
-    color: #c79a3b;
+    color: #876219;
     letter-spacing: 2px;
     font-size: 1.05rem;
 }
@@ -35,7 +35,7 @@
 .feedback-rating-input input:checked ~ label,
 .feedback-rating-input label:hover,
 .feedback-rating-input label:hover ~ label {
-    color: #c79a3b;
+    color: #876219;
 }
 
 .feedback-rating-input label:hover {
@@ -71,7 +71,7 @@
 
 .feedback-average small {
     font-size: 1.2rem;
-    color: #888;
+    color: #6d6860;
     font-weight: 400;
 }
 
