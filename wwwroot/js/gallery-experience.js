@@ -22,6 +22,27 @@
     }
 
     let frame = null;
+    let heroFrame = null;
+
+    // La luce della home segue il cursore su tutta la prima sezione.
+    const hero = document.querySelector(".gallery-hero");
+
+    if (hero) {
+        hero.addEventListener("pointermove", function (event) {
+            if (heroFrame) {
+                cancelAnimationFrame(heroFrame);
+            }
+
+            heroFrame = requestAnimationFrame(function () {
+                const box = hero.getBoundingClientRect();
+                const x = ((event.clientX - box.left) / box.width) * 100;
+                const y = ((event.clientY - box.top) / box.height) * 100;
+
+                hero.style.setProperty("--gx-hx", x.toFixed(1) + "%");
+                hero.style.setProperty("--gx-hy", y.toFixed(1) + "%");
+            });
+        }, { passive: true });
+    }
 
     document.addEventListener("pointermove", function (event) {
         const target = event.target.closest(selectors);

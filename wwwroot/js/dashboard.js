@@ -72,10 +72,10 @@ function createBookingsChart(data) {
                             ),
 
                         borderColor:
-                            "#9b7b4f",
+                            "#8c1d36",
 
                         backgroundColor:
-                            "rgba(155, 123, 79, 0.10)",
+                            "rgba(140, 29, 54, 0.10)",
 
                         borderWidth:
                             2,
@@ -90,7 +90,7 @@ function createBookingsChart(data) {
                             4,
 
                         pointBackgroundColor:
-                            "#9b7b4f"
+                            "#8c1d36"
                     }
                 ]
 
@@ -200,9 +200,9 @@ function createInquiriesChart(data) {
                         ],
 
                         backgroundColor: [
-                            "#9b7b4f",
-                            "#191918",
-                            "#ded9d1"
+                            "#8c1d36",
+                            "#b8872e",
+                            "#e6dcd3"
                         ],
 
                         borderWidth:
