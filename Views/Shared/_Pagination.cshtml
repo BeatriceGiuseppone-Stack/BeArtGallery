@@ -1,0 +1,71 @@
+@model BeArtGallery.ViewModels.PaginationViewModel
+
+@* Barra di paginazione condivisa da catalogo opere e artisti *@
+
+@if (Model.TotalPages > 1)
+{
+    <nav class="gx-pagination"
+         aria-label="@Model.AriaLabel">
+
+        @if (Model.CurrentPage > 1)
+        {
+            <a asp-controller="@Model.Controller"
+               asp-action="@Model.Action"
+               asp-route-page="@(Model.CurrentPage - 1)"
+               class="gx-page-step"
+               rel="prev">
+                ← Precedente
+            </a>
+        }
+        else
+        {
+            <span class="gx-page-step is-disabled" aria-hidden="true">
+                ← Precedente
+            </span>
+        }
+
+        <ol class="gx-page-numbers">
+
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                <li>
+                    @if (i == Model.CurrentPage)
+                    {
+                        <span class="gx-page-number is-current"
+                              aria-current="page">
+                            <span class="visually-hidden">Pagina </span>@i
+                        </span>
+                    }
+                    else
+                    {
+                        <a asp-controller="@Model.Controller"
+                           asp-action="@Model.Action"
+                           asp-route-page="@i"
+                           class="gx-page-number">
+                            <span class="visually-hidden">Pagina </span>@i
+                        </a>
+                    }
+                </li>
+            }
+
+        </ol>
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a asp-controller="@Model.Controller"
+               asp-action="@Model.Action"
+               asp-route-page="@(Model.CurrentPage + 1)"
+               class="gx-page-step"
+               rel="next">
+                Successiva →
+            </a>
+        }
+        else
+        {
+            <span class="gx-page-step is-disabled" aria-hidden="true">
+                Successiva →
+            </span>
+        }
+
+    </nav>
+}

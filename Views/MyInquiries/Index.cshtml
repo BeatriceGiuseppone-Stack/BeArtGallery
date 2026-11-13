@@ -7,18 +7,22 @@
 
 <div class="container py-5">
 
-    <div class="gallery-eyebrow mb-3">
-        Il tuo account
+    <div class="gx-band mb-5">
+
+        <div class="gallery-eyebrow mb-3">
+            Area personale
+        </div>
+
+        <h1 class="artworks-page-title">
+            Le mie richieste
+        </h1>
+
+        <p class="artworks-page-intro mb-0">
+            Consulta le richieste inviate alla galleria
+            e continua le conversazioni con il nostro staff.
+        </p>
+
     </div>
-
-    <h1 class="artworks-page-title">
-        Le mie richieste
-    </h1>
-
-    <p class="artworks-page-intro mb-5">
-        Consulta le richieste inviate alla galleria
-        e continua le conversazioni con il nostro staff.
-    </p>
 
 
     @if (!Model.Any())
@@ -105,24 +109,20 @@
                                     Stato
                                 </span>
 
-                                <strong>
+                                @switch (inquiry.Status)
+                                {
+                                    case ArtworkInquiryStatus.New:
+                                        <span class="inquiry-status inquiry-status-new">Nuova</span>
+                                        break;
 
-                                    @switch (inquiry.Status)
-                                    {
-                                        case ArtworkInquiryStatus.New:
-                                            <text>Nuova</text>
-                                            break;
+                                    case ArtworkInquiryStatus.InProgress:
+                                        <span class="inquiry-status inquiry-status-progress">In lavorazione</span>
+                                        break;
 
-                                        case ArtworkInquiryStatus.InProgress:
-                                            <text>In lavorazione</text>
-                                            break;
-
-                                        case ArtworkInquiryStatus.Closed:
-                                            <text>Chiusa</text>
-                                            break;
-                                    }
-
-                                </strong>
+                                    case ArtworkInquiryStatus.Closed:
+                                        <span class="inquiry-status inquiry-status-closed">Chiusa</span>
+                                        break;
+                                }
 
                             </div>
 
@@ -131,13 +131,17 @@
                     </div>
 
 
-                    <a asp-action="Details"
-                       asp-route-id="@inquiry.Id"
-                       class="btn gallery-btn-outline">
+                    <div class="inquiry-list-action">
 
-                        Apri conversazione
+                        <a asp-action="Details"
+                           asp-route-id="@inquiry.Id"
+                           class="btn gallery-btn-outline">
 
-                    </a>
+                            Apri conversazione
+
+                        </a>
+
+                    </div>
 
                 </article>
             }

@@ -7,25 +7,24 @@
 
 <div class="container py-5">
 
-    <div class="mb-5">
+    <div class="gx-band mb-5">
 
         <a asp-action="Index"
-           class="gallery-back-link">
+           class="gx-back-link gx-back-link-light">
 
             ← Torna alle mie richieste
 
         </a>
 
+        <div class="gallery-eyebrow mb-3">
+            Conversazione con la galleria
+        </div>
+
+        <h1 class="inquiry-details-title mb-0">
+            @Model.ArtworkTitle
+        </h1>
+
     </div>
-
-
-    <div class="gallery-eyebrow mb-3">
-        Conversazione con la galleria
-    </div>
-
-    <h1 class="inquiry-details-title">
-        @Model.ArtworkTitle
-    </h1>
 
 
     @if (TempData["ErrorMessage"] != null)

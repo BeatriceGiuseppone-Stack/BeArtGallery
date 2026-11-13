@@ -20,14 +20,33 @@ namespace BeArtGallery.Controllers
         // GET: Artists
         // Pagina pubblica con tutti gli artisti
 
-        public async Task<IActionResult> Index()
+        // Come il catalogo opere: 9 artisti per pagina.
+        public const int ArtistsPageSize = 9;
+
+        public async Task<IActionResult> Index(int page = 1)
         {
+            var totalCount = await _context.Artists.CountAsync();
+
+            var totalPages = Math.Max(
+                1,
+                (int)Math.Ceiling(totalCount / (double)ArtistsPageSize));
+
+            page = Math.Clamp(page, 1, totalPages);
+
             var artists = await _context.Artists
                 .AsNoTracking()
                 .Include(a => a.Artworks)
                 .OrderBy(a => a.LastName)
                 .ThenBy(a => a.FirstName)
+                .ThenBy(a => a.Id)
+                .Skip((page - 1) * ArtistsPageSize)
+                .Take(ArtistsPageSize)
                 .ToListAsync();
+
+            ViewBag.Page = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalCount = totalCount;
+            ViewBag.PageSize = ArtistsPageSize;
 
             return View(artists);
         }

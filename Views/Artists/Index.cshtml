@@ -3,6 +3,14 @@
 
 @{
     ViewData["Title"] = "Artisti";
+
+    var currentPage = ViewBag.Page is int p ? p : 1;
+    var totalPages = ViewBag.TotalPages is int tp ? tp : 1;
+    var totalCount = ViewBag.TotalCount is int tc ? tc : Model.Count();
+    var pageSize = ViewBag.PageSize is int ps ? ps : 9;
+
+    var firstShown = totalCount == 0 ? 0 : (currentPage - 1) * pageSize + 1;
+    var lastShown = (currentPage - 1) * pageSize + Model.Count();
 }
 
 <div class="container py-5">
@@ -15,25 +23,6 @@
                 gap-3
                 mb-5">
 
-    @if (User.IsInRole(RoleNames.Staff) ||
-     User.IsInRole(RoleNames.Admin))
-{
-    <div class="gallery-management-note mb-4">
-
-        <div class="gallery-management-note-title">
-            Gestione artisti
-        </div>
-
-        <p class="mb-0">
-            Un artista può essere eliminato solamente se
-            non ha opere associate nel catalogo.
-            Per questo motivo il pulsante
-            <strong>Elimina</strong> viene mostrato solo
-            quando non sono presenti opere collegate.
-        </p>
-
-    </div>
-}
         <div>
 
             <div class="gallery-eyebrow mb-3">
@@ -66,6 +55,27 @@
         }
 
     </div>
+
+
+    @if (User.IsInRole(RoleNames.Staff) ||
+     User.IsInRole(RoleNames.Admin))
+{
+    <div class="gallery-management-note mb-4">
+
+        <div class="gallery-management-note-title">
+            Gestione artisti
+        </div>
+
+        <p class="mb-0">
+            Un artista può essere eliminato solamente se
+            non ha opere associate nel catalogo.
+            Per questo motivo il pulsante
+            <strong>Elimina</strong> viene mostrato solo
+            quando non sono presenti opere collegate.
+        </p>
+
+    </div>
+}
 
 
     @* Messaggi *@
@@ -113,6 +123,10 @@
     }
     else
     {
+        <p class="gx-catalog-count">
+            Artisti @(firstShown)–@(lastShown) di @totalCount
+        </p>
+
         <div class="row g-4">
 
             @foreach (var artist in Model)
@@ -266,6 +280,17 @@
             }
 
         </div>
+
+        @* Paginazione: 9 artisti per pagina *@
+
+        @(await Html.PartialAsync("_Pagination",
+            new BeArtGallery.ViewModels.PaginationViewModel
+            {
+                CurrentPage = currentPage,
+                TotalPages = totalPages,
+                Controller = "Artists",
+                AriaLabel = "Pagine degli artisti"
+            }))
     }
 
 </div>

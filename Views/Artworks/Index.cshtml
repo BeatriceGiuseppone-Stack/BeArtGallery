@@ -307,70 +307,14 @@
 
         @* Paginazione: 9 opere per pagina *@
 
-        @if (totalPages > 1)
-        {
-            <nav class="gx-pagination"
-                 aria-label="Pagine del catalogo">
-
-                @if (currentPage > 1)
-                {
-                    <a asp-action="Index"
-                       asp-route-page="@(currentPage - 1)"
-                       class="gx-page-step"
-                       rel="prev">
-                        ← Precedente
-                    </a>
-                }
-                else
-                {
-                    <span class="gx-page-step is-disabled" aria-hidden="true">
-                        ← Precedente
-                    </span>
-                }
-
-                <ol class="gx-page-numbers">
-
-                    @for (var i = 1; i <= totalPages; i++)
-                    {
-                        <li>
-                            @if (i == currentPage)
-                            {
-                                <span class="gx-page-number is-current"
-                                      aria-current="page">
-                                    <span class="visually-hidden">Pagina </span>@i
-                                </span>
-                            }
-                            else
-                            {
-                                <a asp-action="Index"
-                                   asp-route-page="@i"
-                                   class="gx-page-number">
-                                    <span class="visually-hidden">Pagina </span>@i
-                                </a>
-                            }
-                        </li>
-                    }
-
-                </ol>
-
-                @if (currentPage < totalPages)
-                {
-                    <a asp-action="Index"
-                       asp-route-page="@(currentPage + 1)"
-                       class="gx-page-step"
-                       rel="next">
-                        Successiva →
-                    </a>
-                }
-                else
-                {
-                    <span class="gx-page-step is-disabled" aria-hidden="true">
-                        Successiva →
-                    </span>
-                }
-
-            </nav>
-        }
+        @(await Html.PartialAsync("_Pagination",
+            new BeArtGallery.ViewModels.PaginationViewModel
+            {
+                CurrentPage = currentPage,
+                TotalPages = totalPages,
+                Controller = "Artworks",
+                AriaLabel = "Pagine del catalogo"
+            }))
     }
 
 </div>

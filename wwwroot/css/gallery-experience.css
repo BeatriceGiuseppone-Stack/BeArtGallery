@@ -2700,3 +2700,87 @@ a.gx-page-number:focus-visible {
         animation: none;
     }
 }
+
+
+/* =====================================================================
+   LE MIE RICHIESTE (visitatore) e conversazione
+   ===================================================================== */
+
+.gx-back-link-light {
+    color: rgba(252, 246, 238, .78);
+}
+
+.gx-back-link-light:hover,
+.gx-back-link-light:focus-visible {
+    color: var(--gx-gilt-light);
+}
+
+/* Una nota chiara dentro la fascia resta comunque leggibile */
+.gx-band .gallery-management-note,
+.gx-band .gallery-management-note p {
+    color: var(--gx-ink);
+}
+
+.inquiry-list-main h2 {
+    font-family: var(--gx-font-display);
+    font-weight: 400;
+}
+
+.inquiry-unread-badge {
+    gap: .4rem;
+    padding: .3rem .75rem;
+    font-size: .78rem;
+    font-weight: 500;
+    color: #fcf6ee;
+    background: var(--gx-gilt-text);
+    border-radius: 999px;
+    animation: gx-badge-pulse 2.4s ease-out infinite;
+}
+
+@keyframes gx-badge-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(140, 29, 54, .4); }
+    70%  { box-shadow: 0 0 0 .5rem rgba(140, 29, 54, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(140, 29, 54, 0); }
+}
+
+.inquiry-conversation-bubble {
+    position: relative;
+    border-color: var(--gx-line);
+    border-radius: 0;
+}
+
+.inquiry-conversation-user .inquiry-conversation-bubble {
+    background: var(--gx-paper);
+    border-left: 2px solid var(--gx-line);
+}
+
+/* Le risposte della galleria hanno il colore del marchio */
+.inquiry-conversation-operator .inquiry-conversation-bubble {
+    color: #fcf6ee;
+    background: var(--gx-bordeaux);
+    border-color: var(--gx-bordeaux);
+}
+
+.inquiry-conversation-operator .inquiry-conversation-bubble span {
+    color: rgba(252, 246, 238, .72);
+}
+
+.inquiry-conversation-author {
+    font-family: var(--gx-font-display);
+    font-size: 1rem;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--gx-gilt-text);
+}
+
+.inquiry-conversation-operator .inquiry-conversation-author {
+    color: var(--gx-gilt-light);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .inquiry-unread-badge {
+        animation: none;
+    }
+}
