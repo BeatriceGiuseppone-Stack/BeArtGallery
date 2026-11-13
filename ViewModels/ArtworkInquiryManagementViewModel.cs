@@ -23,7 +23,10 @@ namespace BeArtGallery.ViewModels
     {
         public int Id { get; set; }
 
-        public int ArtworkId { get; set; }
+        // Null se l'opera è stata eliminata dal catalogo
+        public int? ArtworkId { get; set; }
+
+        public bool ArtworkDeleted => ArtworkId == null;
 
         public string ArtworkTitle { get; set; } = string.Empty;
 
@@ -45,7 +48,10 @@ namespace BeArtGallery.ViewModels
     {
         public int Id { get; set; }
 
-        public int ArtworkId { get; set; }
+        // Null se l'opera è stata eliminata dal catalogo
+        public int? ArtworkId { get; set; }
+
+        public bool ArtworkDeleted => ArtworkId == null;
 
         public string ArtworkTitle { get; set; } = string.Empty;
 

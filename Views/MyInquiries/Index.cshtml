@@ -60,6 +60,12 @@
                             </h2>
 
 
+                            @if (inquiry.ArtworkDeleted)
+                            {
+                                <span class="gx-unavailable-badge">Opera non più disponibile</span>
+                            }
+
+
                             @if (inquiry.UnreadReplies > 0)
                             {
                                 <span class="inquiry-unread-badge">

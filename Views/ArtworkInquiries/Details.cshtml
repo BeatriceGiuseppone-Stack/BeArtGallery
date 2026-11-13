@@ -56,6 +56,11 @@
                         @Model.ArtworkTitle
                     </h1>
 
+                    @if (Model.ArtworkDeleted)
+                    {
+                        <span class="gx-unavailable-badge">Opera non più disponibile</span>
+                    }
+
                     @if (!string.IsNullOrWhiteSpace(
                         Model.ArtistName))
                     {
@@ -425,14 +430,24 @@
                     }
 
 
-                    <a asp-controller="Artworks"
-                       asp-action="Details"
-                       asp-route-id="@Model.ArtworkId"
-                       class="artwork-artist-link">
+                    @if (Model.ArtworkDeleted)
+                    {
+                        <p class="mb-0">
+                            L'opera è stata eliminata dal catalogo:
+                            la conversazione resta consultabile.
+                        </p>
+                    }
+                    else
+                    {
+                        <a asp-controller="Artworks"
+                           asp-action="Details"
+                           asp-route-id="@Model.ArtworkId"
+                           class="artwork-artist-link">
 
-                        Apri la scheda dell'opera →
+                            Apri la scheda dell'opera →
 
-                    </a>
+                        </a>
+                    }
 
                 </div>
 

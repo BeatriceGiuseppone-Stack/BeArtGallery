@@ -196,10 +196,21 @@ public class ArtworksController : Controller
     public async Task<IActionResult> RequestInformation(
         ArtworkInquiryViewModel model)
     {
-        var artworkExists = await _context.Artworks
-            .AnyAsync(a => a.Id == model.ArtworkId);
+        // Titolo e artista vengono copiati nella richiesta, così la
+        // conversazione resta leggibile anche se l'opera sarà eliminata.
+        var artworkInfo = await _context.Artworks
+            .AsNoTracking()
+            .Where(a => a.Id == model.ArtworkId)
+            .Select(a => new
+            {
+                a.Title,
+                ArtistName = a.Artist != null
+                    ? a.Artist.FirstName + " " + a.Artist.LastName
+                    : null
+            })
+            .FirstOrDefaultAsync();
 
-        if (!artworkExists)
+        if (artworkInfo == null)
         {
             return NotFound();
         }
@@ -231,6 +242,8 @@ public class ArtworksController : Controller
         var inquiry = new ArtworkInquiry
         {
             ArtworkId = model.ArtworkId,
+            ArtworkTitle = artworkInfo.Title,
+            ArtistName = artworkInfo.ArtistName,
             UserId = userId,
             Name = model.Name.Trim(),
             Email = model.Email.Trim(),
@@ -433,6 +446,11 @@ public class ArtworksController : Controller
     // ELIMINAZIONE OPERA
     // -------------------------------------------------
 
+    public const string OpenInquiryDeleteError =
+        "Non si può eliminare l'opera: una richiesta di informazioni " +
+        "è ancora in corso, chiudere prima la conversazione.";
+
+
     // GET: Artworks/Delete/5
     [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public async Task<IActionResult> Delete(int? id)
@@ -452,11 +470,19 @@ public class ArtworksController : Controller
             return NotFound();
         }
 
-        var hasInquiries = await _context.ArtworkInquiries
+        // Le richieste ancora aperte bloccano l'eliminazione;
+        // quelle chiuse vengono eliminate insieme all'opera.
+        ViewBag.OpenInquiries = await _context.ArtworkInquiries
             .AsNoTracking()
-            .AnyAsync(i => i.ArtworkId == artwork.Id);
+            .CountAsync(i =>
+                i.ArtworkId == artwork.Id &&
+                i.Status != ArtworkInquiryStatus.Closed);
 
-        ViewBag.HasInquiries = hasInquiries;
+        ViewBag.ClosedInquiries = await _context.ArtworkInquiries
+            .AsNoTracking()
+            .CountAsync(i =>
+                i.ArtworkId == artwork.Id &&
+                i.Status == ArtworkInquiryStatus.Closed);
 
         return View(artwork);
     }
@@ -481,13 +507,15 @@ public class ArtworksController : Controller
             return NotFound();
         }
 
-        var hasInquiries = await _context.ArtworkInquiries
-            .AnyAsync(i => i.ArtworkId == artwork.Id);
+        var inquiries = await _context.ArtworkInquiries
+            .Where(i => i.ArtworkId == artwork.Id)
+            .ToListAsync();
 
-        if (hasInquiries)
+        // Una conversazione ancora in corso non può andare persa:
+        // lo staff deve prima chiuderla.
+        if (inquiries.Any(i => i.Status != ArtworkInquiryStatus.Closed))
         {
-            TempData["ErrorMessage"] =
-                "Non è possibile eliminare questa opera perché sono presenti richieste di informazioni associate.";
+            TempData["ErrorMessage"] = OpenInquiryDeleteError;
 
             return RedirectToAction(
                 nameof(Details),
@@ -499,9 +527,28 @@ public class ArtworksController : Controller
 
         string? imageUrl = artwork.ImageUrl;
 
+        // Le richieste chiuse restano consultabili da visitatori e staff:
+        // conservano titolo e artista e perdono solo il collegamento
+        // all'opera (ArtworkId diventa null), segno che l'opera non è
+        // più disponibile. Tutto avviene in un'unica transazione.
+        var artistName = await _context.Artists
+            .Where(a => a.Id == artwork.ArtistId)
+            .Select(a => a.FirstName + " " + a.LastName)
+            .FirstOrDefaultAsync();
+
+        foreach (var inquiry in inquiries)
+        {
+            inquiry.ArtworkTitle = artwork.Title;
+            inquiry.ArtistName = artistName;
+            inquiry.ArtworkId = null;
+        }
+
         _context.Artworks.Remove(artwork);
 
         await _context.SaveChangesAsync();
+
+        TempData["SuccessMessage"] =
+            $"L'opera \"{artwork.Title}\" è stata eliminata.";
 
         DeleteImage(imageUrl);
 

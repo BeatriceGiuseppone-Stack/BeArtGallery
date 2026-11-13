@@ -34,6 +34,16 @@
 
 <div class="container py-5">
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mb-5"
+             role="alert">
+
+            @TempData["ErrorMessage"]
+
+        </div>
+    }
+
     @if (TempData["AudioGuideSuccess"] != null)
     {
         <div class="alert alert-success mb-5"

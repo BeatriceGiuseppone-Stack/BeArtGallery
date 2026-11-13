@@ -208,15 +208,27 @@
 
                                 <h2>
 
-                                    <a asp-controller="Artworks"
-                                       asp-action="Details"
-                                       asp-route-id="@inquiry.ArtworkId">
-
+                                    @if (inquiry.ArtworkDeleted)
+                                    {
                                         @inquiry.ArtworkTitle
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Artworks"
+                                           asp-action="Details"
+                                           asp-route-id="@inquiry.ArtworkId">
 
-                                    </a>
+                                            @inquiry.ArtworkTitle
+
+                                        </a>
+                                    }
 
                                 </h2>
+
+                                @if (inquiry.ArtworkDeleted)
+                                {
+                                    <span class="gx-unavailable-badge">Opera non più disponibile</span>
+                                }
 
                                 @if (!string.IsNullOrWhiteSpace(
                                     inquiry.ArtistName))

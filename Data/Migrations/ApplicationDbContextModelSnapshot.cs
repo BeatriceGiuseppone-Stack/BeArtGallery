@@ -257,8 +257,17 @@ namespace BeArtGallery.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ArtworkId")
+                    b.Property<string>("ArtistName")
+                        .HasMaxLength(201)
+                        .HasColumnType("nvarchar(201)");
+
+                    b.Property<int?>("ArtworkId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ArtworkTitle")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -733,8 +742,7 @@ namespace BeArtGallery.Data.Migrations
                     b.HasOne("BeArtGallery.Models.Artwork", "Artwork")
                         .WithMany("Inquiries")
                         .HasForeignKey("ArtworkId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("BeArtGallery.Data.ApplicationUser", "User")
                         .WithMany()

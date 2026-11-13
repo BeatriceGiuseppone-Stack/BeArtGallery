@@ -123,7 +123,7 @@ Codici di risposta: `200` successo, `400` dati non validi, `401` non autenticato
 
 ## Test
 
-Il progetto `BeArtGallery.Tests` (xUnit) verifica le regole di business delle prenotazioni su un database **SQLite in memoria**:
+Il progetto `BeArtGallery.Tests` (xUnit) usa un database **SQLite in memoria** e un orologio fisso. `BookingServiceTests` verifica le regole di business delle prenotazioni:
 
 - nessuna prenotazione oltre i posti disponibili (e le prenotazioni annullate liberano posti);
 - nessuna doppia prenotazione dello stesso utente per la stessa attività;
@@ -131,6 +131,18 @@ Il progetto `BeArtGallery.Tests` (xUnit) verifica le regole di business delle pr
 - numero di partecipanti tra 1 e 10;
 - un utente non può annullare la prenotazione di un altro;
 - check-in solo per prenotazioni confermate e una sola volta per QR.
+
+`DashboardServiceTests` verifica gli indicatori della dashboard:
+
+- il tasso di presenza considera solo le attività concluse;
+- l'occupazione esclude attività annullate, attività passate e prenotazioni annullate;
+- con il database vuoto nessun indicatore divide per zero;
+- media dei feedback, insight automatici e riepilogo mensile delle prenotazioni;
+- il database rifiuta un secondo feedback sulla stessa prenotazione.
+
+`PaginationTests` verifica la paginazione dell'elenco artisti (9 per pagina): ordine alfabetico, ultima pagina parziale e numeri di pagina fuori intervallo riportati entro i limiti.
+
+In totale i test sono 32.
 
 Esecuzione: in Visual Studio *Test → Esegui tutti i test*, oppure
 

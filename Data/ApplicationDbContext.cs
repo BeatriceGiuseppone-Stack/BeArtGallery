@@ -85,7 +85,8 @@ namespace BeArtGallery.Data
                 .HasOne(i => i.Artwork)
                 .WithMany(a => a.Inquiries)
                 .HasForeignKey(i => i.ArtworkId)
-                .OnDelete(DeleteBehavior.Restrict);
+                // Eliminando l'opera la richiesta resta, senza collegamento.
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<ArtworkInquiry>()
                 .HasOne(i => i.User)

@@ -95,7 +95,7 @@ namespace BeArtGallery.Controllers
                             ArtworkTitle =
                                 i.Artwork != null
                                     ? i.Artwork.Title
-                                    : string.Empty,
+                                    : i.ArtworkTitle,
 
                             ArtistName =
                                 i.Artwork != null &&
@@ -103,7 +103,7 @@ namespace BeArtGallery.Controllers
                                     ? i.Artwork.Artist.FirstName
                                       + " "
                                       + i.Artwork.Artist.LastName
-                                    : string.Empty,
+                                    : i.ArtistName ?? string.Empty,
 
                             Name = i.Name,
 
@@ -165,7 +165,7 @@ namespace BeArtGallery.Controllers
                             ArtworkTitle =
                                 i.Artwork != null
                                     ? i.Artwork.Title
-                                    : string.Empty,
+                                    : i.ArtworkTitle,
 
                             ArtworkImageUrl =
                                 i.Artwork != null
@@ -178,7 +178,7 @@ namespace BeArtGallery.Controllers
                                     ? i.Artwork.Artist.FirstName
                                       + " "
                                       + i.Artwork.Artist.LastName
-                                    : string.Empty,
+                                    : i.ArtistName ?? string.Empty,
 
                             Name = i.Name,
 

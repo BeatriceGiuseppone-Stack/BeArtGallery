@@ -48,10 +48,13 @@ namespace BeArtGallery.Controllers
                         {
                             Id = i.Id,
 
+                            ArtworkDeleted =
+                                i.ArtworkId == null,
+
                             ArtworkTitle =
                                 i.Artwork != null
                                     ? i.Artwork.Title
-                                    : string.Empty,
+                                    : i.ArtworkTitle,
 
                             ArtworkImageUrl =
                                 i.Artwork != null
@@ -116,7 +119,7 @@ namespace BeArtGallery.Controllers
                             ArtworkTitle =
                                 i.Artwork != null
                                     ? i.Artwork.Title
-                                    : string.Empty,
+                                    : i.ArtworkTitle,
 
                             ArtworkImageUrl =
                                 i.Artwork != null
