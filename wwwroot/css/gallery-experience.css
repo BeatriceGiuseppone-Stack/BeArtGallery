@@ -2784,3 +2784,268 @@ a.gx-page-number:focus-visible {
         animation: none;
     }
 }
+
+
+/* Invito finale di "Chi siamo" (fondo scuro): pulsanti come nella home */
+.about-cta .gallery-btn-primary {
+    color: var(--gx-bordeaux);
+    background: #fcf6ee;
+    border-color: #fcf6ee;
+}
+
+.about-cta .gallery-btn-outline {
+    color: #fcf6ee;
+    background: transparent;
+    border-color: rgba(252, 246, 238, .7);
+}
+
+.about-cta .gallery-btn-primary::before {
+    background: var(--gx-bordeaux);
+}
+
+.about-cta .gallery-btn-outline::before {
+    background: #fcf6ee;
+}
+
+.about-cta .gallery-btn-primary:hover,
+.about-cta .gallery-btn-primary:focus-visible {
+    color: #fcf6ee;
+    background-color: transparent;
+    border-color: #fcf6ee;
+}
+
+.about-cta .gallery-btn-outline:hover,
+.about-cta .gallery-btn-outline:focus-visible {
+    color: var(--gx-bordeaux);
+    background-color: transparent;
+    border-color: #fcf6ee;
+}
+
+.about-cta a:focus-visible {
+    outline-color: var(--gx-gilt-light);
+}
+
+
+/* ---------------------------------------------------------------------
+   Pagina Artisti: indice dei nomi
+   Gli artisti sono il cuore della galleria: i nomi sono in grande,
+   raggruppati per iniziale del cognome. Passando con il mouse su un
+   nome compare una delle sue opere, che segue il cursore.
+   --------------------------------------------------------------------- */
+
+.gx-artist-index {
+    border-top: 1px solid var(--gx-ink);
+}
+
+.gx-artist-group {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    border-bottom: 1px solid var(--gx-line);
+}
+
+.gx-artist-letter {
+    align-self: start;
+    margin: 0;
+    padding: 1.4rem 0;
+    font-family: var(--gx-font-display);
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--gx-gilt);
+}
+
+.gx-artist-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.gx-artist-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem 2rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--gx-line);
+}
+
+.gx-artist-row:last-child {
+    border-bottom: 0;
+}
+
+.gx-artist-name {
+    margin: 0;
+    font-family: var(--gx-font-display);
+    font-size: clamp(2.1rem, 4.8vw, 4rem);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -.01em;
+}
+
+.gx-artist-link {
+    display: inline-block;
+    color: var(--gx-ink);
+    text-decoration: none;
+    transition: color .3s ease, transform .45s cubic-bezier(.2, .7, .2, 1);
+}
+
+/* Tutta la riga è cliccabile, il nome resta l'unico link */
+.gx-artist-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.gx-artist-first {
+    color: var(--gx-muted);
+    transition: color .3s ease;
+}
+
+.gx-artist-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem 1.25rem;
+    margin: .65rem 0 0;
+    color: var(--gx-muted);
+    font-size: .95rem;
+}
+
+.gx-artist-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .75rem;
+    text-align: right;
+}
+
+.gx-artist-count {
+    font-family: var(--gx-font-display);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--gx-gilt-text);
+    white-space: nowrap;
+}
+
+.gx-artist-admin {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: .5rem;
+}
+
+.gx-artist-row:hover .gx-artist-link,
+.gx-artist-row:focus-within .gx-artist-link {
+    color: var(--gx-bordeaux);
+    transform: translateX(.75rem);
+}
+
+.gx-artist-row:hover .gx-artist-first,
+.gx-artist-row:focus-within .gx-artist-first {
+    color: var(--gx-gilt-text);
+}
+
+.gx-artist-link:focus-visible {
+    outline: 2px solid var(--gx-bordeaux);
+    outline-offset: 6px;
+    border-radius: 2px;
+}
+
+/* Anteprima dell'opera */
+.gx-artist-preview {
+    position: absolute;
+    top: 50%;
+    left: var(--gx-px, 58%);
+    z-index: 3;
+    width: 15rem;
+    margin: 0;
+    padding: .6rem .6rem .5rem;
+    background: var(--gx-paper);
+    box-shadow: 0 24px 50px -18px rgba(42, 13, 22, .45);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate(1.5rem, -50%) rotate(-2deg) scale(.9);
+    transition: opacity .3s ease, transform .45s cubic-bezier(.2, .7, .2, 1), visibility 0s linear .3s;
+}
+
+.gx-artist-preview img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+}
+
+.gx-artist-preview figcaption {
+    margin-top: .45rem;
+    font-family: var(--gx-font-display);
+    font-size: .85rem;
+    font-style: italic;
+    color: var(--gx-muted);
+}
+
+@media (hover: hover) and (min-width: 992px) {
+    .gx-artist-row:hover .gx-artist-preview,
+    .gx-artist-row:focus-within .gx-artist-preview {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(1.5rem, -50%) rotate(-2deg) scale(1);
+        transition: opacity .3s ease, transform .45s cubic-bezier(.2, .7, .2, 1), visibility 0s;
+    }
+}
+
+/* Tablet e telefono: niente anteprima che vola, una miniatura fissa */
+@media (max-width: 991.98px), (hover: none) {
+    .gx-artist-row.has-preview {
+        grid-template-columns: minmax(0, 1fr) 5rem;
+    }
+
+    .gx-artist-preview {
+        position: static;
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        align-self: start;
+        width: 5rem;
+        padding: .3rem;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: 0 10px 24px -14px rgba(42, 13, 22, .5);
+    }
+
+    .gx-artist-preview figcaption {
+        display: none;
+    }
+
+    .gx-artist-row .gx-artist-side {
+        grid-column: 1;
+        align-items: flex-start;
+        text-align: left;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .gx-artist-group {
+        grid-template-columns: 1fr;
+    }
+
+    .gx-artist-letter {
+        position: static;
+        padding: 1.25rem 0 0;
+        font-size: 2.6rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gx-artist-link,
+    .gx-artist-preview {
+        transition: none;
+    }
+
+    .gx-artist-row:hover .gx-artist-link,
+    .gx-artist-row:focus-within .gx-artist-link {
+        transform: none;
+    }
+}

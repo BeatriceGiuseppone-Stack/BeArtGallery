@@ -44,6 +44,29 @@
         }, { passive: true });
     }
 
+    // Pagina Artisti: l'opera di anteprima segue il cursore in orizzontale.
+    let previewFrame = null;
+
+    document.addEventListener("pointermove", function (event) {
+        const row = event.target.closest(".gx-artist-row.has-preview");
+
+        if (!row) {
+            return;
+        }
+
+        if (previewFrame) {
+            cancelAnimationFrame(previewFrame);
+        }
+
+        previewFrame = requestAnimationFrame(function () {
+            const box = row.getBoundingClientRect();
+            // L'anteprima resta dentro la riga, lontana dal bordo destro.
+            const x = Math.min(Math.max(event.clientX - box.left, 0), box.width - 300);
+
+            row.style.setProperty("--gx-px", Math.max(x, 0).toFixed(0) + "px");
+        });
+    }, { passive: true });
+
     document.addEventListener("pointermove", function (event) {
         const target = event.target.closest(selectors);
 
@@ -85,6 +108,7 @@
         ".gx-wall-item",
         ".gx-agenda-item",
         ".gx-names li",
+        ".gx-artist-group",
         ".gx-event",
         ".gx-ticket",
         ".gx-roster-row",

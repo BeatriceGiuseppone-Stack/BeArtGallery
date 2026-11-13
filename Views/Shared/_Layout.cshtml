@@ -118,6 +118,21 @@
                         </li>
 
 
+                        @* Artisti: in primo piano, come nelle gallerie *@
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               asp-controller="Artists"
+                               asp-action="Index">
+
+                                Artisti
+
+                            </a>
+
+                        </li>
+
+
                         @* Opere *@
 
                         <li class="nav-item">
@@ -552,6 +567,14 @@
                     <div class="gallery-footer-title">
                         Esplora
                     </div>
+
+
+                    <a asp-controller="Artists"
+                       asp-action="Index">
+
+                        Artisti
+
+                    </a>
 
 
                     <a asp-controller="Artworks"

@@ -127,156 +127,148 @@
             Artisti @(firstShown)–@(lastShown) di @totalCount
         </p>
 
-        <div class="row g-4">
+        @* Indice degli artisti: i nomi in grande, raggruppati per iniziale
+           del cognome, come nei registri delle gallerie. Al passaggio del
+           mouse compare un'opera dell'artista. *@
 
-            @foreach (var artist in Model)
+        <div class="gx-artist-index">
+
+            @foreach (var group in Model.GroupBy(a =>
+                string.IsNullOrEmpty(a.LastName)
+                    ? "#"
+                    : a.LastName.Substring(0, 1).ToUpperInvariant()))
             {
-                <div class="col-md-6 col-lg-4">
+                <section class="gx-artist-group"
+                         aria-labelledby="lettera-@group.Key">
 
-                    <article class="artist-card">
+                    <h2 class="gx-artist-letter"
+                        id="lettera-@group.Key">
+                        @group.Key
+                    </h2>
 
-                        @* Monogramma dell'artista *@
+                    <ol class="gx-artist-list">
 
-                        <a asp-controller="Artists"
-                           asp-action="Details"
-                           asp-route-id="@artist.Id"
-                           class="artist-card-visual">
+                        @foreach (var artist in group)
+                        {
+                            var cover = artist.Artworks
+                                .Where(w => !string.IsNullOrWhiteSpace(w.ImageUrl))
+                                .OrderBy(w => w.Id)
+                                .FirstOrDefault();
 
-                            <span>
-                                @artist.FirstName.FirstOrDefault()
-                            </span>
+                            var worksCount = artist.Artworks.Count;
 
-                            <strong>
-                                @artist.LastName.FirstOrDefault()
-                            </strong>
+                            <li class="gx-artist-row @(cover != null ? "has-preview" : "")">
 
-                        </a>
+                                <div class="gx-artist-main">
 
-
-                        <div class="artist-card-body">
-
-                            <div class="gallery-eyebrow mb-2">
-                                Artista
-                            </div>
-
-
-                            <h2 class="artist-card-title">
-
-                                <a asp-controller="Artists"
-                                   asp-action="Details"
-                                   asp-route-id="@artist.Id">
-
-                                    @artist.FirstName
-                                    @artist.LastName
-
-                                </a>
-
-                            </h2>
-
-
-                            @if (!string.IsNullOrWhiteSpace(
-                                artist.Nationality))
-                            {
-                                <div class="artist-card-nationality">
-
-                                    @artist.Nationality
-
-                                </div>
-                            }
-
-
-                            <div class="artist-card-meta">
-
-                                @if (artist.BirthDate.HasValue)
-                                {
-                                    <span>
-
-                                        @artist.BirthDate.Value.Year
-
-                                        @if (artist.DeathDate.HasValue)
-                                        {
-                                            <text>
-                                                –
-                                                @artist.DeathDate.Value.Year
-                                            </text>
-                                        }
-
-                                    </span>
-                                }
-
-
-                                <span>
-
-                                    @artist.Artworks.Count
-                                    @(artist.Artworks.Count == 1
-                                        ? "opera"
-                                        : "opere")
-
-                                </span>
-
-                            </div>
-
-
-                            @if (!string.IsNullOrWhiteSpace(
-                                artist.Biography))
-                            {
-                                <p class="artist-card-biography">
-
-                                    @artist.Biography
-
-                                </p>
-                            }
-
-
-                            <div class="artist-card-actions">
-
-                                <a asp-controller="Artists"
-                                   asp-action="Details"
-                                   asp-route-id="@artist.Id"
-                                   class="artist-card-link">
-
-                                    Scopri l'artista →
-
-                                </a>
-
-
-                                @if (User.IsInRole(RoleNames.Staff) ||
-                                     User.IsInRole(RoleNames.Admin))
-                                {
-                                    <div class="artist-card-admin-actions">
+                                    <h3 class="gx-artist-name">
 
                                         <a asp-controller="Artists"
-                                           asp-action="Edit"
+                                           asp-action="Details"
                                            asp-route-id="@artist.Id"
-                                           class="btn btn-sm gallery-btn-outline">
+                                           class="gx-artist-link">
 
-                                            Modifica
+                                            <span class="gx-artist-first">@artist.FirstName</span>
+                                            <span class="gx-artist-last">@artist.LastName</span>
 
                                         </a>
 
+                                    </h3>
 
-                                        @if (!artist.Artworks.Any())
+                                    <p class="gx-artist-meta">
+
+                                        @if (!string.IsNullOrWhiteSpace(artist.Nationality))
                                         {
-                                            <a asp-controller="Artists"
-                                               asp-action="Delete"
-                                               asp-route-id="@artist.Id"
-                                               class="btn btn-sm gallery-btn-danger">
-
-                                                Elimina
-
-                                            </a>
+                                            <span>@artist.Nationality</span>
                                         }
 
-                                    </div>
+                                        @if (artist.BirthDate.HasValue)
+                                        {
+                                            <span>
+                                                @(artist.DeathDate.HasValue
+                                                    ? $"{artist.BirthDate.Value.Year}–{artist.DeathDate.Value.Year}"
+                                                    : $"n. {artist.BirthDate.Value.Year}")
+                                            </span>
+                                        }
+
+                                    </p>
+
+                                </div>
+
+
+                                <div class="gx-artist-side">
+
+                                    <span class="gx-artist-count">
+                                        @(worksCount == 0
+                                            ? "Opere in arrivo"
+                                            : worksCount == 1
+                                                ? "1 opera"
+                                                : $"{worksCount} opere")
+                                    </span>
+
+
+                                    @if (User.IsInRole(RoleNames.Staff) ||
+                                         User.IsInRole(RoleNames.Admin))
+                                    {
+                                        <div class="gx-artist-admin">
+
+                                            <a asp-controller="Artists"
+                                               asp-action="Edit"
+                                               asp-route-id="@artist.Id"
+                                               class="btn btn-sm gallery-btn-outline">
+
+                                                Modifica
+                                                <span class="visually-hidden">
+                                                    @artist.FirstName @artist.LastName
+                                                </span>
+
+                                            </a>
+
+                                            @if (!artist.Artworks.Any())
+                                            {
+                                                <a asp-controller="Artists"
+                                                   asp-action="Delete"
+                                                   asp-route-id="@artist.Id"
+                                                   class="btn btn-sm gallery-btn-danger">
+
+                                                    Elimina
+                                                    <span class="visually-hidden">
+                                                        @artist.FirstName @artist.LastName
+                                                    </span>
+
+                                                </a>
+                                            }
+
+                                        </div>
+                                    }
+
+                                </div>
+
+
+                                @if (cover != null)
+                                {
+                                    @* Anteprima decorativa: il nome resta il vero link *@
+
+                                    <figure class="gx-artist-preview"
+                                            aria-hidden="true">
+
+                                        <img src="@cover.ImageUrl"
+                                             alt=""
+                                             loading="lazy" />
+
+                                        <figcaption>
+                                            @(cover.Year.HasValue ? $"{cover.Title}, {cover.Year}" : cover.Title)
+                                        </figcaption>
+
+                                    </figure>
                                 }
 
-                            </div>
+                            </li>
+                        }
 
-                        </div>
+                    </ol>
 
-                    </article>
-
-                </div>
+                </section>
             }
 
         </div>
