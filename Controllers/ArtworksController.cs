@@ -42,13 +42,33 @@ public class ArtworksController : Controller
     // -------------------------------------------------
 
     // GET: Artworks
-    public async Task<IActionResult> Index()
+    // Il catalogo mostra 9 opere per pagina (tre righe da tre).
+    public const int CatalogPageSize = 9;
+
+    public async Task<IActionResult> Index(int page = 1)
     {
+        var totalCount = await _context.Artworks.CountAsync();
+
+        var totalPages = Math.Max(
+            1,
+            (int)Math.Ceiling(totalCount / (double)CatalogPageSize));
+
+        // Una pagina fuori intervallo (es. ?page=99) porta all'ultima valida.
+        page = Math.Clamp(page, 1, totalPages);
+
         var artworks = await _context.Artworks
             .AsNoTracking()
             .Include(a => a.Artist)
             .OrderBy(a => a.Title)
+            .ThenBy(a => a.Id)
+            .Skip((page - 1) * CatalogPageSize)
+            .Take(CatalogPageSize)
             .ToListAsync();
+
+        ViewBag.Page = page;
+        ViewBag.TotalPages = totalPages;
+        ViewBag.TotalCount = totalCount;
+        ViewBag.PageSize = CatalogPageSize;
 
         return View(artworks);
     }
