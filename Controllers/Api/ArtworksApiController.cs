@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeArtGallery.Controllers.Api
 {
     /// <summary>
-    /// API REST pubblica per consultare il catalogo digitale delle opere.
+    /// API pubblica per leggere il catalogo delle opere
     /// </summary>
     [ApiController]
     [Route("api/artworks")]
@@ -28,7 +28,7 @@ namespace BeArtGallery.Controllers.Api
 
 
         /// <summary>
-        /// Elenca le opere del catalogo, con filtri facoltativi.
+        /// Elenca le opere del catalogo, con filtri facoltativi
         /// </summary>
         /// <param name="search">Testo da cercare nel titolo o nel nome dell'artista.</param>
         /// <param name="artistId">Filtra per artista.</param>
@@ -46,6 +46,7 @@ namespace BeArtGallery.Controllers.Api
             IQueryable<Artwork> query =
                 _context.Artworks.AsNoTracking();
 
+            // Ricerca nel titolo e nel nome dell'artista
             if (!string.IsNullOrWhiteSpace(search))
             {
                 var term = search.Trim();
@@ -57,16 +58,19 @@ namespace BeArtGallery.Controllers.Api
                       a.Artist.LastName.Contains(term))));
             }
 
+            // Filtro per artista
             if (artistId.HasValue)
             {
                 query = query.Where(a => a.ArtistId == artistId.Value);
             }
 
+            // Filtro per disponibilità
             if (availability.HasValue)
             {
                 query = query.Where(a => a.AvailabilityStatus == availability.Value);
             }
 
+            // Opere in ordine di titolo, nel formato dell'API
             var artworks =
                 await query
                     .OrderBy(a => a.Title)
@@ -89,7 +93,7 @@ namespace BeArtGallery.Controllers.Api
 
 
         /// <summary>
-        /// Restituisce il dettaglio di un'opera con le audioguide attive.
+        /// Restituisce un'opera con le sue audioguide attive
         /// </summary>
         /// <param name="id">Identificativo dell'opera.</param>
         /// <param name="cancellationToken">Token di annullamento della richiesta.</param>
@@ -118,6 +122,7 @@ namespace BeArtGallery.Controllers.Api
                     "Opera non trovata."));
             }
 
+            // Solo le audioguide attive
             var audioGuides =
                 artwork.AudioGuides
                     .Where(g => g.IsActive)

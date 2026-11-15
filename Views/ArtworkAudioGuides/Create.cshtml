@@ -33,27 +33,23 @@
             </p>
 
 
-            <form asp-action="Create"
-                  method="post"
-                  enctype="multipart/form-data">
+            @* Form per una nuova audioguida (con caricamento del file audio) *@
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
 
-                <input asp-for="ArtworkId"
-                       type="hidden" />
-
+                @* Id dell'opera (nascosto) *@
+                <input asp-for="ArtworkId" type="hidden" />
 
                 <div asp-validation-summary="ModelOnly"
                      class="text-danger mb-4">
                 </div>
 
-
                 <div class="mb-4">
 
-                    <label asp-for="LanguageCode"
-                           class="form-label gallery-form-label">
+                    <label asp-for="LanguageCode" class="form-label gallery-form-label">
                     </label>
 
-                    <select asp-for="LanguageCode"
-                            class="form-select gallery-form-control">
+                    @* Lingua dell'audioguida *@
+                    <select asp-for="LanguageCode" class="form-select gallery-form-control">
 
                         <option value="it-IT">
                             Italiano
@@ -73,8 +69,7 @@
 
                     </select>
 
-                    <span asp-validation-for="LanguageCode"
-                          class="text-danger small">
+                    <span asp-validation-for="LanguageCode" class="text-danger small">
                     </span>
 
                 </div>
@@ -82,30 +77,24 @@
 
                 <div class="mb-4">
 
-                    <label asp-for="Title"
-                           class="form-label gallery-form-label">
+                    <label asp-for="Title" class="form-label gallery-form-label">
                     </label>
 
-                    <input asp-for="Title"
-                           class="form-control gallery-form-control" />
+                    @* Titolo *@
+                    <input asp-for="Title" class="form-control gallery-form-control" />
 
-                    <span asp-validation-for="Title"
-                          class="text-danger small">
+                    <span asp-validation-for="Title" class="text-danger small">
                     </span>
 
                 </div>
 
-
                 <div class="mb-4">
 
-                    <label asp-for="AudioFile"
-                           class="form-label gallery-form-label">
+                    <label asp-for="AudioFile" class="form-label gallery-form-label">
                     </label>
 
-                    <input asp-for="AudioFile"
-                           type="file"
-                           accept=".mp3,.m4a,.wav,audio/*"
-                           class="form-control gallery-form-control" />
+                    @* File audio (MP3, M4A o WAV) *@
+                    <input asp-for="AudioFile" type="file" accept=".mp3,.m4a,.wav,audio/*" class="form-control gallery-form-control" />
 
                     <div class="form-text">
                         Formati consentiti:
@@ -113,26 +102,22 @@
                         Dimensione massima: 25 MB.
                     </div>
 
-                    <span asp-validation-for="AudioFile"
-                          class="text-danger small">
+                    <span asp-validation-for="AudioFile" class="text-danger small">
                     </span>
 
                 </div>
 
-
                 <div class="mb-4">
 
-                    <label asp-for="Transcript"
-                           class="form-label gallery-form-label">
+                    <label asp-for="Transcript" class="form-label gallery-form-label">
 
                         Trascrizione
 
                     </label>
 
-                    <textarea asp-for="Transcript"
-                              rows="8"
-                              class="form-control gallery-form-control"
-                              placeholder="Inserisci la trascrizione dell'audioguida...">
+                    @* Trascrizione del testo *@
+                    <textarea asp-for="Transcript" rows="8" class="form-control gallery-form-control" 
+                    placeholder="Inserisci la trascrizione dell'audioguida...">
                     </textarea>
 
                     <div class="form-text">
@@ -140,20 +125,17 @@
                         l'accessibilità del contenuto.
                     </div>
 
-                    <span asp-validation-for="Transcript"
-                          class="text-danger small">
+                    <span asp-validation-for="Transcript" class="text-danger small">
                     </span>
 
                 </div>
 
-
                 <div class="form-check mb-5">
 
-                    <input asp-for="IsActive"
-                           class="form-check-input" />
+                    @* Pubblicata o no *@
+                    <input asp-for="IsActive" class="form-check-input" />
 
-                    <label asp-for="IsActive"
-                           class="form-check-label">
+                    <label asp-for="IsActive" class="form-check-label">
 
                         Rendi subito disponibile
                         l'audioguida
@@ -165,18 +147,13 @@
 
                 <div class="d-flex gap-3 flex-wrap">
 
-                    <button type="submit"
-                            class="btn gallery-btn-primary">
+                    <button type="submit" class="btn gallery-btn-primary">
 
                         Salva audioguida
 
                     </button>
 
-
-                    <a asp-controller="Artworks"
-                       asp-action="Details"
-                       asp-route-id="@Model.ArtworkId"
-                       class="btn gallery-btn-outline">
+                    <a asp-controller="Artworks" asp-action="Details" asp-route-id="@Model.ArtworkId" class="btn gallery-btn-outline">
 
                         Annulla
 
@@ -193,6 +170,7 @@
 </div>
 
 
+@* Script per controllare il form prima dell'invio *@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />

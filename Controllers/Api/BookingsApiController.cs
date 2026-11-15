@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeArtGallery.Controllers.Api
 {
     /// <summary>
-    /// API REST per le prenotazioni del visitatore autenticato.
+    /// API per le prenotazioni del visitatore collegato
     /// </summary>
     [ApiController]
     [Route("api/bookings")]
@@ -38,8 +38,7 @@ namespace BeArtGallery.Controllers.Api
 
 
         /// <summary>
-        /// Restituisce le prenotazioni dell'utente autenticato,
-        /// dalla più recente alla meno recente.
+        /// Restituisce le prenotazioni dell'utente collegato, dalla più recente
         /// </summary>
         /// <response code="200">Elenco delle prenotazioni.</response>
         /// <response code="401">Utente non autenticato.</response>
@@ -58,6 +57,7 @@ namespace BeArtGallery.Controllers.Api
 
             var now = _timeProvider.GetLocalNow().DateTime;
 
+            // Per ogni prenotazione indica anche se si può ancora annullare
             var bookings =
                 await _context.Bookings
                     .AsNoTracking()
@@ -86,7 +86,7 @@ namespace BeArtGallery.Controllers.Api
 
         /// <summary>
         /// Crea una prenotazione per un'attività.
-        /// Richiede l'header RequestVerificationToken (protezione CSRF).
+        /// Serve l'header RequestVerificationToken (protezione CSRF).
         /// </summary>
         /// <response code="200">Prenotazione creata.</response>
         /// <response code="400">Dati non validi o attività non prenotabile.</response>
@@ -109,6 +109,7 @@ namespace BeArtGallery.Controllers.Api
                 return Unauthorized();
             }
 
+            // Tutti i controlli sono nel BookingService
             var result =
                 await _bookingService.CreateAsync(
                     userId,
@@ -129,8 +130,8 @@ namespace BeArtGallery.Controllers.Api
 
 
         /// <summary>
-        /// Annulla una prenotazione dell'utente autenticato
-        /// (solo se l'attività non è ancora iniziata).
+        /// Annulla una prenotazione dell'utente collegato
+        /// (solo se l'attività non è ancora iniziata)
         /// </summary>
         /// <param name="id">Identificativo della prenotazione.</param>
         /// <param name="cancellationToken">Token di annullamento della richiesta.</param>
@@ -172,7 +173,7 @@ namespace BeArtGallery.Controllers.Api
         }
 
 
-        // Traduce l'esito del servizio nel codice HTTP appropriato.
+        // Trasforma l'errore del servizio nel codice HTTP giusto (404, 409 o 400)
         private IActionResult ToErrorResult(
             BookingOperationResult result)
         {

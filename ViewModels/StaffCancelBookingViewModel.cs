@@ -2,6 +2,7 @@
 
 namespace BeArtGallery.ViewModels
 {
+    // Dati del form con cui lo staff annulla una prenotazione
     public class StaffCancelBookingViewModel
     {
         public int BookingId { get; set; }
@@ -13,9 +14,7 @@ namespace BeArtGallery.ViewModels
         public DateTime StartDateTime { get; set; }
 
         [Required(ErrorMessage = "Inserisci il motivo dell'annullamento.")]
-        [MaxLength(
-            500,
-            ErrorMessage = "La motivazione non può superare 500 caratteri.")]
+        [MaxLength( 500, ErrorMessage = "La motivazione non può superare 500 caratteri.")]
         [Display(Name = "Motivazione")]
         public string CancellationReason { get; set; } = string.Empty;
     }

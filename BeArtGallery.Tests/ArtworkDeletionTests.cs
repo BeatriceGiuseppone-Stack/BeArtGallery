@@ -5,9 +5,8 @@ using Microsoft.EntityFrameworkCore;
 namespace BeArtGallery.Tests
 {
     /// <summary>
-    /// Eliminando un'opera, le richieste di informazioni collegate
-    /// restano nel database: perdono solo il collegamento all'opera
-    /// e conservano titolo e artista.
+    /// Quando si elimina un'opera le richieste collegate restano nel database:
+    /// perdono solo il collegamento all'opera e tengono titolo e artista
     /// </summary>
     public sealed class ArtworkDeletionTests : IDisposable
     {
@@ -20,6 +19,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Eliminando l'opera la richiesta resta con titolo e artista
         [Fact]
         public async Task DeletingArtwork_KeepsInquiriesWithoutLink()
         {
@@ -52,8 +52,8 @@ namespace BeArtGallery.Tests
                 inquiryId = inquiry.Id;
             }
 
-            // Eliminazione dell'opera senza caricare le richieste:
-            // è il database (ON DELETE SET NULL) a staccarle.
+            // Si elimina l'opera senza caricare le richieste:
+            // è il database (ON DELETE SET NULL) a staccarle
             await using (var delete = _db.CreateContext())
             {
                 var artwork = await delete.Artworks.SingleAsync(a => a.Id == artworkId);

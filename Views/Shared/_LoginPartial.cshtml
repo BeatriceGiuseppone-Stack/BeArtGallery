@@ -3,6 +3,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@* Link di accesso creati da Visual Studio: il sito usa il menu account del layout *@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {

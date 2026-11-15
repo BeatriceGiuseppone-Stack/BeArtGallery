@@ -1,12 +1,12 @@
 ﻿@model BeArtGallery.Models.Artwork
 
+@* "Visualizza nella tua stanza": il visitatore carica una foto della sua parete
+   e vede l'opera appesa, anche in scala reale *@
 <section class="room-preview-section">
 
     <div class="row g-5">
 
-        @* =================================================
-           COLONNA SINISTRA - SPIEGAZIONE
-           ================================================= *@
+        @* Colonna di sinistra: spiegazione in tre passaggi *@
 
         <div class="col-lg-4">
 
@@ -98,20 +98,17 @@
         </div>
 
 
-        @* =================================================
-           COLONNA DESTRA - ANTEPRIMA E CONTROLLI
-           ================================================= *@
+        @* Colonna di destra: anteprima e comandi *@
 
         <div class="col-lg-8">
 
             <div class="room-preview-right-column">
 
-                @* Anteprima *@
+                @* Area dell'anteprima (disegnata con il canvas) *@
 
                 <div class="room-preview-workspace">
 
-                    <div id="roomPreviewPlaceholder"
-                         class="room-preview-placeholder">
+                    <div id="roomPreviewPlaceholder" class="room-preview-placeholder">
 
                         <div>
 
@@ -132,19 +129,15 @@
                     </div>
 
 
-                    <canvas id="roomPreviewCanvas"
-                            class="room-preview-canvas d-none"
-                            data-artwork-image="@Model.ImageUrl"
-                            data-artwork-width="@Model.WidthCm"
-                            data-artwork-height="@Model.HeightCm"
-                            tabindex="0"
+                    <canvas id="roomPreviewCanvas" class="room-preview-canvas d-none" data-artwork-image="@Model.ImageUrl"
+                            data-artwork-width="@Model.WidthCm" data-artwork-height="@Model.HeightCm" tabindex="0"
                             aria-label="Anteprima dell'opera nella stanza. Usa le frecce per spostare l'opera e i tasti più e meno per ridimensionarla.">
                     </canvas>
 
                 </div>
 
 
-                @* Legenda *@
+                @* Legenda dei comandi *@
 
                 <div class="room-preview-legend">
 
@@ -165,33 +158,26 @@
                 </div>
 
 
-                @* =================================================
-                   PANNELLO CONTROLLI
-                   ================================================= *@
+                @* Pannello dei comandi *@
 
                 <div class="room-preview-control-panel">
 
-                    @* Foto della stanza *@
+                    @* Caricamento della foto della stanza *@
 
                     <div class="room-preview-photo-control">
 
-                        <label for="roomPhoto"
-                               class="form-label gallery-form-label">
+                        <label for="roomPhoto" class="form-label gallery-form-label">
 
                             Foto della stanza
 
                         </label>
 
-                        <input type="file"
-                               id="roomPhoto"
-                               accept="image/*"
-                               capture="environment"
-                               class="form-control gallery-form-control" />
+                        <input type="file" id="roomPhoto" accept="image/*" capture="environment" class="form-control gallery-form-control" />
 
                     </div>
 
 
-                    @* Modalità anteprima *@
+                    @* Scelta della modalità: libera o in scala reale *@
 
                     <div class="room-preview-mode-section">
 
@@ -201,10 +187,7 @@
 
                         <div class="room-preview-mode-switch">
 
-                            <button type="button"
-                                    id="freePreviewMode"
-                                    aria-pressed="true"
-                                    class="room-preview-mode-button active">
+                            <button type="button" id="freePreviewMode" aria-pressed="true" class="room-preview-mode-button active">
 
                                 <span class="room-preview-mode-title">
                                     Anteprima libera
@@ -217,10 +200,7 @@
                             </button>
 
 
-                            <button type="button"
-                                    id="realScaleMode"
-                                    aria-pressed="false"
-                                    class="room-preview-mode-button">
+                            <button type="button" id="realScaleMode" aria-pressed="false" class="room-preview-mode-button">
 
                                 <span class="room-preview-mode-title">
                                     Scala reale
@@ -237,10 +217,9 @@
                     </div>
 
 
-                    @* Informazione modalità libera *@
+                    @* Spiegazione della modalità libera *@
 
-                    <div id="freeModeHint"
-                         class="room-preview-mode-hint">
+                    <div id="freeModeHint" class="room-preview-mode-hint">
 
                         <strong>
                             Anteprima libera
@@ -255,10 +234,9 @@
                     </div>
 
 
-                    @* Controlli scala reale *@
+                    @* Comandi per la scala reale: misura di riferimento sulla parete *@
 
-                    <div id="realScaleControls"
-                         class="room-preview-real-scale d-none">
+                    <div id="realScaleControls" class="room-preview-real-scale d-none">
 
                         <div class="room-preview-real-scale-heading">
 
@@ -286,8 +264,7 @@
 
                             <div class="col-md-6">
 
-                                <label for="referenceCm"
-                                       class="form-label gallery-form-label">
+                                <label for="referenceCm" class="form-label gallery-form-label">
 
                                     Misura reale di riferimento
 
@@ -295,11 +272,7 @@
 
                                 <div class="room-reference-input">
 
-                                    <input type="number"
-                                           id="referenceCm"
-                                           min="1"
-                                           step="0.1"
-                                           class="form-control gallery-form-control"
+                                    <input type="number" id="referenceCm" min="1" step="0.1" class="form-control gallery-form-control"
                                            placeholder="Es. 200" />
 
                                     <span>
@@ -313,7 +286,6 @@
                                 </div>
 
                             </div>
-
 
                             <div class="col-md-6">
 
@@ -335,9 +307,7 @@
 
                             <div class="col-md-6">
 
-                                <button type="button"
-                                        id="startCalibration"
-                                        class="btn gallery-btn-primary room-preview-action-button">
+                                <button type="button" id="startCalibration" class="btn gallery-btn-primary room-preview-action-button">
 
                                     Seleziona i due estremi
 
@@ -348,9 +318,7 @@
 
                             <div class="col-md-6">
 
-                                <button type="button"
-                                        id="restoreRealScale"
-                                        class="btn gallery-btn-outline room-preview-action-button"
+                                <button type="button" id="restoreRealScale" class="btn gallery-btn-outline room-preview-action-button"
                                         disabled>
 
                                     Ripristina scala reale
@@ -363,24 +331,19 @@
 
                     </div>
 
+                    @* Messaggi sullo stato dell'anteprima *@
 
-                    @* Stato *@
-
-                    <div id="roomPreviewStatus"
-                         class="room-preview-status"
-                         role="status">
+                    <div id="roomPreviewStatus" class="room-preview-status" role="status">
 
                         Carica una foto per iniziare.
 
                     </div>
 
-
-                    @* Privacy *@
+                    @* Nota sulla privacy: la foto non viene caricata sul server *@
 
                     <div class="room-preview-privacy">
 
-                        <div class="room-preview-privacy-icon"
-                             aria-hidden="true">
+                        <div class="room-preview-privacy-icon" aria-hidden="true">
 
                             ✓
 

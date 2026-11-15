@@ -6,6 +6,7 @@
 
 <div class="container py-5">
 
+    @* Intestazione della pagina *@
     <div class="gx-band mb-5">
 
         <div class="gallery-eyebrow mb-3">
@@ -24,6 +25,7 @@
     </div>
 
 
+    @* Nessuna opera tra i preferiti *@
     @if (!Model.Any())
     {
         <div class="favorite-empty-state">
@@ -41,9 +43,7 @@
                 che vuoi ritrovare più facilmente.
             </p>
 
-            <a asp-controller="Artworks"
-               asp-action="Index"
-               class="btn gallery-btn-primary">
+            <a asp-controller="Artworks" asp-action="Index" class="btn gallery-btn-primary">
 
                 Esplora le opere
 
@@ -53,6 +53,7 @@
     }
     else
     {
+        @* Una scheda per ogni opera salvata *@
         <div class="row g-5">
 
             @foreach (var favorite in Model)
@@ -62,25 +63,18 @@
                     continue;
                 }
 
-                var artwork =
-                    favorite.Artwork;
-
+                var artwork = favorite.Artwork;
 
                 <div class="col-md-6 col-xl-4">
 
                     <article class="artwork-catalog-card">
 
-                        <a asp-controller="Artworks"
-                           asp-action="Details"
-                           asp-route-id="@artwork.Id"
-                           class="artwork-catalog-image-wrapper">
+                        <a asp-controller="Artworks" asp-action="Details" asp-route-id="@artwork.Id" class="artwork-catalog-image-wrapper">
 
-                            @if (!string.IsNullOrWhiteSpace(
-                                artwork.ImageUrl))
+                            @* Immagine dell'opera o segnaposto *@
+                            @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl))
                             {
-                                <img src="@artwork.ImageUrl"
-                                     alt="@artwork.Title"
-                                     class="artwork-catalog-image" />
+                                <img src="@artwork.ImageUrl" alt="@artwork.Title" class="artwork-catalog-image" />
                             }
                             else
                             {
@@ -93,19 +87,15 @@
 
                         </a>
 
-
                         <div class="artwork-catalog-content">
 
                             <div class="gallery-eyebrow mb-2">
                                 Opera preferita
                             </div>
 
-
                             <h2 class="artwork-catalog-title">
 
-                                <a asp-controller="Artworks"
-                                   asp-action="Details"
-                                   asp-route-id="@artwork.Id">
+                                <a asp-controller="Artworks" asp-action="Details" asp-route-id="@artwork.Id">
 
                                     @artwork.Title
 
@@ -113,13 +103,11 @@
 
                             </h2>
 
-
+                            @* Artista *@
                             @if (artwork.Artist != null)
                             {
-                                <a asp-controller="Artists"
-                                   asp-action="Details"
-                                   asp-route-id="@artwork.ArtistId"
-                                   class="artwork-catalog-artist">
+                                <a asp-controller="Artists" asp-action="Details" asp-route-id="@artwork.ArtistId" 
+                                    class="artwork-catalog-artist">
 
                                     @artwork.Artist.FirstName
                                     @artwork.Artist.LastName
@@ -127,7 +115,7 @@
                                 </a>
                             }
 
-
+                            @* Anno e tecnica *@
                             <div class="artwork-catalog-meta">
 
                                 @if (artwork.Year.HasValue)
@@ -137,8 +125,7 @@
                                     </span>
                                 }
 
-                                @if (!string.IsNullOrWhiteSpace(
-                                    artwork.Technique))
+                                @if (!string.IsNullOrWhiteSpace(artwork.Technique))
                                 {
                                     <span>
                                         @artwork.Technique
@@ -147,33 +134,23 @@
 
                             </div>
 
-
                             <div class="favorite-card-actions">
 
-                                <a asp-controller="Artworks"
-                                   asp-action="Details"
-                                   asp-route-id="@artwork.Id"
+                                <a asp-controller="Artworks" asp-action="Details" asp-route-id="@artwork.Id"
                                    class="artwork-catalog-details-link">
 
                                     Scopri l'opera →
 
                                 </a>
 
+                                @* Pulsante per togliere l'opera dai preferiti *@
+                                <form asp-controller="Artworks" asp-action="ToggleFavorite" method="post">
 
-                                <form asp-controller="Artworks"
-                                      asp-action="ToggleFavorite"
-                                      method="post">
+                                    <input type="hidden" name="id" value="@artwork.Id" />
 
-                                    <input type="hidden"
-                                           name="id"
-                                           value="@artwork.Id" />
+                                    <input type="hidden" name="fromFavorites" value="true" />
 
-                                    <input type="hidden"
-                                           name="fromFavorites"
-                                           value="true" />
-
-                                    <button type="submit"
-                                            class="favorite-remove-button">
+                                    <button type="submit" class="favorite-remove-button">
 
                                         ♥ Rimuovi dai preferiti
 

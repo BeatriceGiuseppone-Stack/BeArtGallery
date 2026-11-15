@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BeArtGallery.Authorization
 {
-    // Messaggi di errore di ASP.NET Identity in italiano
-    // (registrazione, cambio password, reimpostazione).
+    // Messaggi di errore di Identity tradotti in italiano
+    // (registrazione, cambio password, reimpostazione della password)
     public class ItalianIdentityErrorDescriber : IdentityErrorDescriber
     {
         public override IdentityError DefaultError() =>

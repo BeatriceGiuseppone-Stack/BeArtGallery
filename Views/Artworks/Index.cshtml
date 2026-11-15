@@ -2,6 +2,7 @@
 @using BeArtGallery.Authorization
 @using BeArtGallery.Models.Enums
 
+@* Dati per la paginazione e il contatore "Opere 1–9 di 20" *@
 @{
     ViewData["Title"] = "Catalogo opere";
 
@@ -18,11 +19,7 @@
 
     @* Intestazione della pagina *@
 
-    <div class="gx-band d-flex justify-content-between
-                align-items-end
-                flex-wrap
-                gap-3
-                mb-5">
+    <div class="gx-band d-flex justify-content-between align-items-end flex-wrap gap-3 mb-5">
 
         <div>
 
@@ -41,24 +38,20 @@
             </p>
 
         </div>
-
-
-        @if (User.IsInRole(RoleNames.Staff) ||
-             User.IsInRole(RoleNames.Admin))
+         
+        @* Pulsante "Nuova opera" solo per Staff e Admin *@
+        @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
         {
-            <a asp-controller="Artworks"
-               asp-action="Create"
-               class="btn gallery-btn-primary">
+            <a asp-controller="Artworks" asp-action="Create" class="btn gallery-btn-primary">
 
                 Nuova opera
 
             </a>
         }
 
-    </div>
+    </div> 
 
-
-    @* Messaggi *@
+    @* Messaggi di conferma o di errore *@
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -68,8 +61,7 @@
 
         </div>
     }
-
-
+     
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger mb-4">
@@ -78,10 +70,10 @@
 
         </div>
     }
+     
+    @* Catalogo delle opere *@
 
-
-    @* Catalogo *@
-
+    @* Nessuna opera nel catalogo *@
     @if (!Model.Any())
     {
         <div class="artwork-empty-state">
@@ -109,24 +101,21 @@
 
         <div class="row g-5">
 
+            @* Una scheda per ogni opera *@
             @foreach (var artwork in Model)
             {
                 <div class="col-md-6 col-xl-4">
 
                     <article class="artwork-catalog-card">
 
-                        @* Immagine *@
+                        @* Immagine dell'opera (con l'effetto faretto al passaggio del mouse) *@
 
-                       <a asp-controller="Artworks"
-                           asp-action="Details"
-                           asp-route-id="@artwork.Id"
+                       <a asp-controller="Artworks" asp-action="Details" asp-route-id="@artwork.Id"
                            class="artwork-catalog-image-wrapper">
                         
                             @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl))
                             {
-                                <img src="@artwork.ImageUrl"
-                                     alt="@artwork.Title"
-                                     class="artwork-catalog-image" />
+                                <img src="@artwork.ImageUrl" alt="@artwork.Title" class="artwork-catalog-image" />
                             }
                             else
                             {
@@ -137,33 +126,27 @@
                                 </div>
                             }
                         
-                            @* Disponibilità sovrapposta all'immagine *@
+                            @* Disponibilità mostrata sopra l'immagine *@
                         
-                            @if (artwork.AvailabilityStatus ==
-                                 ArtworkAvailabilityStatus.SoldOut)
+                            @if (artwork.AvailabilityStatus == ArtworkAvailabilityStatus.SoldOut)
                             {
-                                <span class="artwork-catalog-availability-badge
-                                             artwork-catalog-availability-soldout">
+                                <span class="artwork-catalog-availability-badge artwork-catalog-availability-soldout">
                         
                                     Esaurito
                         
                                 </span>
                             }
-                            else if (artwork.AvailabilityStatus ==
-                                     ArtworkAvailabilityStatus.LimitedAvailability)
+                            else if (artwork.AvailabilityStatus == ArtworkAvailabilityStatus.LimitedAvailability)
                             {
-                                <span class="artwork-catalog-availability-badge
-                                             artwork-catalog-availability-limited">
+                                <span class="artwork-catalog-availability-badge artwork-catalog-availability-limited">
                         
                                     Disponibilità limitata
                         
                                 </span>
                             }
-                            else if (artwork.AvailabilityStatus ==
-                                     ArtworkAvailabilityStatus.Unavailable)
+                            else if (artwork.AvailabilityStatus == ArtworkAvailabilityStatus.Unavailable)
                             {
-                                <span class="artwork-catalog-availability-badge
-                                             artwork-catalog-availability-unavailable">
+                                <span class="artwork-catalog-availability-badge artwork-catalog-availability-unavailable">
                         
                                     Non disponibile
                         
@@ -174,7 +157,7 @@
 
                         <div class="artwork-catalog-content">
 
-                            @* Stato esposizione *@
+                            @* Esposta in galleria o no *@
 
                             <div class="mb-3">
 
@@ -196,30 +179,24 @@
                                 }
 
                             </div>
-
-
-                            @* Titolo *@
+                             
+                            @* Titolo con link alla scheda *@
 
                             <h2 class="artwork-catalog-title">
 
-                                <a asp-controller="Artworks"
-                                   asp-action="Details"
-                                   asp-route-id="@artwork.Id">
+                                <a asp-controller="Artworks" asp-action="Details" asp-route-id="@artwork.Id">
 
                                     @artwork.Title
 
                                 </a>
 
                             </h2>
-
-
+                             
                             @* Artista *@
 
                             @if (artwork.Artist != null)
                             {
-                                <a asp-controller="Artists"
-                                   asp-action="Details"
-                                   asp-route-id="@artwork.ArtistId"
+                                <a asp-controller="Artists" asp-action="Details" asp-route-id="@artwork.ArtistId"
                                    class="artwork-catalog-artist">
 
                                     @artwork.Artist.FirstName
@@ -229,7 +206,7 @@
                             }
 
 
-                            @* Metadati *@
+                            @* Anno e tecnica *@
 
                             <div class="artwork-catalog-meta">
 
@@ -240,8 +217,7 @@
                                     </span>
                                 }
 
-                                @if (!string.IsNullOrWhiteSpace(
-                                    artwork.Technique))
+                                @if (!string.IsNullOrWhiteSpace(artwork.Technique))
                                 {
                                     <span>
                                         @artwork.Technique
@@ -251,40 +227,31 @@
                             </div>
 
 
-                            @* Azione pubblica *@
+                            @* Link alla scheda dell'opera *@
 
                             <div class="artwork-catalog-actions">
 
-                                <a asp-controller="Artworks"
-                                   asp-action="Details"
-                                   asp-route-id="@artwork.Id"
+                                <a asp-controller="Artworks" asp-action="Details" asp-route-id="@artwork.Id"
                                    class="artwork-catalog-details-link">
 
                                     Scopri l'opera →
 
                                 </a>
+                                 
+                                @* Modifica ed eliminazione, solo per Staff e Admin *@
 
-
-                                @* Azioni Staff e Admin *@
-
-                                @if (User.IsInRole(RoleNames.Staff) ||
-                                     User.IsInRole(RoleNames.Admin))
+                                @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
                                 {
                                     <div class="artwork-catalog-admin-actions">
 
-                                        <a asp-controller="Artworks"
-                                           asp-action="Edit"
-                                           asp-route-id="@artwork.Id"
+                                        <a asp-controller="Artworks" asp-action="Edit" asp-route-id="@artwork.Id"
                                            class="btn btn-sm gallery-btn-outline">
 
                                             Modifica
 
                                         </a>
-
-
-                                        <a asp-controller="Artworks"
-                                           asp-action="Delete"
-                                           asp-route-id="@artwork.Id"
+                                         
+                                        <a asp-controller="Artworks" asp-action="Delete" asp-route-id="@artwork.Id"
                                            class="btn btn-sm gallery-btn-danger">
 
                                             Elimina
@@ -305,7 +272,7 @@
 
         </div>
 
-        @* Paginazione: 9 opere per pagina *@
+        @* Barra delle pagine (9 opere per pagina) *@
 
         @(await Html.PartialAsync("_Pagination",
             new BeArtGallery.ViewModels.PaginationViewModel

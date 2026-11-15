@@ -6,38 +6,32 @@
 }
 
 
+@* Stili della pagina di check-in *@
 @section Styles
 {
-    <link rel="stylesheet"
-          href="~/css/booking-checkin.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/booking-checkin.css" asp-append-version="true" />
 }
 
 
 <div class="container py-5">
 
+    @* Pagina aperta dallo staff quando scansiona il QR di una prenotazione *@
     <div class="booking-checkin-page">
-
 
         <div class="gallery-eyebrow mb-3">
             Accesso visitatori
         </div>
 
-
         <h1 class="booking-checkin-heading">
             Verifica prenotazione
         </h1>
-
 
         <p class="booking-checkin-intro">
             Controlla i dati della prenotazione
             prima di confermare l'ingresso.
         </p>
 
-
-        @* =================================================
-           MESSAGGI
-           ================================================= *@
+        @* Esito del check-in appena fatto *@
 
         @if (TempData["CheckInSuccess"] != null)
         {
@@ -54,7 +48,6 @@
             </div>
         }
 
-
         @if (TempData["CheckInError"] != null)
         {
             <div class="booking-checkin-message error">
@@ -70,10 +63,7 @@
             </div>
         }
 
-
-        @* =================================================
-           QR NON VALIDO
-           ================================================= *@
+        @* QR non valido o prenotazione non trovata *@
 
         @if (!Model.IsValid)
         {
@@ -95,19 +85,15 @@
         }
         else
         {
-            @* =================================================
-               PRENOTAZIONE
-               ================================================= *@
+            @* Dati della prenotazione *@
 
             <div class="booking-checkin-card">
-
 
                 <div class="booking-checkin-card-header">
 
                     <div>
 
-                        @if (Model.ActivityType ==
-                             ActivityType.Visita)
+                        @if (Model.ActivityType == ActivityType.Visita)
                         {
                             <span class="booking-checkin-type">
                                 Visita
@@ -119,17 +105,14 @@
                                 Evento
                             </span>
                         }
-
-
+                         
                         <h2>
                             @Model.ActivityTitle
                         </h2>
 
                     </div>
-
-
-                    @if (Model.Status ==
-                         BookingStatus.Confirmed)
+                     
+                    @if (Model.Status == BookingStatus.Confirmed)
                     {
                         <span class="booking-checkin-status valid">
                             Confermata
@@ -143,15 +126,11 @@
                     }
 
                 </div>
-
-
-                @* =================================================
-                   DATI
-                   ================================================= *@
+                 
+                @* Visitatore, attività, data, luogo e partecipanti *@
 
                 <div class="booking-checkin-data">
-
-
+                     
                     <div class="booking-checkin-data-row">
 
                         <span>
@@ -163,8 +142,7 @@
                         </strong>
 
                     </div>
-
-
+                     
                     <div class="booking-checkin-data-row">
 
                         <span>
@@ -176,8 +154,7 @@
                         </strong>
 
                     </div>
-
-
+                     
                     <div class="booking-checkin-data-row">
 
                         <span>
@@ -189,8 +166,7 @@
                         </strong>
 
                     </div>
-
-
+                     
                     <div class="booking-checkin-data-row">
 
                         <span>
@@ -204,8 +180,7 @@
                     </div>
 
 
-                    @if (!string.IsNullOrWhiteSpace(
-                        Model.Location))
+                    @if (!string.IsNullOrWhiteSpace(Model.Location))
                     {
                         <div class="booking-checkin-data-row">
 
@@ -219,8 +194,7 @@
 
                         </div>
                     }
-
-
+                     
                     <div class="booking-checkin-data-row">
 
                         <span>
@@ -235,12 +209,9 @@
 
                     </div>
 
-                </div>
+                </div> 
 
-
-                @* =================================================
-                   GIÀ UTILIZZATO
-                   ================================================= *@
+                @* QR già usato: mostra quando e da chi è stato fatto il check-in *@
 
                 @if (Model.CheckedInAt.HasValue)
                 {
@@ -251,15 +222,13 @@
                             ✓
 
                         </div>
-
-
+                         
                         <div>
 
                             <strong>
                                 Ingresso già registrato
                             </strong>
-
-
+                             
                             <p>
 
                                 Check-in effettuato il
@@ -269,8 +238,7 @@
                             </p>
 
 
-                            @if (!string.IsNullOrWhiteSpace(
-                                Model.CheckedInByEmail))
+                            @if (!string.IsNullOrWhiteSpace(Model.CheckedInByEmail))
                             {
                                 <small>
 
@@ -283,15 +251,11 @@
                         </div>
 
                     </div>
-                }
+                } 
 
+                @* Prenotazione annullata: ingresso non permesso *@
 
-                @* =================================================
-                   PRENOTAZIONE ANNULLATA
-                   ================================================= *@
-
-                else if (Model.Status !=
-                         BookingStatus.Confirmed)
+                else if (Model.Status != BookingStatus.Confirmed)
                 {
                     <div class="booking-checkin-blocked">
 
@@ -307,10 +271,7 @@
                     </div>
                 }
 
-
-                @* =================================================
-                   CONFERMA INGRESSO
-                   ================================================= *@
+                @* Pulsante per confermare l'ingresso *@
 
                 else if (Model.CanCheckIn)
                 {
@@ -329,18 +290,11 @@
 
                         </div>
 
+                        <form asp-controller="BookingCheckIn" asp-action="Confirm" method="post">
 
-                        <form asp-controller="BookingCheckIn"
-                              asp-action="Confirm"
-                              method="post">
+                            <input type="hidden" name="token" value="@Model.QrToken" />
 
-                            <input type="hidden"
-                                   name="token"
-                                   value="@Model.QrToken" />
-
-
-                            <button type="submit"
-                                    class="btn gallery-btn-primary booking-checkin-button">
+                            <button type="submit" class="btn gallery-btn-primary booking-checkin-button">
 
                                 Conferma ingresso
 

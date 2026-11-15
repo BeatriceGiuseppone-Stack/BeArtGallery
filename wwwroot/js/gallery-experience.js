@@ -1,11 +1,11 @@
-// BeArtGallery — tema "Luce di sala"
-// Fa seguire al faretto la posizione del cursore sulle opere.
-// Aggiorna solo due variabili CSS (--gx-x, --gx-y): tutto l'effetto
-// visivo è descritto in gallery-experience.css.
+// Effetti grafici del sito (tema della galleria).
+// Il "faretto" segue il mouse sulle opere: lo script cambia solo
+// due variabili CSS (--gx-x e --gx-y), l'effetto è nel CSS.
 
 (function () {
     "use strict";
 
+    // Elementi che hanno il faretto
     const selectors = [
         ".artwork-catalog-image-wrapper",
         ".artist-artwork-image-link",
@@ -13,7 +13,7 @@
         ".gallery-hero-image-wrapper"
     ].join(",");
 
-    // Su dispositivi touch o con movimento ridotto il faretto resta fermo.
+    // Su touch o con animazioni ridotte il faretto resta fermo
     const canHover = window.matchMedia("(hover: hover)").matches;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -24,7 +24,7 @@
     let frame = null;
     let heroFrame = null;
 
-    // La luce della home segue il cursore su tutta la prima sezione.
+    // Home: la luce segue il mouse su tutta la prima sezione
     const hero = document.querySelector(".gallery-hero");
 
     if (hero) {
@@ -33,6 +33,7 @@
                 cancelAnimationFrame(heroFrame);
             }
 
+            // Calcola la posizione del mouse in percentuale
             heroFrame = requestAnimationFrame(function () {
                 const box = hero.getBoundingClientRect();
                 const x = ((event.clientX - box.left) / box.width) * 100;
@@ -44,7 +45,7 @@
         }, { passive: true });
     }
 
-    // Pagina Artisti: l'opera di anteprima segue il cursore in orizzontale.
+    // Pagina Artisti: l'opera di anteprima segue il mouse in orizzontale
     let previewFrame = null;
 
     document.addEventListener("pointermove", function (event) {
@@ -60,13 +61,14 @@
 
         previewFrame = requestAnimationFrame(function () {
             const box = row.getBoundingClientRect();
-            // L'anteprima resta dentro la riga, lontana dal bordo destro.
+            // L'anteprima resta dentro la riga, lontano dal bordo destro
             const x = Math.min(Math.max(event.clientX - box.left, 0), box.width - 300);
 
             row.style.setProperty("--gx-px", Math.max(x, 0).toFixed(0) + "px");
         });
     }, { passive: true });
 
+    // Faretto sulle opere
     document.addEventListener("pointermove", function (event) {
         const target = event.target.closest(selectors);
 
@@ -74,7 +76,7 @@
             return;
         }
 
-        // Un aggiornamento per fotogramma, per non appesantire il browser.
+        // Al massimo un aggiornamento per fotogramma, per non rallentare il browser
         if (frame) {
             cancelAnimationFrame(frame);
         }
@@ -90,17 +92,19 @@
     }, { passive: true });
 })();
 
-// Comparsa degli elementi quando entrano nello schermo e
-// numeri della dashboard che "contano" fino al valore.
+// Comparsa degli elementi quando entrano nello schermo
+// e numeri della dashboard che salgono fino al valore
 (function () {
     "use strict";
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // Niente animazioni se l'utente le ha disattivate
     if (reduceMotion || !("IntersectionObserver" in window)) {
         return;
     }
 
+    // Elementi che compaiono con l'animazione
     const revealSelectors = [
         ".artwork-catalog-card",
         ".artist-card",
@@ -120,17 +124,16 @@
         ".about-info-card"
     ].join(",");
 
-    // Si animano solo gli elementi ancora sotto il bordo dello schermo:
-    // ciò che si vede al caricamento resta subito visibile.
-    // Se la pagina è in una scheda nascosta l'effetto non serve.
+    // Si animano solo gli elementi sotto il bordo dello schermo:
+    // quello che si vede all'apertura resta subito visibile.
+    // Se la scheda è nascosta l'effetto non serve.
     const foldLine = window.innerHeight * 0.92;
 
     const items = document.visibilityState === "visible"
-        ? Array.from(document.querySelectorAll(revealSelectors))
-            .filter(function (el) { return el.getBoundingClientRect().top > foldLine; })
+        ? Array.from(document.querySelectorAll(revealSelectors)).filter(function (el) { return el.getBoundingClientRect().top > foldLine; })
         : [];
 
-    // Ritardo a scalare tra elementi vicini (massimo 5 passi).
+    // Piccolo ritardo tra elementi vicini (massimo 5 passi)
     const counters = new Map();
 
     items.forEach(function (item) {
@@ -142,6 +145,7 @@
         item.classList.add("gx-reveal");
     });
 
+    // Quando un elemento entra nello schermo diventa visibile
     const observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
             if (entry.isIntersecting) {
@@ -155,10 +159,8 @@
         observer.observe(item);
     });
 
-
-    // Numeri che salgono fino al valore (solo interi, es. "12").
-    const numbers = document.querySelectorAll(
-        ".dashboard-kpi strong, .inquiry-stat-card strong");
+    // Numeri che salgono fino al valore (solo numeri interi, es. "12")
+    const numbers = document.querySelectorAll(".dashboard-kpi strong, .inquiry-stat-card strong");
 
     const countObserver = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
@@ -171,19 +173,18 @@
 
             countObserver.unobserve(el);
 
-            if (isNaN(target) || target <= 0 ||
-                String(target) !== el.textContent.trim() ||
-                document.hidden) {
+            if (isNaN(target) || target <= 0 || String(target) !== el.textContent.trim() || document.hidden) {
                 return;
             }
 
-            // Se la scheda viene nascosta a metà, mostra subito il valore finale.
+            // Se la scheda viene nascosta a metà si mostra subito il valore finale
             const finish = function () {
                 el.textContent = target;
             };
 
             document.addEventListener("visibilitychange", finish, { once: true });
 
+            // Animazione di 900 millisecondi che rallenta alla fine
             const duration = 900;
             const start = performance.now();
 

@@ -1,18 +1,7 @@
-/* =====================================================================
-   BeArtGallery — tema "Luce di sala"
-   ---------------------------------------------------------------------
-   Si carica DOPO site.css e modifica solo l'aspetto, non la struttura.
-   Idea guida: il sito si comporta come una sala espositiva.
-   - le opere sono illuminate da un faretto che segue il cursore;
-   - al passaggio del mouse l'opera viene "incorniciata" (passe-partout);
-   - l'arco del logo diventa la cornice dell'immagine principale.
-   Per tornare allo stile precedente basta rimuovere il <link> nel layout.
-   ===================================================================== */
+/* Tema grafico della galleria: colori, caratteri ed effetti.
+   Si carica dopo site.css e cambia solo l'aspetto delle pagine. */
 
-/* Carattere dei titoli: Libre Caslon, lo stesso stile del logotipo
-   (serif classico con terminali a goccia). Licenza SIL Open Font
-   License, file ospitati sul sito: nessuna richiesta a server esterni.
-   Il corsivo e il grassetto usano la versione "Text" della stessa famiglia. */
+/* Carattere dei titoli: Libre Caslon, salvato nel sito (wwwroot/fonts) */
 @font-face {
     font-family: "Libre Caslon Display";
     font-style: normal;
@@ -38,7 +27,7 @@
 }
 
 :root {
-    /* Palette "Bordeaux": pareti avorio, bordeaux profondo, oro del logo */
+    /* Colori: avorio per lo sfondo, bordeaux e oro */
     --gx-wall: #f6f1ea;        /* parete avorio */
     --gx-paper: #fcf9f4;       /* superfici chiare, passe-partout */
     --gx-ink: #2a0d16;         /* testo: bordeaux quasi nero */
@@ -51,14 +40,14 @@
     --gx-bordeaux: #5c1427;    /* campo pieno della home */
     --gx-bordeaux-deep: #2a0d16;
 
-    /* Titoli come il logotipo; testo nel carattere di sistema, come prima */
+    /* Caratteri: Libre Caslon per i titoli, carattere di sistema per il testo */
     --gx-font-display: "Libre Caslon Display", Georgia, "Times New Roman", serif;
     --gx-font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-    /* Movimento */
+    /* Durata e andamento delle animazioni */
     --gx-ease: cubic-bezier(.2, .7, .2, 1);
 
-    /* Allineamento con le variabili già usate in site.css */
+    /* Variabili già usate in site.css, collegate ai nuovi colori */
     --gallery-bg: var(--gx-wall);
     --gallery-text: var(--gx-ink);
     --gallery-muted: var(--gx-muted);
@@ -68,10 +57,7 @@
     --gallery-soft: #efe6dd;
 }
 
-
-/* ---------------------------------------------------------------------
-   Tipografia
-   --------------------------------------------------------------------- */
+/* Titoli */
 
 h1, h2, h3,
 .gallery-brand,
@@ -86,7 +72,7 @@ h1, h2, h3,
     font-weight: 400;
 }
 
-/* Il logotipo ha una spaziatura normale: niente lettere schiacciate */
+/* Logo senza lettere strette */
 .gallery-hero-title,
 .gallery-large-heading,
 .artworks-page-title,
@@ -94,7 +80,7 @@ h1, h2, h3,
     letter-spacing: -.015em;
 }
 
-/* Il titolo della home in grassetto (Libre Caslon Text 700) */
+/* Titolo della home in grassetto */
 .gallery-hero-title {
     font-size: clamp(2.4rem, 4.2vw, 4rem);
     font-weight: 700;
@@ -108,8 +94,7 @@ h1, h2, h3,
     font-style: italic;
 }
 
-/* Le etichette sopra i titoli diventano una didascalia in corsivo,
-   come la targhetta di una sala, invece del maiuscoletto spaziato. */
+/* Etichette sopra i titoli in corsivo */
 .gallery-eyebrow {
     font-family: var(--gx-font-display);
     font-style: italic;
@@ -120,10 +105,7 @@ h1, h2, h3,
     color: var(--gx-gilt-text);
 }
 
-
-/* ---------------------------------------------------------------------
-   Navigazione: filetto dorato che si disegna al passaggio del mouse
-   --------------------------------------------------------------------- */
+/* Menu: linea dorata sotto la voce al passaggio del mouse */
 
 .gallery-navbar .nav-link {
     position: relative;
@@ -154,10 +136,7 @@ h1, h2, h3,
     color: var(--gx-ink);
 }
 
-
-/* ---------------------------------------------------------------------
-   Pulsanti: la luce "sale" dal basso e riempie il pulsante
-   --------------------------------------------------------------------- */
+/* Pulsanti: al passaggio del mouse il colore riempie il pulsante dal basso */
 
 .gallery-btn-primary,
 .gallery-btn-outline {
@@ -201,12 +180,7 @@ h1, h2, h3,
     transform: translateY(0);
 }
 
-
-/* ---------------------------------------------------------------------
-   HOME: campo bordeaux con una luce viva
-   Una luce calda segue il cursore e un secondo bagliore color rame
-   si muove lentamente, come un faretto che attraversa la sala.
-   --------------------------------------------------------------------- */
+/* Home: prima sezione su sfondo bordeaux con una luce che segue il mouse */
 
 .gallery-hero {
     position: relative;
@@ -221,7 +195,7 @@ h1, h2, h3,
     transition: background-position .6s var(--gx-ease);
 }
 
-/* Bagliore rame che si sposta piano sullo sfondo */
+/* Alone che si sposta lentamente sullo sfondo */
 .gallery-hero::before {
     content: "";
     position: absolute;
@@ -234,7 +208,7 @@ h1, h2, h3,
     animation: gx-drift 18s ease-in-out infinite alternate;
 }
 
-/* Grana leggera, come la carta di un catalogo */
+/* Grana leggera sullo sfondo */
 .gallery-hero::after {
     content: "";
     position: absolute;
@@ -274,8 +248,7 @@ h1, h2, h3,
     border-color: rgba(252, 246, 238, .7);
 }
 
-/* Al passaggio del mouse i pulsanti si invertono:
-   quello chiaro diventa bordeaux scuro, quelli a filo si riempiono d'avorio */
+/* Pulsanti della prima sezione: al passaggio del mouse invertono i colori */
 .gallery-hero .gallery-btn-primary::before {
     background: var(--gx-bordeaux-deep);
 }
@@ -303,7 +276,7 @@ h1, h2, h3,
     outline-color: var(--gx-gilt-light);
 }
 
-/* L'arco dell'immagine riceve un filo d'oro, come la cornice del logo */
+/* Bordo dorato attorno all'immagine */
 .gallery-hero-image {
     box-shadow: 0 0 0 1px rgba(233, 178, 122, .55), 0 40px 60px -30px rgba(0, 0, 0, .55);
 }
@@ -314,10 +287,7 @@ h1, h2, h3,
     }
 }
 
-
-/* ---------------------------------------------------------------------
-   HERO: l'immagine diventa un arco, come nel logo
-   --------------------------------------------------------------------- */
+/* Home: immagine a forma di arco, come nel logo */
 
 .gallery-hero-image-wrapper {
     max-width: 440px;
@@ -331,14 +301,13 @@ h1, h2, h3,
     border-radius: 999px 999px 0 0;
 }
 
-/* Nessuna cornice decorativa sotto l'immagine: resta solo l'arco
-   e la luce che segue il mouse (annulla il rettangolo di site.css) */
+/* Nessuna cornice sotto l'immagine */
 .gallery-hero-image-wrapper::after {
     content: none;
     display: none;
 }
 
-/* "La sala si accende": unico momento animato al caricamento */
+/* Animazione all'apertura della home */
 @media (prefers-reduced-motion: no-preference) {
 
     .gallery-hero-image {
@@ -368,11 +337,7 @@ h1, h2, h3,
     to   { opacity: 1; transform: none; }
 }
 
-
-/* ---------------------------------------------------------------------
-   OPERE: faretto che segue il cursore + passe-partout
-   Le coordinate --gx-x / --gx-y sono aggiornate da gallery-experience.js
-   --------------------------------------------------------------------- */
+/* Opere: faretto che segue il mouse e cornice chiara */
 
 .artwork-catalog-image-wrapper,
 .artist-artwork-image-link,
@@ -391,7 +356,7 @@ h1, h2, h3,
     transition: transform .6s var(--gx-ease), box-shadow .6s var(--gx-ease);
 }
 
-/* A riposo l'opera è in penombra, come in una sala con le luci basse */
+/* Opera un po' scura quando il mouse non è sopra */
 .artwork-catalog-image,
 .artist-artwork-image,
 .gx-wall-image {
@@ -399,7 +364,7 @@ h1, h2, h3,
     transition: filter .6s var(--gx-ease), transform .9s var(--gx-ease);
 }
 
-/* Cono di luce calda centrato sul cursore, con bordi in ombra */
+/* Luce che segue il mouse */
 .artwork-catalog-image-wrapper::after,
 .artist-artwork-image-link::after,
 .gx-wall-frame::after {
@@ -421,7 +386,7 @@ h1, h2, h3,
     transition: opacity .5s var(--gx-ease);
 }
 
-/* Passe-partout: un bordo chiaro con filetto dorato "entra" attorno all'opera */
+/* Cornice chiara con filetto dorato al passaggio del mouse */
 .artwork-catalog-image-wrapper::before,
 .artist-artwork-image-link::before {
     content: "";
@@ -438,7 +403,7 @@ h1, h2, h3,
 .artwork-catalog-image-wrapper:focus-visible,
 .artist-artwork-card:hover .artist-artwork-image-link {
     transform: translateY(-6px);
-    /* ombra lunga e morbida, come un quadro appeso a parete */
+    /* Ombra come quella di un quadro appeso */
     box-shadow: 0 34px 40px -28px rgba(45, 32, 12, .45),
                 0 2px 0 rgba(45, 32, 12, .04);
 }
@@ -465,12 +430,12 @@ h1, h2, h3,
     transform: scale(1.015);
 }
 
-/* Le etichette di disponibilità restano sopra luce e cornice */
+/* Le etichette di disponibilità restano sopra la luce */
 .artwork-catalog-availability-badge {
     z-index: 3;
 }
 
-/* Il titolo dell'opera prende il colore dell'oro quando la si guarda */
+/* Titolo dell'opera dorato al passaggio del mouse */
 .artwork-catalog-title a {
     background-image: linear-gradient(var(--gx-gilt), var(--gx-gilt));
     background-size: 0 1px;
@@ -484,7 +449,7 @@ h1, h2, h3,
     color: var(--gx-ink);
 }
 
-/* Anche l'immagine della home riceve il faretto */
+/* Faretto anche sull'immagine della home */
 .gallery-hero-image-wrapper::before {
     content: "";
     position: absolute;
@@ -503,11 +468,7 @@ h1, h2, h3,
     opacity: 1;
 }
 
-
-/* ---------------------------------------------------------------------
-   Schede (servizi della home, artisti, attività)
-   Discrete: si sollevano appena e un filetto dorato attraversa il bordo
-   --------------------------------------------------------------------- */
+/* Schede (servizi della home, artisti, attività) */
 
 .gallery-feature-card,
 .artist-card,
@@ -569,10 +530,7 @@ h1, h2, h3,
     font-weight: 500;
 }
 
-
-/* ---------------------------------------------------------------------
-   Footer
-   --------------------------------------------------------------------- */
+/* Piè di pagina */
 
 .gallery-footer-title {
     font-family: var(--gx-font-display);
@@ -589,13 +547,7 @@ h1, h2, h3,
     color: var(--gx-gilt-light);
 }
 
-
-/* ---------------------------------------------------------------------
-   Visite, eventi e prenotazioni
-   Il calendario è impaginato come il programma stampato di una mostra:
-   righe separate da filetti, data in grande, nessuna "scheda" a riquadro.
-   Le prenotazioni sono biglietti d'ingresso con matrice e linea di strappo.
-   --------------------------------------------------------------------- */
+/* Visite, eventi e prenotazioni */
 
 .gx-page-head {
     display: flex;
@@ -660,7 +612,7 @@ h1, h2, h3,
     line-height: 1.7;
 }
 
-/* --- Il programma ---------------------------------------------------- */
+/* Elenco delle attività */
 
 .gx-program {
     border-bottom: 1px solid var(--gx-line);
@@ -675,8 +627,8 @@ h1, h2, h3,
     border-top: 1px solid var(--gx-line);
 }
 
-/* Filetto d'oro che "si accende" a sinistra della riga */
-/* La prima riga poggia già sul filetto dell'intestazione */
+/* Linea dorata a sinistra della riga al passaggio del mouse */
+/* La prima riga non ha il bordo sopra */
 .gx-event:first-child {
     border-top: 0;
     padding-top: 0;
@@ -822,7 +774,7 @@ h1, h2, h3,
     font-size: .95rem;
 }
 
-/* Posti: una barra sottile come una linea di matita */
+/* Barra dei posti occupati */
 .gx-seats {
     max-width: 22rem;
 }
@@ -885,7 +837,7 @@ h1, h2, h3,
     text-decoration-color: #9b2c2c;
 }
 
-/* Attività concluse o annullate: la riga resta leggibile ma "a luci spente" */
+/* Attività finite o annullate: più chiare ma leggibili */
 .gx-event.is-closed .gx-event-date {
     opacity: .5;
 }
@@ -916,7 +868,7 @@ h1, h2, h3,
     font-size: .82rem;
 }
 
-/* --- Dettaglio attività -------------------------------------------- */
+/* Scheda dell'attività */
 
 .gx-back-link {
     display: inline-block;
@@ -997,7 +949,7 @@ h1, h2, h3,
     font-size: 1rem;
 }
 
-/* La biglietteria: resta in vista mentre si legge la descrizione */
+/* Riquadro della prenotazione: resta visibile mentre si scorre */
 .gx-ticket-desk {
     position: sticky;
     top: 6rem;
@@ -1007,7 +959,7 @@ h1, h2, h3,
     box-shadow: 0 30px 50px -40px rgba(45, 32, 12, .45);
 }
 
-/* La data dentro l'arco del logo: lo stesso segno dell'immagine in home */
+/* Data dentro l'arco, come nel logo */
 .gx-ticket-desk-date {
     display: flex;
     flex-direction: column;
@@ -1060,7 +1012,7 @@ h1, h2, h3,
     box-shadow: none;
 }
 
-/* --- Le mie prenotazioni: biglietti --------------------------------- */
+/* Le mie prenotazioni: ogni prenotazione è un biglietto */
 
 .gx-tickets {
     display: grid;
@@ -1083,7 +1035,7 @@ h1, h2, h3,
     box-shadow: 0 26px 40px -30px rgba(45, 32, 12, .5);
 }
 
-/* Le due tacche semicircolari della linea di strappo */
+/* Tacche ai lati della linea tratteggiata del biglietto */
 .gx-ticket::before,
 .gx-ticket::after {
     content: "";
@@ -1140,7 +1092,7 @@ h1, h2, h3,
     box-shadow: none;
 }
 
-/* QR: oltre una seconda linea tratteggiata, come il tagliando di controllo */
+/* Parte del biglietto con il QR */
 .gx-ticket .booking-qr-section {
     margin-top: 1.75rem;
     padding-top: 1.75rem;
@@ -1220,7 +1172,7 @@ h1, h2, h3,
     text-decoration: none;
 }
 
-/* --- Gestione prenotazioni (staff) --------------------------------- */
+/* Gestione delle prenotazioni (staff) */
 
 .gx-manage .card {
     background: var(--gx-paper);
@@ -1276,9 +1228,7 @@ a.gx-link-danger {
     display: inline-block;
 }
 
-/* ---------------------------------------------------------------------
-   Home: contenuti veri della galleria
-   --------------------------------------------------------------------- */
+/* Home: sezioni con i dati del database */
 
 .gx-home-section {
     padding: 6.5rem 0;
@@ -1320,10 +1270,7 @@ a.gx-link-danger {
     text-decoration-color: var(--gx-gilt);
 }
 
-/* --- Le opere in sala ------------------------------------------------
-   Allestimento "a linea centrale": i quadri hanno misure diverse ma
-   il loro centro sta alla stessa altezza, come si appendono in galleria.
-   La didascalia sta sotto, come la targhetta a parete. */
+/* Home: le ultime opere appese come su una parete */
 
 .gx-wall {
     display: flex;
@@ -1353,7 +1300,7 @@ a.gx-link-danger {
     transition: transform .6s var(--gx-ease), box-shadow .6s var(--gx-ease);
 }
 
-/* L'immagine mantiene le sue proporzioni; misure diverse per ritmo */
+/* L'immagine mantiene le proporzioni; altezze diverse per variare */
 .gx-wall-image {
     display: block;
     width: auto;
@@ -1413,7 +1360,7 @@ a.gx-link-danger {
     color: var(--gx-gilt-text);
 }
 
-/* --- Prossimi appuntamenti: la sala buia --------------------------- */
+/* Home: prossimi appuntamenti su sfondo scuro */
 
 .gx-home-dark {
     color: #f3e9e1;
@@ -1538,7 +1485,7 @@ a.gx-link-danger {
     line-height: 1.7;
 }
 
-/* --- Gli artisti: indice dei nomi ---------------------------------- */
+/* Home: elenco dei nomi degli artisti */
 
 .gx-names {
     display: grid;
@@ -1657,12 +1604,7 @@ a.gx-link-danger {
     }
 }
 
-
-/* ---------------------------------------------------------------------
-   Componenti Bootstrap nello stile della galleria
-   Così anche le pagine di servizio (moduli, conferme, tabelle) hanno
-   lo stesso aspetto del resto del sito.
-   --------------------------------------------------------------------- */
+/* Componenti di Bootstrap con lo stile della galleria */
 
 main .card {
     background: var(--gx-paper);
@@ -1735,7 +1677,7 @@ main .table tbody tr:hover {
     background-color: rgba(var(--gx-light), .16);
 }
 
-/* Etichette: corsivo nei colori del marchio, al posto delle pillole colorate */
+/* Etichette in corsivo al posto dei badge colorati */
 main .badge {
     padding: 0;
     font-family: var(--gx-font-display);
@@ -1753,7 +1695,7 @@ main .badge.bg-secondary,
 main .badge.bg-light   { color: var(--gx-muted); }
 main .badge.bg-warning { color: #8a6418; }
 
-/* Pulsanti Bootstrap rimasti: stessa forma dei pulsanti del sito */
+/* Altri pulsanti di Bootstrap con la stessa forma di quelli del sito */
 main .btn {
     border-radius: 0;
 }
@@ -1842,7 +1784,7 @@ main .btn-danger:hover {
     line-height: 1.8;
 }
 
-/* --- Gestione utenti (admin) --------------------------------------- */
+/* Gestione utenti (admin) */
 
 .gx-roster-summary {
     display: flex;
@@ -1891,7 +1833,7 @@ main .btn-danger:hover {
     min-width: 0;
 }
 
-/* Iniziale dentro l'arco del logo */
+/* Iniziale dell'utente dentro l'arco */
 .gx-monogram {
     display: flex;
     flex: 0 0 2.6rem;
@@ -1954,7 +1896,7 @@ main .btn-danger:hover {
     text-decoration-color: var(--gx-gilt);
 }
 
-/* Moduli dell'amministrazione (nuovo utente, reimposta password) */
+/* Form dell'amministratore (nuovo utente, nuova password) */
 .gx-form-card {
     padding: 2.5rem;
     background: var(--gx-paper);
@@ -1986,7 +1928,7 @@ main .btn-danger:hover {
     }
 }
 
-/* --- Schermi piccoli ------------------------------------------------- */
+/* Schermi piccoli */
 
 @media (max-width: 991.98px) {
 
@@ -2002,7 +1944,7 @@ main .btn-danger:hover {
 
 @media (max-width: 575.98px) {
 
-    /* Le righe con gutter g-5 sporgevano dallo schermo sui telefoni */
+    /* Su smartphone le righe con spazi grandi uscivano dallo schermo */
     .row.g-5 {
         --bs-gutter-x: 1.5rem;
     }
@@ -2071,9 +2013,7 @@ main .btn-danger:hover {
 }
 
 
-/* ---------------------------------------------------------------------
-   Accessibilità
-   --------------------------------------------------------------------- */
+/* Accessibilità */
 
 a:focus-visible,
 button:focus-visible,
@@ -2086,13 +2026,13 @@ textarea:focus-visible {
     outline-offset: 3px;
 }
 
-/* Testi dorati su fondo scuro (pannelli laterali dei moduli) */
+/* Testi dorati su sfondo scuro, più chiari per essere leggibili */
 .gallery-form-side .gallery-eyebrow,
 .gallery-form-side-number {
     color: var(--gx-gilt-light);
 }
 
-/* Stelle dei feedback e testo secondario: contrasto sufficiente */
+/* Stelle dei feedback e testi grigi: colori con contrasto sufficiente */
 .feedback-stars {
     color: var(--gx-gilt-text);
 }
@@ -2108,7 +2048,7 @@ main .btn-link {
     text-underline-offset: 4px;
 }
 
-/* Collegamento "Vai al contenuto": compare solo quando riceve il focus */
+/* Link "Salta al contenuto": compare solo quando si usa la tastiera */
 body a.gx-skip-link {
     position: absolute;
     top: .75rem;
@@ -2130,7 +2070,7 @@ main:focus {
     outline: none;
 }
 
-/* Il focus da tastiera deve vedersi anche sulle righe-link e sui riquadri */
+/* Contorno visibile quando si naviga con la tastiera */
 .gx-wall-item:focus-visible,
 .gx-agenda-item:focus-visible,
 .gx-name:focus-visible,
@@ -2162,7 +2102,7 @@ main:focus {
     }
 }
 
-/* Su schermi touch non c'è un cursore da seguire: niente faretto mobile */
+/* Su touch non c'è il mouse: il faretto resta fermo */
 @media (hover: none) {
 
     .artwork-catalog-image,
@@ -2171,21 +2111,19 @@ main:focus {
     }
 }
 
-/* Etichetta "Disponibilità limitata" nel colore del marchio */
+/* Etichetta "Ultime disponibilità" nel colore del sito */
 .artwork-catalog-availability-limited {
     background-color: var(--gx-gilt-text);
 }
 
-/* Didascalie dorate sulle fasce scure (invito finale di "Chi siamo") */
+/* Etichette dorate sulle sezioni scure */
 .about-cta .gallery-eyebrow,
 .gallery-footer .gallery-eyebrow {
     color: var(--gx-gilt-light);
 }
 
 
-/* ---------------------------------------------------------------------
-   Richieste di informazioni (staff e visitatore)
-   --------------------------------------------------------------------- */
+/* Richieste di informazioni (staff e visitatore) */
 
 .inquiry-status {
     padding: 0;
@@ -2305,9 +2243,7 @@ main:focus {
 }
 
 
-/* ---------------------------------------------------------------------
-   "Chi siamo": la sezione "La galleria" su fondo bordeaux
-   --------------------------------------------------------------------- */
+/* "Chi siamo": sezione "La galleria" su sfondo bordeaux */
 
 .about-section {
     position: relative;
@@ -2347,14 +2283,7 @@ main:focus {
     }
 }
 
-
-/* =====================================================================
-   PAGINE PRINCIPALI: fascia bordeaux d'apertura
-   Ogni pagina importante (opere, artisti, eventi, prenotazioni,
-   gestione, dashboard) si apre con la stessa fascia viva della home.
-   La fascia occupa tutta la larghezza dello schermo senza cambiare
-   la struttura delle pagine: lo sfondo è disegnato da ::before.
-   ===================================================================== */
+/* Pagine principali: fascia bordeaux in alto con il titolo */
 
 main {
     overflow-x: clip;
@@ -2412,7 +2341,7 @@ main {
     color: rgba(252, 246, 238, .84);
 }
 
-/* Pulsanti sulla fascia: come nella home */
+/* Pulsanti sulla fascia, come nella home */
 .gx-band .gallery-btn-primary,
 .gx-page-head .gallery-btn-primary {
     color: var(--gx-bordeaux);
@@ -2460,7 +2389,7 @@ main {
     outline-color: var(--gx-gilt-light);
 }
 
-/* Lo spazio sotto la fascia */
+/* Spazio sotto la fascia */
 .gx-page-head {
     margin-bottom: 3rem;
 }
@@ -2470,9 +2399,7 @@ main {
 }
 
 
-/* =====================================================================
-   CATALOGO: conteggio e paginazione
-   ===================================================================== */
+/* Catalogo: contatore e barra delle pagine */
 
 .gx-catalog-count {
     margin: -1.5rem 0 2rem;
@@ -2547,9 +2474,7 @@ a.gx-page-number:focus-visible {
 }
 
 
-/* =====================================================================
-   DASHBOARD: indicatori che si accendono
-   ===================================================================== */
+/* Dashboard: riquadri dei numeri */
 
 .dashboard-kpi {
     position: relative;
@@ -2601,12 +2526,7 @@ a.gx-page-number:focus-visible {
 }
 
 
-/* =====================================================================
-   COMPARSA AL MOMENTO GIUSTO
-   Gli elementi entrano con una breve dissolvenza quando arrivano sullo
-   schermo. La classe gx-reveal è aggiunta solo da JavaScript, quindi
-   senza script (o con "riduci movimento") tutto resta visibile.
-   ===================================================================== */
+/* Elementi che compaiono quando si scorre la pagina */
 
 .gx-reveal {
     opacity: 0;
@@ -2643,7 +2563,7 @@ a.gx-page-number:focus-visible {
     }
 }
 
-/* Indicatori in evidenza (fondo scuro): numeri oro-rame */
+/* Numeri dorati nei riquadri scuri */
 .dashboard-kpi-highlight strong {
     color: var(--gx-gilt-light);
 }
@@ -2652,7 +2572,7 @@ a.gx-page-number:focus-visible {
     background-color: var(--gx-bordeaux);
 }
 
-/* "In esposizione" / "Non esposta": didascalia con pallino invece della pillola verde */
+/* "In esposizione" / "Non esposta": testo con pallino */
 .gallery-status {
     padding: 0;
     font-family: var(--gx-font-display);
@@ -2702,9 +2622,7 @@ a.gx-page-number:focus-visible {
 }
 
 
-/* =====================================================================
-   LE MIE RICHIESTE (visitatore) e conversazione
-   ===================================================================== */
+/* Le mie richieste (visitatore) e conversazione */
 
 .gx-back-link-light {
     color: rgba(252, 246, 238, .78);
@@ -2715,7 +2633,7 @@ a.gx-page-number:focus-visible {
     color: var(--gx-gilt-light);
 }
 
-/* Una nota chiara dentro la fascia resta comunque leggibile */
+/* Nota chiara dentro la fascia */
 .gx-band .gallery-management-note,
 .gx-band .gallery-management-note p {
     color: var(--gx-ink);
@@ -2754,7 +2672,7 @@ a.gx-page-number:focus-visible {
     border-left: 2px solid var(--gx-line);
 }
 
-/* Le risposte della galleria hanno il colore del marchio */
+/* Risposte della galleria nel colore del sito */
 .inquiry-conversation-operator .inquiry-conversation-bubble {
     color: #fcf6ee;
     background: var(--gx-bordeaux);
@@ -2786,7 +2704,7 @@ a.gx-page-number:focus-visible {
 }
 
 
-/* Invito finale di "Chi siamo" (fondo scuro): pulsanti come nella home */
+/* "Chi siamo": pulsanti della sezione finale su sfondo scuro */
 .about-cta .gallery-btn-primary {
     color: var(--gx-bordeaux);
     background: #fcf6ee;
@@ -2826,12 +2744,7 @@ a.gx-page-number:focus-visible {
 }
 
 
-/* ---------------------------------------------------------------------
-   Pagina Artisti: indice dei nomi
-   Gli artisti sono il cuore della galleria: i nomi sono in grande,
-   raggruppati per iniziale del cognome. Passando con il mouse su un
-   nome compare una delle sue opere, che segue il cursore.
-   --------------------------------------------------------------------- */
+/* Pagina Artisti: elenco dei nomi grandi con anteprima di un'opera */
 
 .gx-artist-index {
     border-top: 1px solid var(--gx-ink);
@@ -2891,7 +2804,7 @@ a.gx-page-number:focus-visible {
     transition: color .3s ease, transform .45s cubic-bezier(.2, .7, .2, 1);
 }
 
-/* Tutta la riga è cliccabile, il nome resta l'unico link */
+/* Tutta la riga è cliccabile, ma il link è solo il nome */
 .gx-artist-link::after {
     content: "";
     position: absolute;
@@ -2996,7 +2909,7 @@ a.gx-page-number:focus-visible {
     }
 }
 
-/* Tablet e telefono: niente anteprima che vola, una miniatura fissa */
+/* Tablet e smartphone: miniatura fissa al posto dell'anteprima che si muove */
 @media (max-width: 991.98px), (hover: none) {
     .gx-artist-row.has-preview {
         grid-template-columns: minmax(0, 1fr) 5rem;

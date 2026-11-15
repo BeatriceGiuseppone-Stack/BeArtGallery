@@ -4,17 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeArtGallery.Data
 {
+    // Prepara ruoli e amministratore all'avvio dell'applicazione
     public static class IdentitySeeder
     {
-        public static async Task SeedAsync(
-            IServiceProvider services,
-            IConfiguration configuration)
+        public static async Task SeedAsync( IServiceProvider services, IConfiguration configuration)
         {
-            var roleManager =
-                services.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-            var userManager =
-                services.GetRequiredService<UserManager<ApplicationUser>>();
+            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
             string[] roles =
             {
@@ -23,42 +20,34 @@ namespace BeArtGallery.Data
                 RoleNames.Admin
             };
 
-            // Crea i ruoli se non esistono
+            // Crea i ruoli Visitore, Staff e Admin se non esistono
             foreach (var roleName in roles)
             {
                 if (!await roleManager.RoleExistsAsync(roleName))
                 {
-                    await roleManager.CreateAsync(
-                        new IdentityRole(roleName));
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
 
-            // Garantisce soltanto l'Admin iniziale
-            var adminEmail =
-                configuration["RoleBootstrap:AdminEmail"];
+            // Dà il ruolo Admin all'utente indicato in configurazione
+            var adminEmail = configuration["RoleBootstrap:AdminEmail"];
 
             if (!string.IsNullOrWhiteSpace(adminEmail))
             {
-                var admin =
-                    await userManager.FindByEmailAsync(adminEmail);
+                var admin = await userManager.FindByEmailAsync(adminEmail);
 
                 if (admin != null)
                 {
-                    var adminRoles =
-                        await userManager.GetRolesAsync(admin);
+                    var adminRoles = await userManager.GetRolesAsync(admin);
 
                     if (!adminRoles.Contains(RoleNames.Admin))
                     {
                         if (adminRoles.Count > 0)
                         {
-                            await userManager.RemoveFromRolesAsync(
-                                admin,
-                                adminRoles);
+                            await userManager.RemoveFromRolesAsync( admin, adminRoles);
                         }
 
-                        await userManager.AddToRoleAsync(
-                            admin,
-                            RoleNames.Admin);
+                        await userManager.AddToRoleAsync( admin, RoleNames.Admin);
                     }
                 }
             }
@@ -68,14 +57,11 @@ namespace BeArtGallery.Data
 
             foreach (var user in users)
             {
-                var userRoles =
-                    await userManager.GetRolesAsync(user);
+                var userRoles = await userManager.GetRolesAsync(user);
 
                 if (userRoles.Count == 0)
                 {
-                    await userManager.AddToRoleAsync(
-                        user,
-                        RoleNames.Visitore);
+                    await userManager.AddToRoleAsync( user, RoleNames.Visitore);
                 }
             }
         }

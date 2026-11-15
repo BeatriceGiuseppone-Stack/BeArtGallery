@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace BeArtGallery.Tests
 {
     /// <summary>
-    /// Test della paginazione dell'elenco artisti (9 per pagina):
-    /// il database restituisce solo la pagina richiesta e i numeri
-    /// di pagina fuori intervallo vengono riportati entro i limiti.
+    /// Test della paginazione degli artisti (9 per pagina): il database restituisce
+    /// solo la pagina richiesta e le pagine non valide vengono corrette
     /// </summary>
     public sealed class PaginationTests : IDisposable
     {
@@ -20,6 +19,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Aggiunge il numero di artisti richiesto
         private void AddArtists(int count)
         {
             using var context = _db.CreateContext();
@@ -29,8 +29,8 @@ namespace BeArtGallery.Tests
                 context.Artists.Add(new Artist
                 {
                     FirstName = "Nome",
-                    // Cognomi con numero a due cifre: l'ordine alfabetico
-                    // coincide con quello numerico (Artista01, Artista02…).
+                    // Cognomi con due cifre (Artista01, Artista02, ...):
+                    // così l'ordine alfabetico è uguale a quello numerico
                     LastName = $"Artista{i:D2}"
                 });
             }
@@ -39,6 +39,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Apre una pagina dell'elenco artisti e restituisce artisti e vista
         private async Task<(List<Artist> Artists, ViewResult View)> OpenPage(int page)
         {
             await using var context = _db.CreateContext();
@@ -51,6 +52,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Prima pagina: 9 artisti in ordine alfabetico
         [Fact]
         public async Task FirstPage_ShowsNineArtistsInAlphabeticalOrder()
         {
@@ -66,6 +68,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Ultima pagina: solo gli artisti rimasti
         [Fact]
         public async Task LastPage_ShowsOnlyRemainingArtists()
         {
@@ -79,6 +82,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Pagine fuori dai limiti: si va alla prima o all'ultima
         [Theory]
         [InlineData(0, 1)]
         [InlineData(-4, 1)]
@@ -93,6 +97,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Nessun artista: una sola pagina vuota
         [Fact]
         public async Task EmptyCatalog_HasOnePageAndNoArtists()
         {

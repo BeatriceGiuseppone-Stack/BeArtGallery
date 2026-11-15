@@ -7,9 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace BeArtGallery.Tests
 {
     /// <summary>
-    /// Database SQLite in memoria creato da zero per ogni test.
-    /// La connessione resta aperta finché il test non termina,
-    /// altrimenti SQLite eliminerebbe il database.
+    /// Database SQLite in memoria, nuovo per ogni test.
+    /// La connessione resta aperta per tutto il test, altrimenti SQLite cancella il database.
     /// </summary>
     public sealed class TestDatabase : IDisposable
     {
@@ -25,6 +24,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Crea un contesto collegato al database di test
         public ApplicationDbContext CreateContext()
         {
             var options =
@@ -36,6 +36,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Aggiunge un utente di prova
         public string AddUser(string id)
         {
             using var context = CreateContext();
@@ -53,6 +54,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Aggiunge un'attività di prova
         public int AddActivity(
             DateTime startDateTime,
             int maxParticipants = 10,
@@ -79,6 +81,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Aggiunge una prenotazione di prova
         public Booking AddBooking(
             int activityId,
             string userId,
@@ -105,6 +108,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Chiude la connessione e cancella il database
         public void Dispose()
         {
             _connection.Dispose();
@@ -113,8 +117,8 @@ namespace BeArtGallery.Tests
 
 
     /// <summary>
-    /// Orologio fisso: rende i test indipendenti dall'ora reale.
-    /// Il fuso "locale" è UTC per semplicità.
+    /// Orologio fermo: così i test non dipendono dall'ora reale.
+    /// Come fuso "locale" si usa UTC.
     /// </summary>
     public sealed class FixedTimeProvider : TimeProvider
     {

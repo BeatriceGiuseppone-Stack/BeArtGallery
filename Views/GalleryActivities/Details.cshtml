@@ -2,6 +2,7 @@
 @using System.Globalization
 @using BeArtGallery.Models.Enums
 
+@* Stato dell'attività e posti, usati in tutta la pagina *@
 @{
     ViewData["Title"] = Model.Title;
 
@@ -17,23 +18,18 @@
 
     var endDateTime = Model.StartDateTime.AddMinutes(Model.DurationMinutes);
 
-    var occupancy = Model.MaxParticipants > 0
-        ? Math.Min(100, Model.BookedParticipants * 100 / Model.MaxParticipants)
-        : 0;
+    var occupancy = Model.MaxParticipants > 0 ? Math.Min(100, Model.BookedParticipants * 100 / Model.MaxParticipants) : 0;
 }
 
 <div class="container py-5">
 
-    <a asp-action="Index"
-       class="gx-back-link">
+    <a asp-action="Index" class="gx-back-link">
         ← Torna agli eventi
     </a>
 
     <div class="gx-detail">
 
-        @* =================================================
-           COLONNA SINISTRA: racconto dell'attività
-           ================================================= *@
+        @* Colonna di sinistra: descrizione dell'attività *@
 
         <div class="gx-detail-main">
 
@@ -63,7 +59,7 @@
                 @Model.Title
             </h1>
 
-            @* Data in evidenza, come sul cartellone della mostra *@
+            @* Data in evidenza, come sul cartellone di una mostra *@
 
             <p class="gx-detail-when">
                 @Model.StartDateTime.ToString("dddd d MMMM yyyy", it)
@@ -72,6 +68,7 @@
                 </span>
             </p>
 
+            @* Avviso se l'attività è stata annullata *@
             @if (isCancelled)
             {
                 <div class="gx-notice gx-notice-alert mb-4">
@@ -100,6 +97,7 @@
                 </p>
             }
 
+            @* Data, orario, durata, luogo e posti *@
             <dl class="gx-detail-facts">
 
                 <div>
@@ -135,9 +133,7 @@
 
         </div>
 
-        @* =================================================
-           COLONNA DESTRA: biglietteria
-           ================================================= *@
+        @* Colonna di destra: prenotazione *@
 
         <aside class="gx-ticket-desk" aria-labelledby="bookingTitle">
 
@@ -150,6 +146,7 @@
                 Prenotazione
             </h2>
 
+            @* Messaggio diverso se l'attività è annullata, passata o al completo *@
             @if (isCancelled)
             {
                 <p class="gx-ticket-desk-note">
@@ -195,6 +192,7 @@
 
                 </div>
 
+                @* Chi non ha fatto l'accesso deve prima entrare *@
                 @if (!(User.Identity?.IsAuthenticated ?? false))
                 {
                     <p class="gx-ticket-desk-note">
@@ -202,44 +200,37 @@
                         devi accedere al tuo account.
                     </p>
 
-                    <a asp-area="Identity"
-                       asp-page="/Account/Login"
-                       asp-route-returnUrl="@Context.Request.Path"
-                       class="btn gallery-btn-primary w-100">
+                    <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path" 
+                            class="btn gallery-btn-primary w-100">
 
                         Accedi per prenotare
                     </a>
                 }
                 else
                 {
+                    @* Scelta del numero di partecipanti e pulsante "Prenota" *@
                     @Html.AntiForgeryToken()
 
                     <div class="mb-3">
 
-                        <label for="numberOfParticipants"
-                               class="form-label gx-field-label">
+                        <label for="numberOfParticipants" class="form-label gx-field-label">
 
                             Numero partecipanti
                         </label>
 
-                        <input type="number" id="numberOfParticipants" class="form-control gx-field"
-                               value="1" min="1" max="10" />
+                        <input type="number" id="numberOfParticipants" class="form-control gx-field" value="1" min="1" max="10" />
 
                         <div class="form-text">
                             Fino a 10 persone per prenotazione.
                         </div>
                     </div>
 
-                    <button type="button"
-                            id="bookingButton"
-                            class="btn gallery-btn-primary w-100">
+                    <button type="button" id="bookingButton" class="btn gallery-btn-primary w-100">
 
                         Prenota
                     </button>
 
-                    <div id="bookingMessage"
-                         class="mt-3"
-                         aria-live="polite">
+                    <div id="bookingMessage" class="mt-3" aria-live="polite">
                     </div>
                 }
             }
@@ -249,12 +240,13 @@
     </div>
 </div>
 
-
+@* Script della prenotazione, solo per chi può prenotare *@
 @if ((User.Identity?.IsAuthenticated ?? false) && canBook)
 {
     @section Scripts {
 
         <script>
+            // Pulsante "Prenota"
             const bookingButton = document.getElementById("bookingButton");
 
             bookingButton?.addEventListener( "click",  async function () {
@@ -267,6 +259,7 @@
 
                     const message = document.getElementById("bookingMessage");
 
+                    // Controlla che i partecipanti siano tra 1 e 10
                     if (isNaN(participants) ||  participants < 1 || participants > 10)
                     {
                         message.innerHTML = `<div class="alert alert-danger">
@@ -277,17 +270,12 @@
                         return;
                     }
 
-                    const availablePlaces =
-                        parseInt(
-                            document.getElementById(
-                                "availablePlaces"
-                            ).textContent
-                        );
+                    // Controlla che ci siano abbastanza posti liberi
+                    const availablePlaces = parseInt(document.getElementById("availablePlaces").textContent);
 
                     if (participants > availablePlaces)
                     {
-                        message.innerHTML =
-                            `<div class="alert alert-danger">
+                        message.innerHTML = `<div class="alert alert-danger">
                                 I posti richiesti superano
                                 quelli disponibili.
                              </div>`;
@@ -295,10 +283,10 @@
                         return;
                     }
 
+                    // Serve il token anti-falsificazione per chiamare l'API
                     if (!tokenInput)
                     {
-                        message.innerHTML =
-                            `<div class="alert alert-danger">
+                        message.innerHTML = `<div class="alert alert-danger">
                                 Impossibile completare
                                 la prenotazione.
                              </div>`;
@@ -308,11 +296,13 @@
 
                     const token =  tokenInput.value;
 
+                    // Disattiva il pulsante mentre la richiesta è in corso
                     bookingButton.disabled = true;
                     bookingButton.textContent = "Prenotazione in corso...";
 
                     try {
 
+                        // Invia la prenotazione all'API POST /api/bookings
                         const response = await fetch( "/api/bookings",
                                 {
                                     method: "POST",
@@ -324,14 +314,14 @@
 
                                     body: JSON.stringify({
                                         galleryActivityId: @Model.Id,
-                                        numberOfParticipants:
-                                            participants
+                                        numberOfParticipants: participants
                                     })
                                 }
                             );
 
                         const result = await response.json();
 
+                        // Prenotazione riuscita: aggiorna i posti liberi
                         if (response.ok)
                         {
                             message.innerHTML = `<div class="alert alert-success">${result.message} </div>`;
@@ -342,12 +332,10 @@
 
                             available.textContent = newAvailablePlaces;
 
-                            // Dopo una prenotazione riuscita
-                            // non permettiamo un secondo click.
+                            // Dopo la prenotazione il pulsante resta disattivato
                             bookingButton.textContent = "Prenotazione effettuata";
 
-                            // Se non ci sono più posti,
-                            // disabilitiamo anche l'input.
+                            // Se i posti sono finiti si disattiva anche il campo dei partecipanti
                             if (newAvailablePlaces <= 0)
                             {
                                 participantsInput.disabled = true;
@@ -355,6 +343,7 @@
                         }
                         else
                         {
+                            // Errore: mostra il messaggio e riattiva il pulsante
                             message.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
 
                             bookingButton.disabled = false;
@@ -362,12 +351,12 @@
                             bookingButton.textContent = "Prenota";
                         }
                     }
+                    // Errore di rete o del server
                     catch (error)
                     {
                         console.error("Errore durante la prenotazione:", error);
 
-                        message.innerHTML =
-                            `<div class="alert alert-danger">
+                        message.innerHTML = `<div class="alert alert-danger">
                                 Si è verificato un errore
                                 durante la prenotazione.
                              </div>`;

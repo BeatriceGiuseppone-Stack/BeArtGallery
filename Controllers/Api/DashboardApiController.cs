@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace BeArtGallery.Controllers.Api
 {
     /// <summary>
-    /// API REST riservata a Staff e Admin con gli indicatori di attività.
-    /// Può essere usata da strumenti esterni di analytics o reporting.
+    /// API con gli indicatori della galleria, solo per Staff e Admin.
+    /// Può essere usata da strumenti esterni di analisi.
     /// </summary>
     [ApiController]
     [Route("api/dashboard")]
@@ -27,7 +27,7 @@ namespace BeArtGallery.Controllers.Api
 
 
         /// <summary>
-        /// Restituisce i principali indicatori (KPI) della galleria.
+        /// Restituisce i principali indicatori (KPI) della galleria
         /// </summary>
         /// <response code="200">Indicatori calcolati al momento della richiesta.</response>
         /// <response code="401">Utente non autenticato.</response>
@@ -39,6 +39,7 @@ namespace BeArtGallery.Controllers.Api
         public async Task<IActionResult> GetStats(
             CancellationToken cancellationToken)
         {
+            // Stessi calcoli della pagina Dashboard
             var m = await _dashboardService.BuildAsync(cancellationToken);
 
             return Ok(new DashboardStatsDto(

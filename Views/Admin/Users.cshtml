@@ -12,7 +12,7 @@
 
 <div class="container py-5 gx-manage">
 
-    @* Intestazione *@
+    @* Intestazione con il pulsante "Nuovo utente" *@
 
     <div class="gx-page-head">
 
@@ -35,9 +35,7 @@
 
         <div class="gx-page-actions">
 
-            <a asp-controller="Admin"
-               asp-action="CreateUser"
-               class="btn gallery-btn-primary">
+            <a asp-controller="Admin" asp-action="CreateUser" class="btn gallery-btn-primary">
                 Nuovo utente
             </a>
 
@@ -46,6 +44,7 @@
     </div>
 
 
+    @* Messaggi di conferma o di errore *@
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success">
@@ -60,7 +59,7 @@
         </div>
     }
 
-
+    @* Nessun utente *@
     @if (!Model.Any())
     {
         <div class="gx-empty">
@@ -73,9 +72,7 @@
                 Crea il primo account per lo staff o per un visitatore.
             </p>
 
-            <a asp-controller="Admin"
-               asp-action="CreateUser"
-               class="btn gallery-btn-primary">
+            <a asp-controller="Admin" asp-action="CreateUser" class="btn gallery-btn-primary">
                 Nuovo utente
             </a>
 
@@ -83,7 +80,7 @@
     }
     else
     {
-        @* Riepilogo dei ruoli *@
+        @* Quanti utenti per ogni ruolo *@
 
         <p class="gx-roster-summary">
             @total @(total == 1 ? "utente" : "utenti"):
@@ -94,15 +91,14 @@
 
         <ul class="gx-roster">
 
+            @* Una riga per ogni utente *@
             @foreach (var user in Model)
             {
-                var initial = string.IsNullOrEmpty(user.Email)
-                    ? "?"
-                    : user.Email.Substring(0, 1).ToUpperInvariant();
+                var initial = string.IsNullOrEmpty(user.Email) ? "?" : user.Email.Substring(0, 1).ToUpperInvariant();
 
                 <li class="gx-roster-row">
 
-                    @* Utente *@
+                    @* Email e ruolo attuale *@
 
                     <div class="gx-roster-user">
 
@@ -132,25 +128,18 @@
                     </div>
 
 
-                    @* Modifica ruolo *@
+                    @* Cambio del ruolo *@
 
-                    <form asp-controller="Admin"
-                          asp-action="ChangeRole"
-                          method="post"
-                          class="gx-roster-role">
+                    <form asp-controller="Admin" asp-action="ChangeRole" method="post" class="gx-roster-role">
 
-                        <input type="hidden"
-                               name="userId"
-                               value="@user.Id" />
+                        <input type="hidden" name="userId" value="@user.Id" />
 
-                        <label class="visually-hidden"
-                               for="role-@user.Id">
+                        <label class="visually-hidden" for="role-@user.Id">
                             Ruolo di @user.Email
                         </label>
 
-                        <select name="role"
-                                id="role-@user.Id"
-                                class="form-select">
+                        @* Il ruolo attuale è già selezionato *@
+                        <select name="role" id="role-@user.Id" class="form-select">
 
                             @if (user.Role == RoleNames.Visitore)
                             {
@@ -181,21 +170,17 @@
 
                         </select>
 
-                        <button type="submit"
-                                class="btn gallery-btn-outline">
+                        <button type="submit" class="btn gallery-btn-outline">
                             Aggiorna ruolo
                         </button>
 
                     </form>
 
-
-                    @* Reimposta password *@
+                    @* Link per reimpostare la password *@
 
                     <div class="gx-roster-actions">
 
-                        <a asp-controller="Admin"
-                           asp-action="ResetPassword"
-                           asp-route-userId="@user.Id">
+                        <a asp-controller="Admin" asp-action="ResetPassword" asp-route-userId="@user.Id">
                             Reimposta password
                         </a>
 

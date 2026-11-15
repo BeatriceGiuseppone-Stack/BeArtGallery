@@ -1,13 +1,10 @@
-﻿/* =================================================
-   BEARTGALLERY - QR OPERA
-   ================================================= */
+﻿/* Stili del QR code nella scheda dell'opera (visibile allo staff) */
 
 .artwork-qr-admin-section {
     margin-top: 6rem;
     padding-top: 5rem;
     border-top: 1px solid var(--gallery-border);
 }
-
 
 .artwork-qr-admin-layout {
     display: grid;
@@ -18,10 +15,7 @@
     background-color: var(--gallery-soft);
 }
 
-
-/* =================================================
-   QR
-   ================================================= */
+/* Immagine del QR */
 
 .artwork-qr-image-wrapper {
     display: flex;
@@ -32,7 +26,6 @@
     border: 1px solid var(--gallery-border);
 }
 
-
 .artwork-qr-image {
     display: block;
     width: 100%;
@@ -40,16 +33,12 @@
     height: auto;
 }
 
-
-/* =================================================
-   TESTO
-   ================================================= */
+/* Testo e pulsante di download */
 
 .artwork-qr-content h2 {
     margin-bottom: 1rem;
     font-size: 2rem;
 }
-
 
 .artwork-qr-content p {
     max-width: 650px;
@@ -58,17 +47,13 @@
     line-height: 1.8;
 }
 
-
 .artwork-qr-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
 }
 
-
-/* =================================================
-   RESPONSIVE
-   ================================================= */
+/* Schermi piccoli */
 
 @media (max-width: 767.98px) {
 
@@ -77,13 +62,11 @@
         padding-top: 3rem;
     }
 
-
     .artwork-qr-admin-layout {
         grid-template-columns: 1fr;
         gap: 2rem;
         padding: 1.5rem;
     }
-
 
     .artwork-qr-image-wrapper {
         max-width: 260px;

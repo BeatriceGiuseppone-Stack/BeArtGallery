@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeArtGallery.Controllers
 {
+    // Check-in all'ingresso tramite QR code (solo Staff e Admin)
     [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public class BookingCheckInController : Controller
     {
@@ -18,9 +19,7 @@ namespace BeArtGallery.Controllers
 
         private readonly IBookingService _bookingService;
 
-
-        public BookingCheckInController(
-            ApplicationDbContext context,
+        public BookingCheckInController( ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
             IBookingService bookingService)
         {
@@ -30,128 +29,80 @@ namespace BeArtGallery.Controllers
         }
 
 
-        // =================================================
-        // SCANSIONE QR
-        // =================================================
+        // Pagina aperta quando lo staff scansiona il QR del visitatore
 
         [HttpGet]
-        public async Task<IActionResult> Scan(
-            string? token)
+        public async Task<IActionResult> Scan(string? token)
         {
+            // QR senza codice
             if (string.IsNullOrWhiteSpace(token))
             {
-                return View(
-                    new BookingCheckInViewModel
+                return View( new BookingCheckInViewModel
                     {
                         IsValid = false,
-
-                        ErrorMessage =
-                            "Il QR code non contiene una prenotazione valida."
+                        ErrorMessage = "Il QR code non contiene una prenotazione valida."
                     });
             }
 
 
-            var booking =
-                await _context.Bookings
-                    .AsNoTracking()
-                    .Include(b => b.GalleryActivity)
-                    .Include(b => b.User)
-                    .Include(b => b.CheckedInByUser)
-                    .FirstOrDefaultAsync(b =>
-                        b.QrToken == token);
-
+            // Cerca la prenotazione con il codice del QR
+            var booking = await _context.Bookings.AsNoTracking().Include(b => b.GalleryActivity)
+                    .Include(b => b.User).Include(b => b.CheckedInByUser)
+                    .FirstOrDefaultAsync(b => b.QrToken == token);
 
             if (booking == null)
             {
-                return View(
-                    new BookingCheckInViewModel
+                return View( new BookingCheckInViewModel
                     {
                         IsValid = false,
-
                         QrToken = token,
-
-                        ErrorMessage =
-                            "Prenotazione non trovata. Il QR potrebbe essere non valido."
+                        ErrorMessage = "Prenotazione non trovata. Il QR potrebbe essere non valido."
                     });
             }
 
-
-            var model =
-                new BookingCheckInViewModel
+            // Dati della prenotazione da mostrare allo staff
+            var model = new BookingCheckInViewModel
                 {
                     IsValid = true,
-
-                    QrToken =
-                        token,
-
-                    BookingId =
-                        booking.Id,
-
-                    UserEmail =
-                        booking.User?.Email
-                        ?? string.Empty,
-
-                    ActivityTitle =
-                        booking.GalleryActivity?.Title
-                        ?? string.Empty,
-
-                    ActivityType =
-                        booking.GalleryActivity?.ActivityType
-                        ?? default,
-
-                    StartDateTime =
-                        booking.GalleryActivity?.StartDateTime
-                        ?? default,
-
-                    Location =
-                        booking.GalleryActivity?.Location,
-
-                    NumberOfParticipants =
-                        booking.NumberOfParticipants,
-
-                    Status =
-                        booking.Status,
-
-                    CheckedInAt =
-                        booking.CheckedInAt,
-
-                    CheckedInByEmail =
-                        booking.CheckedInByUser?.Email
+                    QrToken = token,
+                    BookingId = booking.Id,
+                    UserEmail = booking.User?.Email ?? string.Empty,
+                    ActivityTitle = booking.GalleryActivity?.Title ?? string.Empty,
+                    ActivityType = booking.GalleryActivity?.ActivityType ?? default,
+                    StartDateTime = booking.GalleryActivity?.StartDateTime ?? default,
+                    Location = booking.GalleryActivity?.Location,
+                    NumberOfParticipants = booking.NumberOfParticipants,
+                    Status = booking.Status,
+                    CheckedInAt = booking.CheckedInAt,
+                    CheckedInByEmail = booking.CheckedInByUser?.Email
                 };
-
 
             return View(model);
         }
 
 
-        // =================================================
-        // CONFERMA CHECK-IN
-        // =================================================
+        // Conferma dell'ingresso del visitatore
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Confirm(
-            string token)
+        public async Task<IActionResult> Confirm( string token)
         {
             if (string.IsNullOrWhiteSpace(token))
             {
                 return BadRequest();
             }
 
-            var currentUserId =
-                _userManager.GetUserId(User);
+            // Utente dello staff che registra l'ingresso
+            var currentUserId = _userManager.GetUserId(User);
 
             if (string.IsNullOrWhiteSpace(currentUserId))
             {
                 return Challenge();
             }
 
-            // Le regole del check-in (prenotazione confermata,
-            // QR non ancora utilizzato) sono nel BookingService.
-            var result =
-                await _bookingService.CheckInAsync(
-                    token,
-                    currentUserId);
+            // I controlli del check-in (prenotazione confermata, QR non già usato)
+            // sono nel BookingService
+            var result = await _bookingService.CheckInAsync( token, currentUserId);
 
             if (result.Success)
             {
@@ -162,12 +113,8 @@ namespace BeArtGallery.Controllers
                 TempData["CheckInError"] = result.Message;
             }
 
-            return RedirectToAction(
-                nameof(Scan),
-                new
-                {
-                    token
-                });
+            // Torna alla pagina del QR con l'esito
+            return RedirectToAction(nameof(Scan), new {token});
         }
     }
 }

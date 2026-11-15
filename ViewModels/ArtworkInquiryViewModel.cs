@@ -2,6 +2,7 @@
 
 namespace BeArtGallery.ViewModels
 {
+    // Dati del form "Richiedi informazioni" nella scheda dell'opera
     public class ArtworkInquiryViewModel
     {
         [Required]
@@ -22,10 +23,7 @@ namespace BeArtGallery.ViewModels
 
 
         [Required(ErrorMessage = "Inserisci un messaggio.")]
-        [StringLength(
-            2000,
-            MinimumLength = 10,
-            ErrorMessage = "Il messaggio deve contenere almeno 10 caratteri.")]
+        [StringLength( 2000, MinimumLength = 10, ErrorMessage = "Il messaggio deve contenere almeno 10 caratteri.")]
         [Display(Name = "Messaggio")]
         public string Message { get; set; } = string.Empty;
     }

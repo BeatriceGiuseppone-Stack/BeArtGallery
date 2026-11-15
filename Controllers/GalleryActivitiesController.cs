@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeArtGallery.Controllers
 {
+    // Visite ed eventi: elenco pubblico, scheda e gestione per lo staff
     public class GalleryActivitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,165 +22,93 @@ namespace BeArtGallery.Controllers
             _userManager = userManager;
         }
 
-        // INDEX PUBBLICO
-        public async Task<IActionResult> Index(
-    bool showCancelled = false,
-    bool showPast = false)
+        // GET: GalleryActivities
+        // Elenco delle attività. Lo staff può vedere anche quelle passate e annullate.
+        public async Task<IActionResult> Index(bool showCancelled = false, bool showPast = false)
         {
             var now = DateTime.Now;
 
-            var canViewHistory =
-                User.IsInRole(RoleNames.Staff) ||
-                User.IsInRole(RoleNames.Admin);
+            // Solo Staff e Admin possono vedere lo storico
+            var canViewHistory = User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin);
 
-
-            // Un visitatore normale non può forzare
-            // showPast=true dalla query string.
+            // Un visitatore non può vedere le attività passate nemmeno cambiando l'indirizzo
             if (!canViewHistory)
             {
                 showPast = false;
             }
 
+            var query = _context.GalleryActivities.AsNoTracking().AsQueryable();
 
-            var query =
-                _context.GalleryActivities
-                    .AsNoTracking()
-                    .AsQueryable();
-
-
-            // Per il pubblico e, di default, anche per Staff/Admin
-            // mostriamo solo attività future.
+            // Di base si mostrano solo le attività future
             if (!showPast)
             {
-                query =
-                    query.Where(a =>
-                        a.StartDateTime >= now);
+                query = query.Where(a => a.StartDateTime >= now);
             }
 
-
-            // Gli annullati continuano a essere
-            // nascosti finché non vengono richiesti.
+            // Le attività annullate si vedono solo se richiesto
             if (!showCancelled)
             {
-                query =
-                    query.Where(a =>
-                        a.Status !=
-                        GalleryActivityStatus.Cancelled);
+                query = query.Where(a => a.Status != GalleryActivityStatus.Cancelled);
             }
 
-
-            var activities =
-                await query
-                    .OrderBy(a =>
-                        a.Status ==
-                        GalleryActivityStatus.Cancelled
-                            ? 1
-                            : 0)
-                    .ThenBy(a =>
-                        a.StartDateTime)
+            // Ordina mettendo in fondo le annullate, poi per data,
+            // e calcola i posti già prenotati
+            var activities = await query.OrderBy(a => a.Status == GalleryActivityStatus.Cancelled ? 1 : 0)
+                    .ThenBy(a => a.StartDateTime) 
                     .Select(a =>
                         new GalleryActivityViewModel
                         {
                             Id = a.Id,
-
                             Title = a.Title,
+                            Description = a.Description,
+                            ActivityType = a.ActivityType,
+                            StartDateTime = a.StartDateTime,
+                            DurationMinutes = a.DurationMinutes,
+                            MaxParticipants = a.MaxParticipants,
+                            Location = a.Location,
+                            Status = a.Status,
+                            CancellationReason = a.CancellationReason,
+                            CancelledAt = a.CancelledAt,
+                            HasBookings = a.Bookings.Any(),
+                            BookedParticipants = a.Bookings.Where(b => b.Status == BookingStatus.Confirmed)
+                                    .Sum(b => (int?)b.NumberOfParticipants) ?? 0
+                        }).ToListAsync();
 
-                            Description =
-                                a.Description,
-
-                            ActivityType =
-                                a.ActivityType,
-
-                            StartDateTime =
-                                a.StartDateTime,
-
-                            DurationMinutes =
-                                a.DurationMinutes,
-
-                            MaxParticipants =
-                                a.MaxParticipants,
-
-                            Location =
-                                a.Location,
-
-                            Status =
-                                a.Status,
-
-                            CancellationReason =
-                                a.CancellationReason,
-
-                            CancelledAt =
-                                a.CancelledAt,
-
-                            HasBookings =
-                                a.Bookings.Any(),
-
-                            BookedParticipants =
-                                a.Bookings
-                                    .Where(b =>
-                                        b.Status ==
-                                        BookingStatus.Confirmed)
-                                    .Sum(b =>
-                                        (int?)b.NumberOfParticipants)
-                                ?? 0
-                        })
-                    .ToListAsync();
-
-
-            // Conteggio annullati relativo alla modalità corrente.
-            var cancelledQuery =
-                _context.GalleryActivities
-                    .AsNoTracking()
-                    .Where(a =>
-                        a.Status ==
-                        GalleryActivityStatus.Cancelled);
-
+            // Conta le attività annullate per il pulsante del filtro
+            var cancelledQuery = _context.GalleryActivities.AsNoTracking().Where(a => a.Status == GalleryActivityStatus.Cancelled);
 
             if (!showPast)
             {
-                cancelledQuery =
-                    cancelledQuery.Where(a =>
-                        a.StartDateTime >= now);
+                cancelledQuery = cancelledQuery.Where(a => a.StartDateTime >= now);
             }
 
+            var cancelledCount = await cancelledQuery.CountAsync();
 
-            var cancelledCount =
-                await cancelledQuery.CountAsync();
-
-
-            // Lo storico è disponibile solo a Staff/Admin.
+            // Conta le attività passate (solo per Staff e Admin)
             var pastCount = 0;
 
             if (canViewHistory)
             {
-                pastCount =
-                    await _context.GalleryActivities
-                        .AsNoTracking()
-                        .CountAsync(a =>
-                            a.StartDateTime < now);
+                pastCount = await _context.GalleryActivities.AsNoTracking()
+                        .CountAsync(a => a.StartDateTime < now);
             }
 
+            // Valori che servono alla vista per i filtri
+            ViewBag.ShowCancelled = showCancelled;
 
-            ViewBag.ShowCancelled =
-                showCancelled;
+            ViewBag.CancelledCount = cancelledCount;
 
-            ViewBag.CancelledCount =
-                cancelledCount;
+            ViewBag.ShowPast = showPast;
 
-            ViewBag.ShowPast =
-                showPast;
+            ViewBag.PastCount = pastCount;
 
-            ViewBag.PastCount =
-                pastCount;
-
-            ViewBag.CanViewHistory =
-                canViewHistory;
-
+            ViewBag.CanViewHistory = canViewHistory;
 
             return View(activities);
         }
 
-        // DETAILS
+        // GET: GalleryActivities/Details/5
+        // Scheda dell'attività con i posti prenotati
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -213,14 +142,16 @@ namespace BeArtGallery.Controllers
             return View(activity);
         }
 
-        // CREATE - GET
+        // GET: GalleryActivities/Create
+        // Form per una nuova attività (solo Staff e Admin)
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
         public IActionResult Create()
         {
             return View();
         }
 
-        // CREATE - POST
+        // POST: GalleryActivities/Create
+        // Salva la nuova attività
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
@@ -236,7 +167,7 @@ namespace BeArtGallery.Controllers
             )]
             GalleryActivity galleryActivity)
         {
-            // Le attività non possono avere data minore ad oggi
+            // La data dell'attività deve essere futura
             if (galleryActivity.StartDateTime <= DateTime.Now)
             {
                 ModelState.AddModelError(nameof(galleryActivity.StartDateTime), "La data dell'attività deve essere futura.");
@@ -247,7 +178,7 @@ namespace BeArtGallery.Controllers
                 return View(galleryActivity);
             }
 
-            // inizializziamo lo stato
+            // Una nuova attività parte sempre come "programmata"
             galleryActivity.Status = GalleryActivityStatus.Scheduled;
 
             _context.GalleryActivities.Add(galleryActivity);
@@ -259,7 +190,8 @@ namespace BeArtGallery.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-         // EDIT - GET
+         // GET: GalleryActivities/Edit/5
+         // Form di modifica dell'attività
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -275,8 +207,7 @@ namespace BeArtGallery.Controllers
                 return NotFound();
             }
 
-            // Un'attività annullata mantiene il suo storico
-            //e non viene modificata con il normale Edit.
+            // Un'attività annullata non si modifica, così resta il suo storico
             if (galleryActivity.Status == GalleryActivityStatus.Cancelled)
             {
                 TempData["ErrorMessage"] = "Non è possibile modificare un'attività annullata.";
@@ -284,7 +215,7 @@ namespace BeArtGallery.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Non modifichiamo eventi già iniziati/conclusi.
+            // Un'attività già iniziata o finita non si modifica
             if (galleryActivity.StartDateTime <= DateTime.Now)
             {
                 TempData["ErrorMessage"] = "Non è possibile modificare un'attività già iniziata o conclusa.";
@@ -295,12 +226,12 @@ namespace BeArtGallery.Controllers
             return View(galleryActivity);
         }
 
-        // EDIT - POST
+        // POST: GalleryActivities/Edit/5
+        // Salva le modifiche all'attività
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
-        public async Task<IActionResult> Edit(
-            int? id,
+        public async Task<IActionResult> Edit( int? id,
             [Bind(
                 "Id," +
                 "Title," +
@@ -310,8 +241,7 @@ namespace BeArtGallery.Controllers
                 "DurationMinutes," +
                 "MaxParticipants," +
                 "Location"
-            )]
-            GalleryActivity galleryActivity)
+            )] GalleryActivity galleryActivity)
         {
             if (id == null || id != galleryActivity.Id)
             {
@@ -325,7 +255,7 @@ namespace BeArtGallery.Controllers
                 return NotFound();
             }
 
-            // Non modifichiamo attività annullate
+            // Ripete i controlli: niente modifiche ad attività annullate
             if (existingActivity.Status == GalleryActivityStatus.Cancelled)
             {
                 TempData["ErrorMessage"] = "Non è possibile modificare un'attività annullata.";
@@ -333,7 +263,7 @@ namespace BeArtGallery.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Non modifichiamo attività già iniziate
+            // Niente modifiche ad attività già iniziate
             if (existingActivity.StartDateTime <= DateTime.Now)
             {
                 TempData["ErrorMessage"] = "Non è possibile modificare un'attività già iniziata o conclusa.";
@@ -347,7 +277,7 @@ namespace BeArtGallery.Controllers
                 ModelState.AddModelError(nameof(galleryActivity.StartDateTime), "La data dell'attività deve essere futura.");
             }
 
-            // Controllo capienza
+            // I posti non possono essere meno dei partecipanti già prenotati
             var bookedParticipants = await _context.Bookings.Where(b => b.GalleryActivityId == existingActivity.Id &&
                         b.Status == BookingStatus.Confirmed).SumAsync(b => (int?)b.NumberOfParticipants) ?? 0;
 
@@ -364,7 +294,7 @@ namespace BeArtGallery.Controllers
 
             try
             {
-                // Aggiorniamo SOLO i dati modificabili.
+                // Aggiorna solo i campi che si possono modificare
                 existingActivity.Title = galleryActivity.Title;
                 existingActivity.Description = galleryActivity.Description;
                 existingActivity.ActivityType = galleryActivity.ActivityType;
@@ -390,9 +320,9 @@ namespace BeArtGallery.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // DELETE - GET
-        // Eliminazione consentita SOLO se non è mai
-        // esistita alcuna prenotazione.
+        // GET: GalleryActivities/Delete/5
+        // Un'attività si può eliminare solo se non ha mai avuto prenotazioni,
+        // altrimenti va annullata
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -421,12 +351,12 @@ namespace BeArtGallery.Controllers
             return View(galleryActivity);
         }
 
-        // DELETE - POST
+        // POST: GalleryActivities/Delete/5
+        // Elimina l'attività dopo la conferma (ripetendo il controllo)
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
-        public async Task<IActionResult> DeleteConfirmed(
-            int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var galleryActivity = await _context.GalleryActivities.FindAsync(id);
 
@@ -453,7 +383,8 @@ namespace BeArtGallery.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // CANCEL ATTIVITÀ - GET
+        // GET: GalleryActivities/Cancel/5
+        // Pagina per annullare un'attività indicando il motivo
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
         [HttpGet]
         public async Task<IActionResult> Cancel(int id)
@@ -465,6 +396,7 @@ namespace BeArtGallery.Controllers
                 return NotFound();
             }
 
+            // Già annullata
             if (activity.Status == GalleryActivityStatus.Cancelled)
             {
                 TempData["ErrorMessage"] = "L'attività risulta già annullata.";
@@ -472,6 +404,7 @@ namespace BeArtGallery.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // Non si annulla un'attività già iniziata
             if (activity.StartDateTime <= DateTime.Now)
             {
                 TempData["ErrorMessage"] = "Non è possibile annullare un'attività già iniziata o conclusa.";
@@ -479,6 +412,7 @@ namespace BeArtGallery.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // Prenotazioni confermate che verranno annullate
             var confirmedBookings = await _context.Bookings.Where(b => b.GalleryActivityId == id &&
                         b.Status == BookingStatus.Confirmed).ToListAsync();
 
@@ -494,12 +428,12 @@ namespace BeArtGallery.Controllers
             return View(model);
         }
 
-        // CANCEL ATTIVITÀ - POST
+        // POST: GalleryActivities/Cancel
+        // Annulla l'attività e tutte le sue prenotazioni
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Cancel(
-            CancelActivityViewModel model)
+        public async Task<IActionResult> Cancel( CancelActivityViewModel model)
         {
             var activity = await _context.GalleryActivities.FirstOrDefaultAsync(a => a.Id == model.ActivityId);
 
@@ -508,13 +442,11 @@ namespace BeArtGallery.Controllers
                 return NotFound();
             }
 
-            // Recuperiamo sempre i dati reali dal DB.
+            // Prenotazioni confermate prese dal database
             var confirmedBookings = await _context.Bookings.Where(b => b.GalleryActivityId == activity.Id &&
                         b.Status == BookingStatus.Confirmed).ToListAsync();
 
-            // Ripopoliamo i dati non provenienti dal form.
-            // Servono se ModelState non è valido
-            // e dobbiamo mostrare nuovamente la View.
+            // Dati da mostrare di nuovo se il form ha errori
             model.Title = activity.Title;
             model.StartDateTime = activity.StartDateTime;
             model.ConfirmedBookings = confirmedBookings.Count;
@@ -525,6 +457,7 @@ namespace BeArtGallery.Controllers
                 return View(model);
             }
 
+            // Ripete i controlli della pagina GET
             if (activity.Status == GalleryActivityStatus.Cancelled)
             {
                 TempData["ErrorMessage"] = "L'attività risulta già annullata.";
@@ -550,15 +483,16 @@ namespace BeArtGallery.Controllers
 
             var cancellationReason = model.CancellationReason.Trim();
 
+            // Attività e prenotazioni si annullano insieme in una transazione
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
-            // ANNULLAMENTO ATTIVITÀ
+            // Annulla l'attività
             activity.Status = GalleryActivityStatus.Cancelled;
             activity.CancelledAt = cancelledAt;
             activity.CancelledByUserId = currentUserId;
             activity.CancellationReason = cancellationReason;
 
-            // ANNULLAMENTO AUTOMATICO PRENOTAZIONI
+            // Annulla in automatico tutte le prenotazioni confermate
             foreach (var booking in confirmedBookings)
             {
                 booking.Status = BookingStatus.Cancelled;
@@ -578,11 +512,10 @@ namespace BeArtGallery.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // HELPER
+        // Controlla se un'attività esiste
         private bool GalleryActivityExists(int id)
         {
-            return _context.GalleryActivities
-                .Any(a => a.Id == id);
+            return _context.GalleryActivities.Any(a => a.Id == id);
         }
     }
 }

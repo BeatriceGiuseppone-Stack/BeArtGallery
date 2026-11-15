@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeArtGallery.Controllers.Api
 {
     /// <summary>
-    /// API REST pubblica per consultare gli eventi della galleria.
+    /// API pubblica per leggere le visite e gli eventi della galleria
     /// </summary>
     [ApiController]
     [Route("api/activities")]
@@ -31,7 +31,7 @@ namespace BeArtGallery.Controllers.Api
 
 
         /// <summary>
-        /// Elenca le attività attive e non annullate.
+        /// Elenca le attività attive e non annullate
         /// </summary>
         /// <param name="type">Filtro facoltativo: Visita o Evento.</param>
         /// <param name="includePast">Se true include anche le attività già iniziate.</param>
@@ -44,8 +44,10 @@ namespace BeArtGallery.Controllers.Api
             [FromQuery] bool includePast,
             CancellationToken cancellationToken)
         {
+            // Ora attuale della galleria
             var now = _timeProvider.GetLocalNow().DateTime;
 
+            // Solo attività attive e non annullate
             IQueryable<GalleryActivity> query =
                 _context.GalleryActivities
                     .AsNoTracking()
@@ -53,11 +55,13 @@ namespace BeArtGallery.Controllers.Api
                         a.IsActive &&
                         a.Status == GalleryActivityStatus.Scheduled);
 
+            // Di base solo le attività future
             if (!includePast)
             {
                 query = query.Where(a => a.StartDateTime > now);
             }
 
+            // Filtro per tipo (Visita o Evento)
             if (type.HasValue)
             {
                 query = query.Where(a => a.ActivityType == type.Value);
@@ -72,7 +76,7 @@ namespace BeArtGallery.Controllers.Api
 
 
         /// <summary>
-        /// Restituisce il dettaglio di un'attività con i posti ancora disponibili.
+        /// Restituisce un'attività con i posti ancora liberi
         /// </summary>
         /// <param name="id">Identificativo dell'attività.</param>
         /// <param name="cancellationToken">Token di annullamento della richiesta.</param>
@@ -103,8 +107,8 @@ namespace BeArtGallery.Controllers.Api
         }
 
 
-        // La somma dei partecipanti viene calcolata dal database
-        // (SUM in SQL), senza caricare le prenotazioni in memoria.
+        // Trasforma le attività nel formato dell'API.
+        // La somma dei partecipanti la fa il database (SUM), senza caricare le prenotazioni.
         private static IQueryable<ActivityDto> ProjectToDto(
             IQueryable<GalleryActivity> query)
         {
@@ -126,8 +130,8 @@ namespace BeArtGallery.Controllers.Api
                 x.Activity.Location,
                 x.Activity.MaxParticipants,
                 x.Booked,
-                x.Activity.MaxParticipants - x.Booked < 0
-                    ? 0
+                // I posti liberi non possono essere negativi
+                x.Activity.MaxParticipants - x.Booked < 0 ? 0
                     : x.Activity.MaxParticipants - x.Booked,
                 x.Activity.Status));
         }

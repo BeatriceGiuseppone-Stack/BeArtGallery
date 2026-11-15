@@ -2,6 +2,7 @@
 
 namespace BeArtGallery.ViewModels
 {
+    // Pagina dello staff con l'elenco delle richieste e i contatori per stato
     public class ArtworkInquiryIndexViewModel
     {
         public ArtworkInquiryStatus? StatusFilter { get; set; }
@@ -14,16 +15,16 @@ namespace BeArtGallery.ViewModels
 
         public int ClosedCount { get; set; }
 
-        public List<ArtworkInquiryListItemViewModel> Inquiries { get; set; }
-            = new();
+        public List<ArtworkInquiryListItemViewModel> Inquiries { get; set; } = new();
     }
 
 
+    // Riga dell'elenco delle richieste
     public class ArtworkInquiryListItemViewModel
     {
         public int Id { get; set; }
 
-        // Null se l'opera è stata eliminata dal catalogo
+        // Opera della richiesta (null se è stata eliminata)
         public int? ArtworkId { get; set; }
 
         public bool ArtworkDeleted => ArtworkId == null;
@@ -40,15 +41,17 @@ namespace BeArtGallery.ViewModels
 
         public ArtworkInquiryStatus Status { get; set; }
 
+        // Vero se la richiesta arriva da un utente registrato
         public bool IsRegisteredUser { get; set; }
     }
 
 
+    // Dettaglio di una richiesta visto dallo staff
     public class ArtworkInquiryDetailsViewModel
     {
         public int Id { get; set; }
 
-        // Null se l'opera è stata eliminata dal catalogo
+        // Opera della richiesta (null se è stata eliminata)
         public int? ArtworkId { get; set; }
 
         public bool ArtworkDeleted => ArtworkId == null;
@@ -71,12 +74,8 @@ namespace BeArtGallery.ViewModels
 
         public bool IsRegisteredUser { get; set; }
 
+        public List<ArtworkInquiryMessageViewModel> Messages { get; set; } = new();
 
-        public List<ArtworkInquiryMessageViewModel> Messages { get; set; }
-            = new();
-
-
-        public ArtworkInquiryReplyViewModel Reply { get; set; }
-            = new();
+        public ArtworkInquiryReplyViewModel Reply { get; set; } = new();
     }
 }

@@ -1,4 +1,5 @@
-﻿@using BeArtGallery.Authorization
+﻿@* Layout comune a tutte le pagine: menu in alto, contenuto e piè di pagina *@
+@using BeArtGallery.Authorization
 
 <!DOCTYPE html>
 
@@ -8,8 +9,7 @@
 
     <meta charset="utf-8" />
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>
         @ViewData["Title"] - BeArtGallery
@@ -18,36 +18,25 @@
     <script type="importmap"></script>
 
 
-    <link rel="stylesheet"
-          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    @* Fogli di stile: Bootstrap, stile del sito e tema della galleria *@
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <link rel="stylesheet"
-          href="~/css/site.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
-    @* Tema "Luce di sala": faretto sulle opere, arco del logo, nuovi caratteri *@
-    <link rel="stylesheet"
-          href="~/css/gallery-experience.css"
-          asp-append-version="true" />
+    @* Tema della galleria (colori, caratteri, effetti) *@
+    <link rel="stylesheet" href="~/css/gallery-experience.css" asp-append-version="true" />
 
+    @* Stili aggiuntivi delle singole pagine *@
+    @await RenderSectionAsync("Styles", required: false)
 
-    @await RenderSectionAsync(
-        "Styles",
-        required: false)
-
-
-    <link rel="stylesheet"
-          href="~/BeArtGallery.styles.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/BeArtGallery.styles.css" asp-append-version="true" />
 
 </head>
 
-
 <body>
 
-    @* Collegamento per chi naviga da tastiera: salta il menu *@
+    @* Link per chi usa la tastiera: salta il menu e va al contenuto *@
     <a class="gx-skip-link" href="#main-content">Vai al contenuto</a>
-
 
     <header>
 
@@ -55,61 +44,35 @@
 
             <div class="container">
 
+                @* Logo che riporta alla home *@
 
-                @* =================================================
-                   LOGO
-                   ================================================= *@
-
-                <a class="navbar-brand gallery-brand"
-                   asp-area=""
-                   asp-controller="Home"
-                   asp-action="Index"
+                <a class="navbar-brand gallery-brand" asp-area="" asp-controller="Home" asp-action="Index"
                    aria-label="BeArtGallery - Home">
 
-                    <img src="~/images/beartgallery-logo-horizontal.png"
-                         alt="BeArtGallery"
-                         class="gallery-brand-logo" />
+                    <img src="~/images/beartgallery-logo-horizontal.png" alt="BeArtGallery" class="gallery-brand-logo" />
 
                 </a>
 
+                @* Pulsante del menu su smartphone *@
 
-                @* =================================================
-                   MENU MOBILE
-                   ================================================= *@
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavigation"
+                        aria-controls="mainNavigation" aria-expanded="false" aria-label="Apri il menu di navigazione">
 
-                <button class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#mainNavigation"
-                        aria-controls="mainNavigation"
-                        aria-expanded="false"
-                        aria-label="Apri il menu di navigazione">
-
-                    <span class="navbar-toggler-icon">
-                    </span>
+                    <span class="navbar-toggler-icon"></span>
 
                 </button>
 
+                <div class="collapse navbar-collapse" id="mainNavigation">
 
-                <div class="collapse navbar-collapse"
-                     id="mainNavigation">
-
-
-                    @* =================================================
-                       NAVIGAZIONE PRINCIPALE
-                       ================================================= *@
+                    @* Menu principale *@
 
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 gallery-main-nav">
-
 
                         @* Home *@
 
                         <li class="nav-item">
 
-                            <a class="nav-link"
-                               asp-area=""
-                               asp-controller="Home"
-                               asp-action="Index">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
 
                                 Home
 
@@ -117,14 +80,11 @@
 
                         </li>
 
-
-                        @* Artisti: in primo piano, come nelle gallerie *@
+                        @* Artisti *@
 
                         <li class="nav-item">
 
-                            <a class="nav-link"
-                               asp-controller="Artists"
-                               asp-action="Index">
+                            <a class="nav-link" asp-controller="Artists" asp-action="Index">
 
                                 Artisti
 
@@ -132,14 +92,11 @@
 
                         </li>
 
-
                         @* Opere *@
 
                         <li class="nav-item">
 
-                            <a class="nav-link"
-                               asp-controller="Artworks"
-                               asp-action="Index">
+                            <a class="nav-link" asp-controller="Artworks" asp-action="Index">
 
                                 Opere
 
@@ -147,14 +104,11 @@
 
                         </li>
 
-
                         @* Eventi *@
 
                         <li class="nav-item">
 
-                            <a class="nav-link"
-                               asp-controller="GalleryActivities"
-                               asp-action="Index">
+                            <a class="nav-link" asp-controller="GalleryActivities" asp-action="Index">
 
                                 Eventi
 
@@ -162,14 +116,11 @@
 
                         </li>
 
-
                         @* Chi siamo *@
 
                         <li class="nav-item">
 
-                            <a class="nav-link"
-                               asp-controller="Home"
-                               asp-action="About">
+                            <a class="nav-link" asp-controller="Home" asp-action="About">
 
                                 Chi siamo
 
@@ -177,44 +128,31 @@
 
                         </li>
 
+                        @* Menu "Gestione": solo per Staff e Admin *@
 
-                        @* =================================================
-                           GESTIONE - SOLO STAFF / ADMIN
-                           ================================================= *@
-
-                        @if (User.IsInRole(RoleNames.Staff) ||
-                             User.IsInRole(RoleNames.Admin))
+                        @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
                         {
                             <li class="nav-item dropdown">
 
-                                <a class="nav-link dropdown-toggle"
-                                   href="#"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
                                     Gestione
 
                                 </a>
-
-
+                                 
                                 <ul class="dropdown-menu gallery-dropdown">
-
-
+                                     
                                     @* Dashboard *@
 
                                     <li>
 
-                                        <a class="dropdown-item"
-                                           asp-controller="Dashboard"
-                                           asp-action="Index">
+                                        <a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">
 
                                             Dashboard
 
                                         </a>
 
-                                    </li>
-
+                                    </li> 
 
                                     <li>
 
@@ -222,70 +160,55 @@
 
                                     </li>
 
-
                                     @* Artisti *@
 
                                     <li>
 
-                                        <a class="dropdown-item"
-                                           asp-controller="Artists"
-                                           asp-action="Index">
+                                        <a class="dropdown-item" asp-controller="Artists" asp-action="Index">
 
                                             Artisti
 
                                         </a>
 
-                                    </li>
-
+                                    </li> 
 
                                     @* Prenotazioni *@
 
                                     <li>
 
-                                        <a class="dropdown-item"
-                                           asp-controller="Bookings"
-                                           asp-action="Manage">
+                                        <a class="dropdown-item" asp-controller="Bookings" asp-action="Manage">
 
                                             Prenotazioni
 
                                         </a>
 
-                                    </li>
-
+                                    </li> 
 
                                     @* Richieste informazioni *@
 
                                     <li>
 
-                                        <a class="dropdown-item"
-                                           asp-controller="ArtworkInquiries"
-                                           asp-action="Index">
+                                        <a class="dropdown-item" asp-controller="ArtworkInquiries" asp-action="Index">
 
                                             Richieste informazioni
 
                                         </a>
 
                                     </li>
-
-
+                                     
                                     @* Feedback visitatori *@
 
                                     <li>
 
-                                        <a class="dropdown-item"
-                                           asp-controller="Feedback"
-                                           asp-action="Index">
+                                        <a class="dropdown-item" asp-controller="Feedback" asp-action="Index">
 
                                             Feedback visitatori
 
                                         </a>
 
                                     </li>
-
-
-                                    @* =====================================
-                                       SOLO ADMIN
-                                       ===================================== *@
+                                     
+                                    @* Gestione utenti: solo per Admin *@
 
                                     @if (User.IsInRole(RoleNames.Admin))
                                     {
@@ -298,9 +221,7 @@
 
                                         <li>
 
-                                            <a class="dropdown-item"
-                                               asp-controller="Admin"
-                                               asp-action="Users">
+                                            <a class="dropdown-item" asp-controller="Admin" asp-action="Users">
 
                                                 Utenti
 
@@ -315,39 +236,29 @@
                         }
 
                     </ul>
-
-
-                    @* =================================================
-                       AREA ACCOUNT
-                       ================================================= *@
+                     
+                    @* Menu dell'account *@
 
                     <div class="gallery-account">
 
                         @if (User.Identity?.IsAuthenticated == true)
                         {
 
-                            @* =========================================
-                               UTENTE AUTENTICATO
-                               ========================================= *@
+                            @* Utente che ha fatto l'accesso *@
 
                             <ul class="navbar-nav gallery-user-nav">
 
                                 <li class="nav-item dropdown">
 
-                                    <a class="nav-link dropdown-toggle gallery-account-toggle"
-                                       href="#"
-                                       id="accountDropdown"
-                                       role="button"
-                                       data-bs-toggle="dropdown"
-                                       aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle gallery-account-toggle" href="#"
+                                       id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
                                         Area personale
-
-
+                                         
+                                        @* Numero di risposte non lette (solo per i visitatori) *@
                                         @if (User.IsInRole(RoleNames.Visitore))
                                         {
-                                            @await Component.InvokeAsync(
-                                                "InquiryNotificationCount")
+                                            @await Component.InvokeAsync("InquiryNotificationCount")
                                         }
 
                                     </a>
@@ -356,19 +267,14 @@
                                     <ul class="dropdown-menu dropdown-menu-end gallery-dropdown gallery-account-menu"
                                         aria-labelledby="accountDropdown">
 
-
-                                        @* =================================
-                                           FUNZIONI VISITATORE
-                                           ================================= *@
+                                        @* Pagine del visitatore: prenotazioni, preferiti e richieste *@
 
                                         @if (User.IsInRole(RoleNames.Visitore))
                                         {
 
                                             <li>
 
-                                                <a class="dropdown-item"
-                                                   asp-controller="Bookings"
-                                                   asp-action="Index">
+                                                <a class="dropdown-item" asp-controller="Bookings" asp-action="Index">
 
                                                     Le mie prenotazioni
 
@@ -376,38 +282,29 @@
 
                                             </li>
 
-
                                             <li>
 
-                                                <a class="dropdown-item"
-                                                   asp-controller="Artworks"
-                                                   asp-action="Favorites">
+                                                <a class="dropdown-item" asp-controller="Artworks" asp-action="Favorites">
 
                                                     I miei preferiti
 
                                                 </a>
 
                                             </li>
-
-
+                                             
                                             <li>
 
-                                                <a class="dropdown-item gallery-nav-notification"
-                                                   asp-controller="MyInquiries"
-                                                   asp-action="Index">
+                                                <a class="dropdown-item gallery-nav-notification" asp-controller="MyInquiries" asp-action="Index">
 
                                                     <span>
                                                         Le mie richieste
                                                     </span>
 
-
-                                                    @await Component.InvokeAsync(
-                                                        "InquiryNotificationCount")
+                                                    @await Component.InvokeAsync("InquiryNotificationCount")
 
                                                 </a>
 
                                             </li>
-
 
                                             <li>
 
@@ -416,16 +313,11 @@
                                             </li>
                                         }
 
-
-                                        @* =================================
-                                           PROFILO
-                                           ================================= *@
+                                        @* Profilo dell'utente *@
 
                                         <li>
 
-                                            <a class="dropdown-item"
-                                               asp-area="Identity"
-                                               asp-page="/Account/Manage/Index">
+                                            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
 
                                                 Il mio profilo
 
@@ -433,28 +325,20 @@
 
                                         </li>
 
-
                                         <li>
 
                                             <hr class="dropdown-divider" />
 
                                         </li>
 
-
-                                        @* =================================
-                                           LOGOUT
-                                           ================================= *@
+                                        @* Uscita (logout) *@
 
                                         <li>
 
-                                            <form asp-area="Identity"
-                                                  asp-page="/Account/Logout"
-                                                  asp-route-returnUrl="@Url.Content("~/")"
-                                                  method="post"
-                                                  class="m-0">
+                                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Content("~/")"
+                                                  method="post" class="m-0">
 
-                                                <button type="submit"
-                                                        class="dropdown-item gallery-logout-link">
+                                                <button type="submit" class="dropdown-item gallery-logout-link">
 
                                                     Esci
 
@@ -474,17 +358,13 @@
                         else
                         {
 
-                            @* =========================================
-                               UTENTE NON AUTENTICATO
-                               ========================================= *@
+                            @* Utente senza accesso: registrazione e login *@
 
                             <ul class="navbar-nav gallery-user-nav">
 
                                 <li class="nav-item">
 
-                                    <a class="nav-link"
-                                       asp-area="Identity"
-                                       asp-page="/Account/Register">
+                                    <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">
 
                                         Registrati
 
@@ -492,12 +372,9 @@
 
                                 </li>
 
-
                                 <li class="nav-item">
 
-                                    <a class="nav-link"
-                                       asp-area="Identity"
-                                       asp-page="/Account/Login">
+                                    <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">
 
                                         Accedi
 
@@ -519,10 +396,7 @@
 
     </header>
 
-
-    @* =================================================
-       CONTENUTO PAGINA
-       ================================================= *@
+    @* Contenuto della pagina *@
 
     <main role="main" id="main-content" tabindex="-1">
 
@@ -530,10 +404,7 @@
 
     </main>
 
-
-    @* =================================================
-       FOOTER
-       ================================================= *@
+    @* Footer *@
 
     <footer class="gallery-footer">
 
@@ -541,8 +412,7 @@
 
             <div class="row gy-4 align-items-start">
 
-
-                @* Brand *@
+                @* Nome e descrizione della galleria *@
 
                 <div class="col-md-5">
 
@@ -559,8 +429,7 @@
 
                 </div>
 
-
-                @* Esplora *@
+                @* Link alle sezioni principali *@
 
                 <div class="col-md-3">
 
@@ -568,33 +437,25 @@
                         Esplora
                     </div>
 
-
-                    <a asp-controller="Artists"
-                       asp-action="Index">
+                    <a asp-controller="Artists" asp-action="Index">
 
                         Artisti
 
                     </a>
 
-
-                    <a asp-controller="Artworks"
-                       asp-action="Index">
+                    <a asp-controller="Artworks" asp-action="Index">
 
                         Opere
 
                     </a>
 
-
-                    <a asp-controller="GalleryActivities"
-                       asp-action="Index">
+                    <a asp-controller="GalleryActivities" asp-action="Index">
 
                         Eventi
 
                     </a>
 
-
-                    <a asp-controller="Home"
-                       asp-action="About">
+                    <a asp-controller="Home" asp-action="About">
 
                         Chi siamo
 
@@ -602,18 +463,15 @@
 
                 </div>
 
-
-                @* Informazioni *@
+                @* Altre informazioni *@
 
                 <div class="col-md-4">
 
                     <div class="gallery-footer-title">
                         Informazioni
                     </div>
-
-
-                    <a asp-controller="Home"
-                       asp-action="Privacy">
+                     
+                    <a asp-controller="Home" asp-action="Privacy">
 
                         Privacy
 
@@ -622,7 +480,6 @@
                 </div>
 
             </div>
-
 
             <div class="gallery-footer-bottom">
 
@@ -634,28 +491,18 @@
 
     </footer>
 
+    @* Script: jQuery, Bootstrap, script del sito e effetti della galleria *@
 
-    @* =================================================
-       SCRIPT
-       ================================================= *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-    <script src="~/lib/jquery/dist/jquery.min.js">
-    </script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js">
-    </script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <script src="~/js/site.js"
-            asp-append-version="true">
-    </script>
+    <script src="~/js/gallery-experience.js" asp-append-version="true"></script>
 
-    <script src="~/js/gallery-experience.js"
-            asp-append-version="true"></script>
-
-
-    @await RenderSectionAsync(
-        "Scripts",
-        required: false)
+    @* Script aggiuntivi delle singole pagine *@
+    @await RenderSectionAsync("Scripts", required: false)
 
 </body>
 

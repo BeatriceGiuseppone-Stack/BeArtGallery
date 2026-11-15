@@ -1,11 +1,6 @@
-﻿/* =================================================
-   BEARTGALLERY - QR PRENOTAZIONE
-   ================================================= */
+﻿/* Stili del biglietto digitale con il QR in "Le mie prenotazioni" */
 
-
-/* =================================================
-   BIGLIETTO DIGITALE
-   ================================================= */
+/* Riquadro del biglietto */
 
 .booking-qr-section {
     margin-top: 2rem;
@@ -13,11 +8,9 @@
     border-top: 1px solid var(--gallery-border);
 }
 
-
 .booking-qr-heading {
     margin-bottom: 1.5rem;
 }
-
 
 .booking-qr-title {
     margin-bottom: 0.6rem;
@@ -26,17 +19,13 @@
     font-weight: 400;
 }
 
-
 .booking-qr-description {
     margin: 0;
     color: var(--gallery-muted);
     line-height: 1.7;
 }
 
-
-/* =================================================
-   CONTENUTO
-   ================================================= */
+/* Contenuto del biglietto */
 
 .booking-qr-content {
     display: grid;
@@ -48,10 +37,7 @@
     border: 1px solid var(--gallery-border);
 }
 
-
-/* =================================================
-   QR
-   ================================================= */
+/* Immagine del QR */
 
 .booking-qr-wrapper {
     display: flex;
@@ -62,7 +48,6 @@
     border: 1px solid var(--gallery-border);
 }
 
-
 .booking-qr-image {
     display: block;
     width: 100%;
@@ -70,16 +55,12 @@
     height: auto;
 }
 
-
-/* =================================================
-   DATI BIGLIETTO
-   ================================================= */
+/* Dati del biglietto */
 
 .booking-qr-info {
     display: grid;
     gap: 0.9rem;
 }
-
 
 .booking-qr-info-item {
     display: flex;
@@ -89,18 +70,15 @@
     border-bottom: 1px solid rgba(29, 29, 27, 0.12);
 }
 
-
     .booking-qr-info-item:last-child {
         padding-bottom: 0;
         border-bottom: 0;
     }
 
-
     .booking-qr-info-item span {
         color: var(--gallery-muted);
         font-size: 0.8rem;
     }
-
 
     .booking-qr-info-item strong {
         color: var(--gallery-text);
@@ -109,10 +87,7 @@
         text-align: right;
     }
 
-
-/* =================================================
-   AVVISO
-   ================================================= */
+/* Avviso sotto il QR */
 
 .booking-qr-notice {
     display: flex;
@@ -124,16 +99,12 @@
     line-height: 1.5;
 }
 
-
 .booking-qr-notice-icon {
     color: var(--gallery-accent);
     font-size: 1.1rem;
 }
 
-
-/* =================================================
-   CHECK-IN COMPLETATO
-   ================================================= */
+/* Check-in completato */
 
 .booking-checkin-completed {
     display: flex;
@@ -144,7 +115,6 @@
     background-color: #edf5ef;
     border: 1px solid #b8d5bf;
 }
-
 
 .booking-checkin-icon {
     display: flex;
@@ -160,7 +130,6 @@
     font-weight: 700;
 }
 
-
 .booking-checkin-title {
     margin-bottom: 0.3rem;
     color: #245b32;
@@ -168,25 +137,18 @@
     font-weight: 700;
 }
 
-
 .booking-checkin-date {
     color: #536b59;
     font-size: 0.8rem;
 }
 
-
-/* =================================================
-   AZIONI
-   ================================================= */
+/* Pulsanti */
 
 .booking-actions {
     margin-top: 1.5rem;
 }
 
-
-/* =================================================
-   RESPONSIVE
-   ================================================= */
+/* Schermi piccoli */
 
 @media (max-width: 575.98px) {
 
@@ -195,12 +157,10 @@
         gap: 1.5rem;
     }
 
-
     .booking-qr-wrapper {
         width: 190px;
         margin: 0 auto;
     }
-
 
     .booking-qr-info-item {
         align-items: flex-start;
@@ -208,11 +168,9 @@
         gap: 0.25rem;
     }
 
-
         .booking-qr-info-item strong {
             text-align: left;
         }
-
 
     .booking-checkin-completed {
         align-items: flex-start;

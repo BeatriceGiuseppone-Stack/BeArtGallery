@@ -7,11 +7,11 @@ namespace BeArtGallery.Tests
 {
     /// <summary>
     /// Test degli indicatori della dashboard: presenze, occupazione,
-    /// tassi con denominatore nullo, feedback e insight automatici.
+    /// percentuali senza dati, feedback e avvisi automatici
     /// </summary>
     public sealed class DashboardServiceTests : IDisposable
     {
-        // "Adesso" per tutti i test: 1 marzo 2026, ore 10:00
+        // Data e ora "attuali" per tutti i test: 1 marzo 2026, ore 10:00
         private static readonly DateTime Now = new(2026, 3, 1, 10, 0, 0);
 
         private readonly TestDatabase _db = new();
@@ -32,6 +32,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Aggiunge un feedback di prova
         private void AddFeedback(int bookingId, string userId, int rating)
         {
             using var context = _db.CreateContext();
@@ -48,10 +49,9 @@ namespace BeArtGallery.Tests
         }
 
 
-        // =================================================
-        // PRESENZE
-        // =================================================
+        // Presenze
 
+        // Il tasso di presenza conta solo le attività già finite
         [Fact]
         public async Task AttendanceRate_CountsOnlyConcludedActivities()
         {
@@ -59,20 +59,20 @@ namespace BeArtGallery.Tests
             var luca = _db.AddUser("luca");
             var sara = _db.AddUser("sara");
 
-            // Attività conclusa ieri: 3 persone entrate, 1 assente.
+            // Attività finita ieri: 3 persone entrate, 1 assente
             var past = _db.AddActivity(Now.AddDays(-1));
             _db.AddBooking(past, anna, participants: 3, checkedInAt: Now.AddDays(-1));
             _db.AddBooking(past, luca, participants: 1);
 
-            // Attività di domani: nessuno può ancora essere entrato.
+            // Attività di domani: nessuno può essere già entrato
             var future = _db.AddActivity(Now.AddDays(1));
             _db.AddBooking(future, sara, participants: 5);
 
             await using var context = _db.CreateContext();
             var model = await CreateService(context).BuildAsync();
 
-            // 3 entrati su 4 attesi nelle sole attività concluse = 75%.
-            // Se si contassero anche i 5 di domani risulterebbe 33,3%.
+            // 3 entrati su 4 attesi = 75%.
+            // Contando anche i 5 di domani verrebbe 33,3%.
             Assert.Equal(75.0, model.AttendanceRate);
             Assert.Equal(9, model.ExpectedVisitors);
             Assert.Equal(3, model.CheckedInVisitors);
@@ -81,6 +81,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Senza attività finite il tasso è 0
         [Fact]
         public async Task AttendanceRate_WithoutConcludedActivities_IsZero()
         {
@@ -97,6 +98,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Le prenotazioni annullate non contano tra i visitatori attesi
         [Fact]
         public async Task CancelledBookings_AreNotCountedAsExpectedVisitors()
         {
@@ -117,10 +119,9 @@ namespace BeArtGallery.Tests
         }
 
 
-        // =================================================
-        // OCCUPAZIONE DELLE ATTIVITÀ FUTURE
-        // =================================================
+        // Occupazione delle attività future
 
+        // L'occupazione usa solo prenotazioni confermate di attività future in programma
         [Fact]
         public async Task OccupancyRate_UsesConfirmedBookingsOfScheduledFutureActivities()
         {
@@ -128,19 +129,19 @@ namespace BeArtGallery.Tests
             var luca = _db.AddUser("luca");
             var sara = _db.AddUser("sara");
 
-            // Attività futura da 10 posti: 4 confermati, 3 annullati.
+            // Attività futura da 10 posti: 4 confermati e 3 annullati
             var future = _db.AddActivity(Now.AddDays(2), maxParticipants: 10);
             _db.AddBooking(future, anna, participants: 4);
             _db.AddBooking(future, luca, participants: 3, status: BookingStatus.Cancelled);
 
-            // Attività futura annullata: esclusa dal calcolo.
+            // Attività futura annullata: non conta
             var cancelled = _db.AddActivity(
                 Now.AddDays(4),
                 maxParticipants: 10,
                 status: GalleryActivityStatus.Cancelled);
             _db.AddBooking(cancelled, sara, participants: 2);
 
-            // Attività già svolta: esclusa dal calcolo.
+            // Attività già passata: non conta
             var past = _db.AddActivity(Now.AddDays(-3), maxParticipants: 10);
             _db.AddBooking(past, sara, participants: 10);
 
@@ -155,6 +156,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Con occupazione alta compare l'avviso "Elevata partecipazione"
         [Fact]
         public async Task HighOccupancy_GeneratesParticipationInsight()
         {
@@ -170,9 +172,7 @@ namespace BeArtGallery.Tests
         }
 
 
-        // =================================================
-        // DATABASE VUOTO: NESSUNA DIVISIONE PER ZERO
-        // =================================================
+        // Database vuoto: nessuna divisione per zero
 
         [Fact]
         public async Task EmptyDatabase_AllRatesAreZeroAndNoInsights()
@@ -187,16 +187,15 @@ namespace BeArtGallery.Tests
             Assert.Equal(0, model.AverageRating);
             Assert.Empty(model.Insights);
 
-            // Il riepilogo mensile mostra comunque gli ultimi sei mesi.
+            // Il grafico mostra comunque gli ultimi sei mesi
             Assert.Equal(6, model.BookingsByMonth.Count);
             Assert.All(model.BookingsByMonth, m => Assert.Equal(0, m.Value));
         }
 
 
-        // =================================================
-        // FEEDBACK
-        // =================================================
+        // Feedback
 
+        // Media dei voti e avviso quando la media è bassa
         [Fact]
         public async Task Feedback_AverageAndLowSatisfactionInsight()
         {
@@ -230,8 +229,8 @@ namespace BeArtGallery.Tests
 
             AddFeedback(booking.Id, anna, 5);
 
-            // Il vincolo univoco su BookingId blocca il doppio invio,
-            // anche se il controllo dell'interfaccia venisse aggirato.
+            // Il vincolo univoco su BookingId blocca il secondo feedback,
+            // anche se qualcuno aggira il controllo della pagina
             Assert.Throws<DbUpdateException>(() => AddFeedback(booking.Id, anna, 4));
 
             await using var check = _db.CreateContext();
@@ -239,10 +238,9 @@ namespace BeArtGallery.Tests
         }
 
 
-        // =================================================
-        // RIEPILOGO MENSILE
-        // =================================================
+        // Prenotazioni per mese
 
+        // Ogni prenotazione viene contata nel suo mese
         [Fact]
         public async Task BookingsByMonth_CountsBookingsInTheirMonth()
         {
@@ -260,8 +258,8 @@ namespace BeArtGallery.Tests
                 await update.SaveChangesAsync();
             }
 
-            // La prima prenotazione ha la data reale di creazione:
-            // la portiamo a marzo 2026 per allinearla all'orologio fisso.
+            // La prima prenotazione ha la data di oggi:
+            // la spostiamo a marzo 2026 come l'orologio del test
             await using (var update = _db.CreateContext())
             {
                 var saved = await update.Bookings.SingleAsync(b => b.UserId == anna);
@@ -272,7 +270,7 @@ namespace BeArtGallery.Tests
             await using var context = _db.CreateContext();
             var model = await CreateService(context).BuildAsync();
 
-            // Sei mesi: da ottobre 2025 a marzo 2026.
+            // Sei mesi: da ottobre 2025 a marzo 2026
             Assert.Equal(6, model.BookingsByMonth.Count);
             Assert.Equal(1, model.BookingsByMonth[3].Value); // gennaio 2026
             Assert.Equal(0, model.BookingsByMonth[4].Value); // febbraio 2026

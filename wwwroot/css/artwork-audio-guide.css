@@ -1,6 +1,4 @@
-﻿/* =================================================
-   BEARTGALLERY - AUDIOGUIDA
-   ================================================= */
+﻿/* Stili della sezione audioguide nella scheda dell'opera */
 
 .artwork-audio-section {
     margin-top: 6rem;
@@ -8,10 +6,7 @@
     border-top: 1px solid var(--gallery-border);
 }
 
-
-/* =================================================
-   HEADER
-   ================================================= */
+/* Titolo della sezione */
 
 .artwork-audio-header {
     display: flex;
@@ -21,13 +16,11 @@
     margin-bottom: 3rem;
 }
 
-
 .artwork-audio-title {
     margin-bottom: 1rem;
     font-size: clamp(2.8rem, 5vw, 4.5rem);
     line-height: 1;
 }
-
 
 .artwork-audio-intro {
     max-width: 650px;
@@ -36,27 +29,20 @@
     line-height: 1.8;
 }
 
-
-/* =================================================
-   LISTA
-   ================================================= */
+/* Elenco delle audioguide */
 
 .artwork-audio-list {
     display: grid;
     gap: 1.5rem;
 }
 
-
-/* =================================================
-   CARD
-   ================================================= */
+/* Riquadro di un'audioguida */
 
 .artwork-audio-card {
     padding: 2rem;
     background-color: var(--gallery-surface);
     border: 1px solid var(--gallery-border);
 }
-
 
 .artwork-audio-card-header {
     display: flex;
@@ -66,12 +52,10 @@
     margin-bottom: 1.5rem;
 }
 
-
 .artwork-audio-card h3 {
     margin: 0.4rem 0 0;
     font-size: 1.4rem;
 }
-
 
 .artwork-audio-language {
     color: var(--gallery-accent);
@@ -81,20 +65,14 @@
     text-transform: uppercase;
 }
 
-
-/* =================================================
-   PLAYER
-   ================================================= */
+/* Lettore audio */
 
 .artwork-audio-player {
     display: block;
     width: 100%;
 }
 
-
-/* =================================================
-   AZIONI STAFF
-   ================================================= */
+/* Pulsanti per lo staff */
 
 .artwork-audio-admin-actions {
     display: flex;
@@ -102,28 +80,22 @@
     font-size: 0.8rem;
 }
 
-
     .artwork-audio-admin-actions a {
         color: var(--gallery-text);
         text-decoration: none;
     }
 
-
         .artwork-audio-admin-actions a:hover {
             text-decoration: underline;
         }
 
-
-/* =================================================
-   TRASCRIZIONE
-   ================================================= */
+/* Trascrizione */
 
 .artwork-audio-transcript {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid var(--gallery-border);
 }
-
 
 .artwork-transcript-toggle {
     padding: 0;
@@ -135,11 +107,9 @@
     cursor: pointer;
 }
 
-
     .artwork-transcript-toggle:hover {
         color: var(--gallery-accent);
     }
-
 
 .artwork-transcript-content {
     margin-top: 1.5rem;
@@ -150,10 +120,7 @@
     white-space: pre-line;
 }
 
-
-/* =================================================
-   EMPTY
-   ================================================= */
+/* Nessuna audioguida */
 
 .artwork-audio-empty {
     padding: 2rem;
@@ -161,29 +128,23 @@
     border: 1px solid var(--gallery-border);
 }
 
-
     .artwork-audio-empty strong {
         display: block;
         margin-bottom: 0.5rem;
     }
-
 
     .artwork-audio-empty p {
         margin: 0;
         color: var(--gallery-muted);
     }
 
-
-/* =================================================
-   AUDIOGUIDE NON PUBBLICATE
-   ================================================= */
+/* Audioguide non pubblicate */
 
 .artwork-inactive-audio {
     margin-top: 2.5rem;
     padding-top: 2rem;
     border-top: 1px solid var(--gallery-border);
 }
-
 
 .artwork-inactive-audio-item {
     display: flex;
@@ -194,12 +155,10 @@
     border-bottom: 1px solid var(--gallery-border);
 }
 
-
     .artwork-inactive-audio-item strong,
     .artwork-inactive-audio-item span {
         display: block;
     }
-
 
     .artwork-inactive-audio-item span {
         margin-top: 0.25rem;
@@ -207,17 +166,13 @@
         font-size: 0.8rem;
     }
 
-
     .artwork-inactive-audio-item a {
         color: var(--gallery-text);
         font-size: 0.8rem;
         text-decoration: none;
     }
 
-
-/* =================================================
-   RESPONSIVE
-   ================================================= */
+/* Schermi piccoli */
 
 @media (max-width: 767.98px) {
 
@@ -226,24 +181,20 @@
         padding-top: 3rem;
     }
 
-
     .artwork-audio-header {
         align-items: flex-start;
         flex-direction: column;
         gap: 1.5rem;
     }
 
-
     .artwork-audio-card {
         padding: 1.25rem;
     }
-
 
     .artwork-audio-card-header {
         flex-direction: column;
         gap: 1rem;
     }
-
 
     .artwork-inactive-audio-item {
         align-items: flex-start;

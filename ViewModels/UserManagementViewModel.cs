@@ -1,5 +1,6 @@
 ﻿namespace BeArtGallery.ViewModels
 {
+    // Riga dell'elenco utenti: id, email e ruolo
     public class UserManagementViewModel
     {
         public string Id { get; set; } = string.Empty;

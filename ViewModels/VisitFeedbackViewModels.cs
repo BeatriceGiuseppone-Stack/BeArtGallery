@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations;
 namespace BeArtGallery.ViewModels
 {
     /// <summary>
-    /// Modulo con cui il visitatore valuta una visita o un evento.
+    /// Form con cui il visitatore valuta una visita o un evento
     /// </summary>
     public class VisitFeedbackFormViewModel
     {
         [Required]
         public int BookingId { get; set; }
 
-        // Dati dell'attività, solo per la visualizzazione
+        // Dati dell'attività, solo da mostrare
         public string ActivityTitle { get; set; } = string.Empty;
 
         public DateTime StartDateTime { get; set; }
@@ -21,7 +21,6 @@ namespace BeArtGallery.ViewModels
         [Display(Name = "Valutazione")]
         public int? Rating { get; set; }
 
-
         [MaxLength(1000, ErrorMessage = "Il commento può contenere al massimo 1000 caratteri.")]
         [Display(Name = "Commento (facoltativo)")]
         public string? Comment { get; set; }
@@ -29,7 +28,7 @@ namespace BeArtGallery.ViewModels
 
 
     /// <summary>
-    /// Riga dell'elenco feedback consultato dallo staff.
+    /// Riga dell'elenco dei feedback per lo staff
     /// </summary>
     public class VisitFeedbackListItemViewModel
     {
@@ -50,7 +49,7 @@ namespace BeArtGallery.ViewModels
 
 
     /// <summary>
-    /// Pagina di riepilogo dei feedback per lo staff.
+    /// Pagina dei feedback per lo staff
     /// </summary>
     public class VisitFeedbackManagementViewModel
     {
@@ -58,9 +57,10 @@ namespace BeArtGallery.ViewModels
 
         public double AverageRating { get; set; }
 
-        // Numero di feedback per ciascun voto: indice 0 = 1 stella ... indice 4 = 5 stelle
+        // Quanti feedback per ogni voto: posizione 0 = 1 stella, posizione 4 = 5 stelle
         public int[] RatingDistribution { get; set; } = new int[5];
 
+        // Voto scelto nel filtro
         public int? RatingFilter { get; set; }
 
         public List<VisitFeedbackListItemViewModel> Feedbacks { get; set; } = new();

@@ -1,5 +1,6 @@
 ﻿namespace BeArtGallery.Models.Enums
 {
+    // Disponibilità di un'opera
     public enum ArtworkAvailabilityStatus
     {
         Available = 1,

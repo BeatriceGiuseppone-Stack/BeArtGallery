@@ -18,7 +18,7 @@
 
     var isStaff = User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin);
 
-    // Date in italiano (es. "14 novembre", "venerdì")
+    @* Date scritte in italiano (es. "14 novembre", "venerdì") *@
     var it = new CultureInfo("it-IT");
 }
 
@@ -53,11 +53,8 @@
             {
                 @if (!showCancelled)
                 {
-                    <a asp-controller="GalleryActivities"
-                       asp-action="Index"
-                       asp-route-showCancelled="true"
-                       asp-route-showPast="@showPast"
-                       class="btn gallery-btn-outline">
+                    <a asp-controller="GalleryActivities" asp-action="Index" asp-route-showCancelled="true"
+                       asp-route-showPast="@showPast" class="btn gallery-btn-outline">
 
                         Mostra annullate (@cancelledCount)
 
@@ -65,11 +62,8 @@
                 }
                 else
                 {
-                    <a asp-controller="GalleryActivities"
-                       asp-action="Index"
-                       asp-route-showCancelled="false"
-                       asp-route-showPast="@showPast"
-                       class="btn gallery-btn-outline">
+                    <a asp-controller="GalleryActivities" asp-action="Index" asp-route-showCancelled="false"
+                       asp-route-showPast="@showPast" class="btn gallery-btn-outline">
 
                         Nascondi annullate
 
@@ -77,7 +71,7 @@
                 }
             }
 
-            @* Storico e creazione: solo Staff e Admin *@
+            @* Storico e nuova attività: solo per Staff e Admin *@
 
             @if (isStaff)
             {
@@ -85,11 +79,8 @@
                 {
                     @if (!showPast)
                     {
-                        <a asp-controller="GalleryActivities"
-                           asp-action="Index"
-                           asp-route-showPast="true"
-                           asp-route-showCancelled="@showCancelled"
-                           class="btn gallery-btn-outline">
+                        <a asp-controller="GalleryActivities" asp-action="Index" asp-route-showPast="true"
+                           asp-route-showCancelled="@showCancelled" class="btn gallery-btn-outline">
 
                             Mostra storico (@pastCount)
 
@@ -97,11 +88,8 @@
                     }
                     else
                     {
-                        <a asp-controller="GalleryActivities"
-                           asp-action="Index"
-                           asp-route-showPast="false"
-                           asp-route-showCancelled="@showCancelled"
-                           class="btn gallery-btn-outline">
+                        <a asp-controller="GalleryActivities" asp-action="Index" asp-route-showPast="false"
+                           asp-route-showCancelled="@showCancelled" class="btn gallery-btn-outline">
 
                             Nascondi storico
 
@@ -109,9 +97,7 @@
                     }
                 }
 
-                <a asp-controller="GalleryActivities"
-                   asp-action="Create"
-                   class="btn gallery-btn-primary">
+                <a asp-controller="GalleryActivities" asp-action="Create" class="btn gallery-btn-primary">
 
                     Nuova attività
 
@@ -122,7 +108,7 @@
 
     </div>
 
-    @* Messaggi di conferma o errore *@
+    @* Messaggi di conferma o di errore *@
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -138,6 +124,7 @@
         </div>
     }
 
+    @* Avviso quando si stanno guardando anche le annullate *@
     @if (showCancelled)
     {
         <p class="gx-filter-note">
@@ -145,7 +132,7 @@
         </p>
     }
 
-    @* Nessuna attività disponibile *@
+    @* Nessuna attività in programma *@
 
     @if (!Model.Any())
     {
@@ -161,9 +148,7 @@
                 puoi esplorare la collezione.
             </p>
 
-            <a asp-controller="Artworks"
-               asp-action="Index"
-               class="btn gallery-btn-outline">
+            <a asp-controller="Artworks" asp-action="Index" class="btn gallery-btn-outline">
 
                 Esplora le opere
 
@@ -175,26 +160,21 @@
     {
         <div class="gx-program">
 
+            @* Una scheda per ogni attività *@
             @foreach (var item in Model)
             {
                 var isCancelled = item.Status == GalleryActivityStatus.Cancelled;
                 var isPast = item.StartDateTime <= DateTime.Now;
                 var isClosed = isCancelled || isPast;
                 var isSoldOut = !isClosed && item.AvailablePlaces <= 0;
-                var occupancy = item.MaxParticipants > 0
-                    ? Math.Min(100, item.BookedParticipants * 100 / item.MaxParticipants)
-                    : 0;
+                var occupancy = item.MaxParticipants > 0 ? Math.Min(100, item.BookedParticipants * 100 / item.MaxParticipants) : 0;
 
                 <article class="gx-event @(isClosed ? "is-closed" : "") @(isSoldOut ? "is-soldout" : "")">
 
-                    @* Blocco data, come nel calendario di una mostra *@
+                    @* Data grande, come nel calendario di una mostra *@
 
-                    <a asp-controller="GalleryActivities"
-                       asp-action="Details"
-                       asp-route-id="@item.Id"
-                       class="gx-event-date"
-                       tabindex="-1"
-                       aria-hidden="true">
+                    <a asp-controller="GalleryActivities" asp-action="Details" asp-route-id="@item.Id" class="gx-event-date"
+                       tabindex="-1" aria-hidden="true">
 
                         <span class="gx-event-day">@item.StartDateTime.ToString("dd", it)</span>
 
@@ -238,9 +218,7 @@
 
                         <h2 class="gx-event-title">
 
-                            <a asp-controller="GalleryActivities"
-                               asp-action="Details"
-                               asp-route-id="@item.Id">
+                            <a asp-controller="GalleryActivities" asp-action="Details" asp-route-id="@item.Id">
 
                                 @item.Title
 
@@ -248,6 +226,7 @@
 
                         </h2>
 
+                        @* Descrizione, orario, durata e luogo *@
                         @if (!string.IsNullOrWhiteSpace(item.Description))
                         {
                             <p class="gx-event-text">
@@ -272,7 +251,7 @@
 
                         </dl>
 
-                        @* Annullamento o disponibilità dei posti *@
+                        @* Annullamento oppure posti disponibili *@
 
                         @if (isCancelled)
                         {
@@ -314,6 +293,7 @@
 
                                 </p>
 
+                                @* Barra che mostra quanti posti sono occupati *@
                                 <div class="gx-seats-bar" aria-hidden="true">
                                     <span style="width: @(occupancy)%"></span>
                                 </div>
@@ -321,16 +301,14 @@
                             </div>
                         }
 
-                        @* Azioni *@
+                        @* Pulsanti *@
 
                         <div class="gx-event-actions">
 
                             @if (!isClosed && !isSoldOut)
                             {
-                                <a asp-controller="GalleryActivities"
-                                   asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="btn gallery-btn-primary">
+                                <a asp-controller="GalleryActivities" asp-action="Details" asp-route-id="@item.Id" 
+                                    class="btn gallery-btn-primary">
 
                                     Scopri e prenota
 
@@ -338,9 +316,7 @@
                             }
                             else
                             {
-                                <a asp-controller="GalleryActivities"
-                                   asp-action="Details"
-                                   asp-route-id="@item.Id"
+                                <a asp-controller="GalleryActivities" asp-action="Details" asp-route-id="@item.Id"
                                    class="btn gallery-btn-outline">
 
                                     Vedi dettagli
@@ -348,7 +324,7 @@
                                 </a>
                             }
 
-                            @* Azioni riservate a Staff e Admin *@
+                            @* Pulsanti per Staff e Admin *@
 
                             @if (isStaff)
                             {
@@ -358,32 +334,24 @@
 
                                     @if (item.Status == GalleryActivityStatus.Scheduled && item.StartDateTime > DateTime.Now)
                                     {
-                                        <a asp-controller="GalleryActivities"
-                                           asp-action="Edit"
-                                           asp-route-id="@item.Id">
+                                        <a asp-controller="GalleryActivities" asp-action="Edit" asp-route-id="@item.Id">
 
                                             Modifica
 
                                         </a>
 
-                                        <a asp-controller="GalleryActivities"
-                                           asp-action="Cancel"
-                                           asp-route-id="@item.Id"
-                                           class="is-danger">
+                                        <a asp-controller="GalleryActivities" asp-action="Cancel" asp-route-id="@item.Id" class="is-danger">
 
                                             Annulla attività
 
                                         </a>
                                     }
 
-                                    @* Eliminazione solo se non esistono prenotazioni *@
+                                    @* Eliminazione solo se l'attività non ha prenotazioni *@
 
                                     @if (!item.HasBookings && item.Status == GalleryActivityStatus.Scheduled)
                                     {
-                                        <a asp-controller="GalleryActivities"
-                                           asp-action="Delete"
-                                           asp-route-id="@item.Id"
-                                           class="is-danger">
+                                        <a asp-controller="GalleryActivities" asp-action="Delete" asp-route-id="@item.Id" class="is-danger">
 
                                             Elimina
 

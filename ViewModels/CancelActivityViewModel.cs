@@ -2,6 +2,7 @@
 
 namespace BeArtGallery.ViewModels
 {
+    // Dati della pagina per annullare un'attività
     public class CancelActivityViewModel
     {
         public int ActivityId { get; set; }
@@ -10,6 +11,7 @@ namespace BeArtGallery.ViewModels
 
         public DateTime StartDateTime { get; set; }
 
+        // Prenotazioni e persone che verranno avvisate dell'annullamento
         public int ConfirmedBookings { get; set; }
 
         public int ConfirmedParticipants { get; set; }

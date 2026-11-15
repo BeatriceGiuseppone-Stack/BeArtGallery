@@ -7,52 +7,41 @@ using Microsoft.EntityFrameworkCore;
 namespace BeArtGallery.Data
 {
     /// <summary>
-    /// Popola il database con dati dimostrativi, così il prototipo
-    /// è subito utilizzabile da chi lo valuta: tre utenti (uno per
-    /// ruolo), artisti, opere, attività, prenotazioni e feedback.
-    /// Viene eseguito solo se "DemoData:Enabled" è true
-    /// (di default soltanto in appsettings.Development.json).
-    /// I dati del catalogo sono inseriti solo se non esiste
-    /// ancora nessun artista, quindi non tocca dati reali.
+    /// Inserisce dati di esempio per provare subito il sito:
+    /// un utente per ruolo, artisti, opere, attività, prenotazioni e feedback.
+    /// Parte solo se "DemoData:Enabled" è true (in appsettings.Development.json)
+    /// e il catalogo viene creato solo se non c'è ancora nessun artista.
     /// </summary>
     public static class DemoDataSeeder
     {
+        // Email degli utenti di prova
         public const string AdminEmail = "admin@beartgallery.test";
         public const string StaffEmail = "staff@beartgallery.test";
         public const string VisitorEmail = "visitatore@beartgallery.test";
 
-
-        public static async Task SeedAsync(
-            IServiceProvider services,
-            IConfiguration configuration)
+        public static async Task SeedAsync(IServiceProvider services, IConfiguration configuration)
         {
+            // Servizi necessari
             var context = services.GetRequiredService<ApplicationDbContext>();
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
             var timeProvider = services.GetRequiredService<TimeProvider>();
 
-            var password = configuration["DemoData:Password"] ?? "Demo123!";
+            // Password degli utenti di prova
+            var password = configuration["DemoData:Password"] ?? "Admin1!";
 
-
-            // =================================================
-            // UTENTI DEMO (uno per ruolo)
-            // =================================================
+            // Utenti di prova (uno per ruolo)
 
             await EnsureUserAsync(userManager, AdminEmail, password, RoleNames.Admin);
             var staff = await EnsureUserAsync(userManager, StaffEmail, password, RoleNames.Staff);
             var visitor = await EnsureUserAsync(userManager, VisitorEmail, password, RoleNames.Visitore);
 
-
-            // Il catalogo demo viene creato una sola volta.
+            // Il catalogo di prova si crea una sola volta
             if (await context.Artists.AnyAsync())
             {
                 return;
             }
 
-
-            // =================================================
-            // ARTISTI E OPERE (artisti di fantasia; le immagini
-            // sono in wwwroot/images/artworks e vanno nel repository)
-            // =================================================
+            // Artisti e opere di prova (le immagini sono in wwwroot/images/artworks)
 
             var elena = new Artist
             {
@@ -108,6 +97,7 @@ namespace BeArtGallery.Data
                 Biography = "Ceramista nato a Umeå, nel nord della Svezia, con studio a Stoccolma. Realizza vasi scultorei e piccole installazioni in gres, cotti ad alta temperatura con smalti che ricordano il ghiaccio, la roccia e la neve. Ogni pezzo è unico e porta i segni della lavorazione a mano."
             };
 
+            // Salva artisti e opere
             context.Artists.AddRange(elena, tomas, aiko, luca, nadia, jonas);
 
             context.Artworks.AddRange(
@@ -204,9 +194,7 @@ namespace BeArtGallery.Data
                 });
 
 
-            // =================================================
-            // ATTIVITÀ (date relative a oggi)
-            // =================================================
+            // Attività di prova, con date calcolate a partire da oggi
 
             var today = timeProvider.GetLocalNow().Date;
 
@@ -265,17 +253,13 @@ namespace BeArtGallery.Data
                 Location = "Laboratorio"
             };
 
-            context.GalleryActivities.AddRange(
-                pastVisit, pastEvent, nextVisit, nextEvent, workshop);
+            // Salva le attività
+            context.GalleryActivities.AddRange( pastVisit, pastEvent, nextVisit, nextEvent, workshop);
 
-
-            // =================================================
-            // PRENOTAZIONI E FEEDBACK DEL VISITATORE DEMO
-            // =================================================
-
+            // Prenotazioni e feedback del visitatore di prova
             var utcNow = timeProvider.GetUtcNow().UtcDateTime;
 
-            // Visita passata: check-in effettuato e feedback lasciato.
+            // Visita passata: check-in fatto e feedback lasciato
             var attendedWithFeedback = new Booking
             {
                 GalleryActivity = pastVisit,
@@ -288,8 +272,7 @@ namespace BeArtGallery.Data
                 CheckedInByUserId = staff.Id
             };
 
-            // Evento passato: check-in effettuato, feedback ancora
-            // da lasciare (utile per provare la funzione).
+            // Evento passato: check-in fatto, feedback ancora da lasciare
             var attendedWithoutFeedback = new Booking
             {
                 GalleryActivity = pastEvent,
@@ -302,7 +285,7 @@ namespace BeArtGallery.Data
                 CheckedInByUserId = staff.Id
             };
 
-            // Visita futura: prenotazione confermata con QR.
+            // Visita futura: prenotazione confermata con QR
             var upcoming = new Booking
             {
                 GalleryActivity = nextVisit,
@@ -313,10 +296,7 @@ namespace BeArtGallery.Data
                 QrToken = Guid.NewGuid().ToString("N")
             };
 
-            context.Bookings.AddRange(
-                attendedWithFeedback,
-                attendedWithoutFeedback,
-                upcoming);
+            context.Bookings.AddRange(attendedWithFeedback, attendedWithoutFeedback, upcoming);
 
             context.VisitFeedbacks.Add(new VisitFeedback
             {
@@ -327,15 +307,13 @@ namespace BeArtGallery.Data
                 CreatedAt = utcNow.AddDays(-9)
             });
 
+            // Salva tutto
             await context.SaveChangesAsync();
         }
 
-
-        private static async Task<ApplicationUser> EnsureUserAsync(
-            UserManager<ApplicationUser> userManager,
-            string email,
-            string password,
-            string role)
+        // Crea l'utente se non esiste e gli assegna il ruolo
+        private static async Task<ApplicationUser> EnsureUserAsync( UserManager<ApplicationUser> userManager,
+            string email, string password, string role)
         {
             var user = await userManager.FindByEmailAsync(email);
 
@@ -352,13 +330,12 @@ namespace BeArtGallery.Data
 
                 if (!result.Succeeded)
                 {
-                    throw new InvalidOperationException(
-                        $"Impossibile creare l'utente demo {email}: " +
+                    throw new InvalidOperationException( $"Impossibile creare l'utente demo {email}: " +
                         string.Join("; ", result.Errors.Select(e => e.Description)));
                 }
             }
 
-            // Un solo ruolo per utente, coerente con l'IdentitySeeder.
+            // Ogni utente ha un solo ruolo
             var currentRoles = await userManager.GetRolesAsync(user);
 
             if (!currentRoles.Contains(role))

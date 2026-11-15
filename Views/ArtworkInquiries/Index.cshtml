@@ -7,12 +7,8 @@
 
 <div class="container py-5">
 
-    <div class="gx-band d-flex
-                justify-content-between
-                align-items-end
-                flex-wrap
-                gap-4
-                mb-5">
+    @* Intestazione della pagina *@
+    <div class="gx-band d-flex justify-content-between align-items-end flex-wrap gap-4 mb-5">
 
         <div>
 
@@ -34,6 +30,7 @@
     </div>
 
 
+    @* Messaggio di conferma *@
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="gallery-management-note mb-4">
@@ -50,14 +47,13 @@
     }
 
 
-    @* Riepilogo *@
+    @* Contatori per stato, che fanno anche da filtro *@
 
     <div class="row g-3 mb-5">
 
         <div class="col-md-3">
 
-            <a asp-action="Index"
-               class="inquiry-stat-card">
+            <a asp-action="Index" class="inquiry-stat-card">
 
                 <span>
                     Tutte
@@ -74,9 +70,7 @@
 
         <div class="col-md-3">
 
-            <a asp-action="Index"
-               asp-route-status="@ArtworkInquiryStatus.New"
-               class="inquiry-stat-card">
+            <a asp-action="Index" asp-route-status="@ArtworkInquiryStatus.New" class="inquiry-stat-card">
 
                 <span>
                     Nuove
@@ -90,12 +84,9 @@
 
         </div>
 
-
         <div class="col-md-3">
 
-            <a asp-action="Index"
-               asp-route-status="@ArtworkInquiryStatus.InProgress"
-               class="inquiry-stat-card">
+            <a asp-action="Index" asp-route-status="@ArtworkInquiryStatus.InProgress" class="inquiry-stat-card">
 
                 <span>
                     In lavorazione
@@ -112,9 +103,7 @@
 
         <div class="col-md-3">
 
-            <a asp-action="Index"
-               asp-route-status="@ArtworkInquiryStatus.Closed"
-               class="inquiry-stat-card">
+            <a asp-action="Index" asp-route-status="@ArtworkInquiryStatus.Closed" class="inquiry-stat-card">
 
                 <span>
                     Chiuse
@@ -131,7 +120,7 @@
     </div>
 
 
-    @* Filtro corrente *@
+    @* Filtro attivo, con il link per toglierlo *@
 
     @if (Model.StatusFilter.HasValue)
     {
@@ -169,6 +158,7 @@
     }
 
 
+    @* Nessuna richiesta *@
     @if (!Model.Inquiries.Any())
     {
         <div class="inquiry-empty-state">
@@ -192,6 +182,7 @@
     {
         <div class="inquiries-list">
 
+            @* Una scheda per ogni richiesta *@
             @foreach (var inquiry in Model.Inquiries)
             {
                 <article class="inquiry-list-item">
@@ -208,15 +199,14 @@
 
                                 <h2>
 
+                                    @* Se l'opera è stata eliminata il titolo non è un link *@
                                     @if (inquiry.ArtworkDeleted)
                                     {
                                         @inquiry.ArtworkTitle
                                     }
                                     else
                                     {
-                                        <a asp-controller="Artworks"
-                                           asp-action="Details"
-                                           asp-route-id="@inquiry.ArtworkId">
+                                        <a asp-controller="Artworks" asp-action="Details" asp-route-id="@inquiry.ArtworkId">
 
                                             @inquiry.ArtworkTitle
 
@@ -225,13 +215,13 @@
 
                                 </h2>
 
+                                @* Etichetta "Opera non più disponibile" *@
                                 @if (inquiry.ArtworkDeleted)
                                 {
                                     <span class="gx-unavailable-badge">Opera non più disponibile</span>
                                 }
 
-                                @if (!string.IsNullOrWhiteSpace(
-                                    inquiry.ArtistName))
+                                @if (!string.IsNullOrWhiteSpace(inquiry.ArtistName))
                                 {
                                     <p class="inquiry-artist">
                                         @inquiry.ArtistName
@@ -243,6 +233,7 @@
 
                             <div>
 
+                                @* Stato della richiesta *@
                                 @switch (inquiry.Status)
                                 {
                                     case ArtworkInquiryStatus.New:
@@ -277,6 +268,7 @@
                         </div>
 
 
+                        @* Dati del visitatore *@
                         <div class="inquiry-requester">
 
                             <div>
@@ -304,7 +296,6 @@
 
                             </div>
 
-
                             <div>
 
                                 <span>
@@ -322,11 +313,10 @@
                     </div>
 
 
+                    @* Link alla conversazione *@
                     <div class="inquiry-list-action">
 
-                        <a asp-action="Details"
-                           asp-route-id="@inquiry.Id"
-                           class="btn gallery-btn-outline">
+                        <a asp-action="Details" asp-route-id="@inquiry.Id" class="btn gallery-btn-outline">
 
                             Visualizza
 

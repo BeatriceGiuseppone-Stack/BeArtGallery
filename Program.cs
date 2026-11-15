@@ -6,25 +6,23 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+// Crea l'applicazione web e legge la configurazione (appsettings.json)
 var builder = WebApplication.CreateBuilder(args);
 
-// =====================================================
-// DATABASE E IDENTITÀ
-// =====================================================
+// Database e utenti
 
+// Stringa di connessione al database SQL Server
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(
-    options => options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>()
+// Gestione degli utenti con Identity e dei ruoli
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddErrorDescriber<BeArtGallery.Authorization.ItalianIdentityErrorDescriber>();
 
-// Le chiamate alle API non devono essere reindirizzate alla
-// pagina di login (HTML): rispondono con 401 / 403.
+// Per le API non si fa il redirect alla pagina di login:
+// si risponde con 401 (non autenticato) o 403 (non autorizzato)
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Events.OnRedirectToLogin = context =>
@@ -52,89 +50,68 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
-// =====================================================
-// SERVIZI APPLICATIVI (logica di dominio)
-// =====================================================
+// Servizi con la logica dell'applicazione
 
-// TimeProvider rende "l'ora corrente" una dipendenza:
-// nei test può essere sostituito da un orologio fisso.
+// Orologio dell'applicazione: nei test si usa un orologio fisso
 builder.Services.AddSingleton(TimeProvider.System);
+// Servizi per prenotazioni e dashboard
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
-// =====================================================
-// MVC + API
-// =====================================================
+// Controller MVC e API
 
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
     {
-        // Le enum nelle API sono esposte come testo
-        // (es. "Confirmed" invece di 1).
-        options.JsonSerializerOptions.Converters.Add(
-            new JsonStringEnumConverter());
+        // Nelle API gli stati vengono scritti come testo (es. "Confirmed")
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     })
     .ConfigureApiBehaviorOptions(options =>
     {
-        // Errori di validazione delle API nello stesso formato
-        // { success, message } usato dalle altre risposte.
+        // Errori di validazione delle API nello stesso formato delle altre risposte
         options.InvalidModelStateResponseFactory = context =>
         {
-            var firstError =
-                context.ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m))
-                ?? "Dati della richiesta non validi.";
+            var firstError = context.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
+                    .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m)) ?? "Dati della richiesta non validi.";
 
-            return new BadRequestObjectResult(
-                new ApiMessageResponse(false, firstError));
+            return new BadRequestObjectResult(new ApiMessageResponse(false, firstError));
         };
     });
 
-// Documento OpenAPI generato automaticamente dai controller API
-// (comprese le descrizioni scritte nei commenti XML ///).
+// Documentazione OpenAPI delle API, creata in automatico dai controller
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
         document.Info.Title = "BeArtGallery API";
         document.Info.Version = "v1";
-        document.Info.Description =
-            "API REST della piattaforma BeArtGallery: catalogo delle opere, " +
+        document.Info.Description = "API REST della piattaforma BeArtGallery: catalogo delle opere, " +
             "attività prenotabili, prenotazioni dei visitatori e indicatori della dashboard.";
         return Task.CompletedTask;
     });
 });
 
+// Sessione: serve per ricordare alcune informazioni tra una pagina e l'altra
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout =
-        TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
 
-    options.Cookie.HttpOnly =
-        true;
+    options.Cookie.HttpOnly = true;
 
-    options.Cookie.IsEssential =
-        true;
+    options.Cookie.IsEssential = true;
 
-    options.Cookie.SameSite =
-        SameSiteMode.Lax;
+    options.Cookie.SameSite = SameSiteMode.Lax;
 });
 
 var app = builder.Build();
 
-// =====================================================
-// PIPELINE HTTP
-// =====================================================
+// Gestione delle richieste HTTP
 
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
 
-    // Documentazione interattiva delle API:
-    //   /openapi/v1.json  -> documento OpenAPI
-    //   /swagger          -> interfaccia Swagger UI
+    // In sviluppo la documentazione delle API è visibile su /swagger
     app.MapOpenApi();
 
     app.UseSwaggerUI(options =>
@@ -146,53 +123,49 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
+    // In produzione si mostra una pagina di errore generica
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // HSTS: il browser userà sempre HTTPS per questo sito
     app.UseHsts();
 }
 
+// Reindirizza da HTTP a HTTPS
 app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseSession();
 
+// Prima si controlla chi è l'utente, poi cosa può fare
 app.UseAuthentication();
 app.UseAuthorization();
+// Rotte dei controller API (es. /api/artworks)
 app.MapControllers();
 
 app.MapStaticAssets();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+// Rotta predefinita delle pagine: /Controller/Azione/Id
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}").WithStaticAssets();
 
-app.MapRazorPages()
-   .WithStaticAssets();
+// Pagine di login e registrazione (Identity)
+app.MapRazorPages().WithStaticAssets();
 
-// =====================================================
-// INIZIALIZZAZIONE DATABASE
-// =====================================================
+// Preparazione del database all'avvio
 
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    // Applica le migrazioni mancanti: chi scarica il progetto
-    // non deve eseguire a mano "Update-Database".
+    // Applica le migration mancanti, così il database è sempre aggiornato
     var db = services.GetRequiredService<ApplicationDbContext>();
     await db.Database.MigrateAsync();
 
-    await IdentitySeeder.SeedAsync(
-        services,
-        builder.Configuration);
+    // Crea i ruoli e l'utente amministratore
+    await IdentitySeeder.SeedAsync(services, builder.Configuration);
 
-    // Dati dimostrativi (solo se abilitati in configurazione).
+    // Inserisce i dati di esempio, solo se attivati in configurazione
     if (builder.Configuration.GetValue<bool>("DemoData:Enabled"))
     {
-        await DemoDataSeeder.SeedAsync(
-            services,
-            builder.Configuration);
+        await DemoDataSeeder.SeedAsync(services, builder.Configuration);
     }
 }
 

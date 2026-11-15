@@ -7,8 +7,7 @@
 
 <div class="container py-5">
 
-    <a asp-action="Index"
-       class="gx-back-link">
+    <a asp-action="Index" class="gx-back-link">
         ← Torna agli eventi
     </a>
 
@@ -16,6 +15,7 @@
 
         <div class="col-lg-7">
 
+            @* Riepilogo dell'attività da eliminare *@
             <div class="gx-form-card">
 
                 <div class="gallery-eyebrow mb-2">
@@ -56,19 +56,18 @@
 
                 </dl>
 
+                @* Conferma dell'eliminazione *@
                 <form asp-action="Delete" method="post">
 
                     <input type="hidden" asp-for="Id" />
 
                     <div class="d-flex flex-wrap gap-2">
 
-                        <button type="submit"
-                                class="btn gallery-btn-danger">
+                        <button type="submit" class="btn gallery-btn-danger">
                             Elimina definitivamente
                         </button>
 
-                        <a asp-action="Index"
-                           class="btn gallery-btn-outline">
+                        <a asp-action="Index" class="btn gallery-btn-outline">
                             Annulla
                         </a>
 

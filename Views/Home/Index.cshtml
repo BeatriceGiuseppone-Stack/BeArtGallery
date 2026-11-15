@@ -2,12 +2,14 @@
 @using System.Globalization
 @using BeArtGallery.Models.Enums
 
+@* Formato italiano per date e numeri *@
 @{
     ViewData["Title"] = "Home";
 
     var it = new CultureInfo("it-IT");
 }
 
+@* Prima sezione: titolo, pulsanti principali e immagine *@
 <section class="gallery-hero">
 
     <div class="container">
@@ -38,25 +40,20 @@
 
                 <div class="d-flex flex-wrap gap-3 mt-4">
 
-                    <a asp-controller="Artworks"
-                       asp-action="Index"
-                       class="btn gallery-btn-primary">
+                    @* Pulsanti verso opere, artisti ed eventi *@
+                    <a asp-controller="Artworks" asp-action="Index" class="btn gallery-btn-primary">
 
                         Esplora le opere
 
                     </a>
 
-                    <a asp-controller="Artists"
-                       asp-action="Index"
-                       class="btn gallery-btn-outline">
+                    <a asp-controller="Artists" asp-action="Index" class="btn gallery-btn-outline">
 
                         Esplora i nostri artisti
 
                     </a>
 
-                    <a asp-controller="GalleryActivities"
-                       asp-action="Index"
-                       class="btn gallery-btn-outline">
+                    <a asp-controller="GalleryActivities" asp-action="Index" class="btn gallery-btn-outline">
 
                         Eventi
 
@@ -68,11 +65,10 @@
 
             <div class="col-lg-5 d-none d-lg-block">
 
+                @* Immagine della galleria (solo su schermi grandi) *@
                 <div class="gallery-hero-image-wrapper">
 
-                    <img src="~/images/gallery-hero.png"
-                         alt="Interno moderno della galleria BeArtGallery"
-                         class="gallery-hero-image" />
+                    <img src="~/images/gallery-hero.png" alt="Interno moderno della galleria BeArtGallery" class="gallery-hero-image" />
 
                 </div>
 
@@ -84,10 +80,7 @@
 
 </section>
 
-
-@* =========================================================
-   ORA IN GALLERIA: le opere esposte, appese come in una sala
-   ========================================================= *@
+@* Ora in galleria: le ultime opere esposte, appese come su una parete *@
 
 @if (Model.FeaturedArtworks.Any())
 {
@@ -109,37 +102,30 @@
 
                 </div>
 
-                <a asp-controller="Artworks"
-                   asp-action="Index"
-                   class="gx-home-more">
+                <a asp-controller="Artworks" asp-action="Index" class="gx-home-more">
 
                     Tutto il catalogo
-                    (@Model.ArtworksOnDisplayCount
-                    @(Model.ArtworksOnDisplayCount == 1 ? "opera" : "opere"))
+                    (@Model.ArtworksOnDisplayCount @(Model.ArtworksOnDisplayCount == 1 ? "opera" : "opere"))
 
                 </a>
 
             </div>
 
+            @* Parete con le opere (la disposizione cambia in base al numero di opere) *@
             <div class="gx-wall gx-wall-@Model.FeaturedArtworks.Count">
 
                 @foreach (var artwork in Model.FeaturedArtworks)
                 {
-                    <a asp-controller="Artworks"
-                       asp-action="Details"
-                       asp-route-id="@artwork.Id"
-                       class="gx-wall-item">
+                    <a asp-controller="Artworks" asp-action="Details" asp-route-id="@artwork.Id" class="gx-wall-item">
 
                         <span class="gx-wall-frame">
 
-                            <img src="@artwork.ImageUrl"
-                                 alt="@artwork.Title, opera di @artwork.ArtistName"
-                                 class="gx-wall-image"
-                                 loading="lazy" />
+                            <img src="@artwork.ImageUrl" alt="@artwork.Title, opera di @artwork.ArtistName"
+                                 class="gx-wall-image" loading="lazy" />
 
                         </span>
 
-                        @* Didascalia come la targhetta accanto a un quadro *@
+                        @* Didascalia dell'opera, come la targhetta accanto a un quadro *@
 
                         <span class="gx-wall-label">
 
@@ -166,10 +152,7 @@
     </section>
 }
 
-
-@* =========================================================
-   PROSSIMI APPUNTAMENTI
-   ========================================================= *@
+@* Prossimi appuntamenti *@
 
 <section class="gx-home-section gx-home-dark">
 
@@ -189,9 +172,7 @@
 
             </div>
 
-            <a asp-controller="GalleryActivities"
-               asp-action="Index"
-               class="gx-home-more">
+            <a asp-controller="GalleryActivities" asp-action="Index" class="gx-home-more">
 
                 Tutto il programma
 
@@ -207,10 +188,7 @@
                 {
                     var place = string.IsNullOrWhiteSpace(activity.Location) ? "" : ", " + activity.Location;
 
-                    <a asp-controller="GalleryActivities"
-                       asp-action="Details"
-                       asp-route-id="@activity.Id"
-                       class="gx-agenda-item">
+                    <a asp-controller="GalleryActivities" asp-action="Details" asp-route-id="@activity.Id" class="gx-agenda-item">
 
                         <span class="gx-agenda-date">
 
@@ -236,6 +214,7 @@
 
                         <span class="gx-agenda-seats">
 
+                            @* Posti ancora liberi oppure "completo" *@
                             @if (activity.AvailablePlaces > 0)
                             {
                                 <span>
@@ -259,6 +238,7 @@
         }
         else
         {
+            @* Messaggio se non ci sono eventi in programma *@
             <p class="gx-agenda-empty">
                 Il calendario dei prossimi appuntamenti è in preparazione.
                 Nel frattempo puoi scoprire le opere della collezione.
@@ -269,10 +249,7 @@
 
 </section>
 
-
-@* =========================================================
-   GLI ARTISTI: un indice di nomi, come la parete d'ingresso
-   ========================================================= *@
+@* Gli artisti: un elenco di nomi, come la parete all'ingresso *@
 
 @if (Model.Artists.Any())
 {
@@ -294,9 +271,7 @@
 
                 </div>
 
-                <a asp-controller="Artists"
-                   asp-action="Index"
-                   class="gx-home-more">
+                <a asp-controller="Artists" asp-action="Index" class="gx-home-more">
 
                     Tutti gli artisti (@Model.ArtistsCount)
 
@@ -309,16 +284,11 @@
                 @foreach (var artist in Model.Artists)
                 {
                     var works = artist.ArtworksCount + (artist.ArtworksCount == 1 ? " opera" : " opere");
-                    var meta = string.IsNullOrWhiteSpace(artist.Nationality)
-                        ? works
-                        : artist.Nationality + ", " + works;
+                    var meta = string.IsNullOrWhiteSpace(artist.Nationality) ? works : artist.Nationality + ", " + works;
 
                     <li>
 
-                        <a asp-controller="Artists"
-                           asp-action="Details"
-                           asp-route-id="@artist.Id"
-                           class="gx-name">
+                        <a asp-controller="Artists" asp-action="Details" asp-route-id="@artist.Id" class="gx-name">
 
                             <span class="gx-name-full">@artist.FullName</span>
 
@@ -337,9 +307,7 @@
 }
 
 
-@* =========================================================
-   LA PIATTAFORMA
-   ========================================================= *@
+@* La piattaforma: cosa può fare il visitatore *@
 
 <section class="gallery-experience-section">
 
@@ -351,9 +319,7 @@
 
                 <div class="gallery-experience-visual">
 
-                    <img src="~/images/beartgallery-logo.png"
-                         alt="BeArtGallery"
-                         class="gallery-experience-logo" />
+                    <img src="~/images/beartgallery-logo.png" alt="BeArtGallery" class="gallery-experience-logo" />
 
                 </div>
 
@@ -379,11 +345,10 @@
 
                 </p>
 
+                @* Pulsante diverso se l'utente ha fatto l'accesso o no *@
                 @if (User.Identity?.IsAuthenticated == true)
                 {
-                    <a asp-controller="Bookings"
-                       asp-action="Index"
-                       class="btn gallery-btn-primary mt-3">
+                    <a asp-controller="Bookings" asp-action="Index" class="btn gallery-btn-primary mt-3">
 
                         Le mie prenotazioni
 
@@ -391,9 +356,7 @@
                 }
                 else
                 {
-                    <a asp-area="Identity"
-                       asp-page="/Account/Register"
-                       class="btn gallery-btn-primary mt-3">
+                    <a asp-area="Identity" asp-page="/Account/Register" class="btn gallery-btn-primary mt-3">
 
                         Crea un account
 

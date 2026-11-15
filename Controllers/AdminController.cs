@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeArtGallery.Controllers
 {
+    // Area riservata all'amministratore: gestione degli utenti e dei ruoli
     [Authorize(Roles = RoleNames.Admin)]
     public class AdminController : Controller
     {
@@ -23,6 +24,7 @@ namespace BeArtGallery.Controllers
         }
 
         // GET: /Admin/Users
+        // Elenco di tutti gli utenti con il loro ruolo
         public async Task<IActionResult> Users()
         {
             var users = await _userManager.Users
@@ -31,6 +33,7 @@ namespace BeArtGallery.Controllers
 
             var model = new List<UserManagementViewModel>();
 
+            // Per ogni utente legge il ruolo assegnato
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -47,6 +50,7 @@ namespace BeArtGallery.Controllers
         }
 
         // POST: /Admin/ChangeRole
+        // Cambia il ruolo di un utente
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeRole(
@@ -60,6 +64,7 @@ namespace BeArtGallery.Controllers
                 return NotFound();
             }
 
+            // Ruoli che si possono assegnare
             string[] allowedRoles =
             {
         RoleNames.Visitore,
@@ -67,13 +72,13 @@ namespace BeArtGallery.Controllers
         RoleNames.Admin
     };
 
-            // Impedisce l'invio di ruoli non previsti
+            // Rifiuta ruoli diversi da quelli previsti
             if (!allowedRoles.Contains(role))
             {
                 return BadRequest();
             }
 
-            // Controlla che il ruolo esista realmente
+            // Controlla che il ruolo esista nel database
             if (!await _roleManager.RoleExistsAsync(role))
             {
                 return BadRequest();
@@ -85,8 +90,7 @@ namespace BeArtGallery.Controllers
             var currentRole =
                 currentRoles.FirstOrDefault();
 
-            // Se il ruolo selezionato è già quello attuale,
-            // non dobbiamo fare nulla.
+            // Se il ruolo è già quello attuale non c'è niente da cambiare
             if (currentRole == role)
             {
                 TempData["SuccessMessage"] =
@@ -95,8 +99,7 @@ namespace BeArtGallery.Controllers
                 return RedirectToAction(nameof(Users));
             }
 
-            // L'Admin attualmente autenticato non può
-            // rimuovere da solo il proprio ruolo Admin.
+            // L'admin collegato non può togliersi da solo il ruolo di Admin
             var currentUserId =
                 _userManager.GetUserId(User);
 
@@ -109,7 +112,7 @@ namespace BeArtGallery.Controllers
                 return RedirectToAction(nameof(Users));
             }
 
-            // Impedisce di rimuovere l'ultimo Admin del sistema.
+            // Deve rimanere almeno un Admin nel sistema
             if (currentRole == RoleNames.Admin &&
                 role != RoleNames.Admin)
             {
@@ -126,7 +129,7 @@ namespace BeArtGallery.Controllers
                 }
             }
 
-            // Rimuove i ruoli precedenti
+            // Toglie i ruoli che l'utente aveva prima
             if (currentRoles.Count > 0)
             {
                 var removeResult =
@@ -164,6 +167,7 @@ namespace BeArtGallery.Controllers
         }
 
         // GET: /Admin/CreateUser
+        // Form per creare un nuovo utente
         [HttpGet]
         public IActionResult CreateUser()
         {
@@ -171,6 +175,7 @@ namespace BeArtGallery.Controllers
         }
 
         // POST: /Admin/CreateUser
+        // Crea l'utente con il ruolo scelto
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateUser(
@@ -195,6 +200,7 @@ namespace BeArtGallery.Controllers
                 return View(model);
             }
 
+            // Controlla che l'email non sia già usata
             var existingUser =
                 await _userManager.FindByEmailAsync(model.Email);
 
@@ -207,6 +213,7 @@ namespace BeArtGallery.Controllers
                 return View(model);
             }
 
+            // Crea l'utente con la password indicata
             var user = new ApplicationUser
             {
                 UserName = model.Email,
@@ -230,6 +237,7 @@ namespace BeArtGallery.Controllers
                 return View(model);
             }
 
+            // Assegna il ruolo al nuovo utente
             var roleResult =
                 await _userManager.AddToRoleAsync(
                     user,
@@ -237,8 +245,7 @@ namespace BeArtGallery.Controllers
 
             if (!roleResult.Succeeded)
             {
-                // Se il ruolo non può essere assegnato,
-                // eliminiamo l'utente appena creato.
+                // Se il ruolo non si può assegnare, l'utente appena creato viene eliminato
                 await _userManager.DeleteAsync(user);
 
                 foreach (var error in roleResult.Errors)
@@ -258,6 +265,7 @@ namespace BeArtGallery.Controllers
         }
 
         // GET: /Admin/ResetPassword
+        // Form per impostare una nuova password a un utente
         [HttpGet]
         public async Task<IActionResult> ResetPassword(string userId)
         {
@@ -284,6 +292,7 @@ namespace BeArtGallery.Controllers
 
 
         // POST: /Admin/ResetPassword
+        // Imposta la nuova password
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(
@@ -296,7 +305,7 @@ namespace BeArtGallery.Controllers
                 return NotFound();
             }
 
-            // Usiamo sempre l'email reale presente nel database
+            // L'email viene sempre presa dal database
             model.Email = user.Email ?? user.UserName ?? string.Empty;
 
             if (!ModelState.IsValid)
@@ -304,7 +313,7 @@ namespace BeArtGallery.Controllers
                 return View(model);
             }
 
-            // Genera un token sicuro di reset tramite ASP.NET Core Identity
+            // Identity crea un token di reset e lo usa subito per cambiare la password
             var token =
                 await _userManager.GeneratePasswordResetTokenAsync(user);
 

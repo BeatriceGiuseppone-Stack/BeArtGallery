@@ -1,3 +1,6 @@
+/* Stili principali del sito: struttura delle pagine e dei componenti.
+   Colori ed effetti del tema sono in gallery-experience.css. */
+
 :root {
     --gallery-bg: #f7f4ef;
     --gallery-surface: #ffffff;
@@ -9,8 +12,7 @@
     --gallery-soft: #ede8df;
 }
 
-
-/* Base */
+/* Stili di base */
 
 html {
     font-size: 16px;
@@ -39,15 +41,14 @@ h3,
     font-family: Georgia, "Times New Roman", serif;
 }
 
+/* Menu in alto */
 
-/* Navbar */
-
-/*.gallery-navbar {
-    background-color: rgba(247, 244, 239, 0.96);
-    border-bottom: 1px solid var(--gallery-border);
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}*/
+/* .gallery-navbar {
+   background-color: rgba(247, 244, 239, 0.96);
+   border-bottom: 1px solid var(--gallery-border);
+   padding-top: 1rem;
+   padding-bottom: 1rem;
+   } */
 
 .gallery-navbar {
     min-height: 92px;
@@ -105,8 +106,7 @@ h3,
     white-space: nowrap;
 }
 
-
-/* Hero */
+/* Prima sezione della pagina */
 
 .gallery-hero {
     background-color: var(--gallery-bg);
@@ -141,7 +141,7 @@ h3,
 }
 
 
-/* Hero artwork */
+/* Immagine della prima sezione */
 
 .gallery-hero-art {
     display: flex;
@@ -189,7 +189,7 @@ h3,
 }
 
 
-/* Buttons */
+/* Pulsanti */
 
 .gallery-btn-primary {
     background-color: var(--gallery-dark);
@@ -222,8 +222,7 @@ h3,
         color: #ffffff;
     }
 
-
-/* Sections */
+/* Sezioni */
 
 .gallery-section {
     padding: 7rem 0;
@@ -248,8 +247,7 @@ h3,
         line-height: 1.7;
     }
 
-
-/* Feature cards */
+/* Schede dei servizi */
 
 .gallery-feature-card {
     height: 100%;
@@ -293,8 +291,7 @@ h3,
         color: var(--gallery-accent);
     }
 
-
-/* Experience section */
+/* Sezione sull'esperienza in galleria */
 
 .gallery-experience-section {
     padding: 7rem 0;
@@ -329,8 +326,7 @@ h3,
     font-size: 1.05rem;
 }
 
-
-/* Footer */
+/* Piè di pagina */
 
 .gallery-footer {
     padding: 4rem 0 1.5rem;
@@ -380,7 +376,6 @@ h3,
     font-size: 0.9rem;
 }
 
-
 /* Accessibilità */
 
 a:focus-visible,
@@ -392,8 +387,7 @@ textarea:focus-visible {
     outline-offset: 3px;
 }
 
-
-/* Responsive */
+/* Schermi piccoli */
 
 @media (max-width: 991.98px) {
 
@@ -419,7 +413,6 @@ textarea:focus-visible {
         padding: 5rem 0;
     }
 }
-
 
 @media (max-width: 575.98px) {
 
@@ -458,7 +451,6 @@ textarea:focus-visible {
         color: var(--gallery-accent);
     }
 
-
 .artwork-detail-image-wrapper {
     width: 100%;
     padding: 1.25rem;
@@ -481,7 +473,6 @@ textarea:focus-visible {
     color: var(--gallery-muted);
     background-color: var(--gallery-soft);
 }
-
 
 .artwork-detail-content {
     padding-top: 0.5rem;
@@ -507,14 +498,12 @@ textarea:focus-visible {
         color: var(--gallery-accent);
     }
 
-
 .artwork-detail-divider {
     width: 100%;
     height: 1px;
     margin: 2rem 0;
     background-color: var(--gallery-border);
 }
-
 
 /* Metadati */
 
@@ -539,7 +528,6 @@ textarea:focus-visible {
         color: var(--gallery-muted);
     }
 
-
 .gallery-status {
     display: inline-block;
     padding: 0.35rem 0.75rem;
@@ -558,7 +546,6 @@ textarea:focus-visible {
     background-color: var(--gallery-soft);
 }
 
-
 /* Descrizione */
 
 .artwork-description {
@@ -575,7 +562,6 @@ textarea:focus-visible {
         font-size: 1.05rem;
         line-height: 1.8;
     }
-
 
 /* Artista */
 
@@ -627,8 +613,7 @@ textarea:focus-visible {
         color: var(--gallery-accent);
     }
 
-
-/* Azioni Staff/Admin */
+    /* Azioni Staff/Admin */
 
 .artwork-admin-actions {
     display: flex;
@@ -653,8 +638,7 @@ textarea:focus-visible {
         border-color: #8b2f2f;
     }
 
-
-/* Responsive */
+/* Schermi piccoli */
 
 @media (max-width: 991.98px) {
 
@@ -662,7 +646,6 @@ textarea:focus-visible {
         margin-top: 1rem;
     }
 }
-
 
 @media (max-width: 575.98px) {
 
@@ -703,7 +686,6 @@ textarea:focus-visible {
     background-color: var(--gallery-border);
 }
 
-
 /* Dati biografici */
 
 .artist-biographical-data {
@@ -731,7 +713,6 @@ textarea:focus-visible {
         font-weight: 600;
     }
 
-
 /* Biografia */
 
 .artist-biography {
@@ -749,7 +730,6 @@ textarea:focus-visible {
         font-size: 1.05rem;
         line-height: 1.9;
     }
-
 
 /* Monogramma decorativo */
 
@@ -772,7 +752,6 @@ textarea:focus-visible {
         font-weight: 400;
     }
 
-
 /* Azioni amministrative */
 
 .artist-admin-actions {
@@ -781,7 +760,6 @@ textarea:focus-visible {
     gap: 0.75rem;
     margin-top: 3rem;
 }
-
 
 /* Opere */
 
@@ -807,7 +785,6 @@ textarea:focus-visible {
     .artist-view-all-link:focus {
         color: var(--gallery-accent);
     }
-
 
 /* Card opere dell'artista */
 
@@ -880,8 +857,7 @@ textarea:focus-visible {
     border: 1px solid var(--gallery-border);
 }
 
-
-/* Responsive */
+/* Schermi piccoli */
 
 @media (max-width: 991.98px) {
 
@@ -893,7 +869,6 @@ textarea:focus-visible {
         margin-top: 5rem;
     }
 }
-
 
 @media (max-width: 575.98px) {
 
@@ -974,8 +949,7 @@ textarea:focus-visible {
         font-size: 0.85rem;
     }
 
-
-/* Form BeArtGallery */
+/* Form del sito */
 
 .gallery-form-title {
     margin-bottom: 1rem;
@@ -1032,7 +1006,6 @@ textarea.gallery-form-control {
     margin-top: 2.5rem;
 }
 
-
 /* Colonna decorativa dei form */
 
 .gallery-form-side {
@@ -1063,8 +1036,7 @@ textarea.gallery-form-control {
     line-height: 1.7;
 }
 
-
-/* Checkbox Identity */
+/* Caselle di spunta delle pagine di accesso */
 
 .form-check-input {
     border-color: var(--gallery-border);
@@ -1075,8 +1047,7 @@ textarea.gallery-form-control {
         border-color: var(--gallery-dark);
     }
 
-
-/* Responsive */
+/* Schermi piccoli */
 
 @media (max-width: 767.98px) {
 
@@ -1106,7 +1077,6 @@ textarea.gallery-form-control {
     line-height: 1.8;
 }
 
-
 /* Card artista */
 
 .artist-card {
@@ -1120,7 +1090,6 @@ textarea.gallery-form-control {
         transform: translateY(-4px);
         box-shadow: 0 18px 45px rgba(0, 0, 0, 0.06);
     }
-
 
 .artist-card-visual {
     min-height: 300px;
@@ -1227,7 +1196,6 @@ textarea.gallery-form-control {
     border-top: 1px solid var(--gallery-border);
 }
 
-
 /* Stato vuoto */
 
 .artist-empty-state {
@@ -1247,8 +1215,7 @@ textarea.gallery-form-control {
         color: var(--gallery-muted);
     }
 
-
-/* Responsive */
+/* Schermi piccoli */
 
 @media (max-width: 575.98px) {
 
@@ -1363,7 +1330,7 @@ textarea.gallery-form-control {
 }
 
 
-/* Status message Identity */
+/* Messaggi delle pagine dell'account */
 
 .alert-success {
     border-radius: 0;
@@ -1374,7 +1341,7 @@ textarea.gallery-form-control {
 }
 
 
-/* Responsive */
+/* Schermi piccoli */
 
 @media (max-width: 991.98px) {
 
@@ -1544,7 +1511,7 @@ textarea.gallery-form-control {
     }
 
 
-/* Responsive */
+/* Schermi piccoli */
 
 @media (max-width: 767.98px) {
 
@@ -1727,9 +1694,7 @@ select.gallery-form-control {
         text-decoration: underline;
     }
 
-/* =================================================
-   DETTAGLIO OPERA - CTA
-   ================================================= */
+/* Dettaglio opera: pulsanti principali */
 
 .artwork-primary-actions {
     display: flex;
@@ -1744,9 +1709,7 @@ select.gallery-form-control {
     }
 
 
-/* =================================================
-   RICHIESTA INFORMAZIONI
-   ================================================= */
+/* Richiesta informazioni */
 
 .artwork-inquiry-panel {
     margin: 0.5rem 0 2rem;
@@ -1803,9 +1766,7 @@ select.gallery-form-control {
 }
 
 
-/* =================================================
-   SEZIONI EDITORIALI
-   ================================================= */
+/* Sezioni editoriali */
 
 .artwork-editorial-section {
     margin-top: 6rem;
@@ -1840,9 +1801,7 @@ select.gallery-form-control {
 }
 
 
-/* =================================================
-   OPERE CORRELATE
-   ================================================= */
+/* Opere correlate */
 
 .related-artworks-section {
     margin-top: 6rem;
@@ -1918,10 +1877,7 @@ select.gallery-form-control {
         color: var(--gallery-muted);
     }
 
-
-/* =================================================
-   RESPONSIVE
-   ================================================= */
+/* Schermi piccoli */
 
 @media (max-width: 767.98px) {
 
@@ -1936,11 +1892,9 @@ select.gallery-form-control {
             justify-content: center;
         }
 
-
     .artwork-inquiry-panel {
         padding: 1.5rem;
     }
-
 
     .artwork-inquiry-form-footer {
         align-items: stretch;
@@ -1951,28 +1905,23 @@ select.gallery-form-control {
             width: 100%;
         }
 
-
     .artwork-editorial-section,
     .related-artworks-section {
         margin-top: 4rem;
         padding-top: 3rem;
     }
 
-
     .related-artworks-header {
         align-items: flex-start;
         flex-direction: column;
     }
-
 
     .related-artwork-image-wrapper {
         height: 280px;
     }
 }
 
-/* =================================================
-   GESTIONE RICHIESTE INFORMAZIONI
-   ================================================= */
+/* Gestione richieste informazioni */
 
 .inquiries-page-title {
     margin-bottom: 1rem;
@@ -1988,7 +1937,6 @@ select.gallery-form-control {
     font-size: 1.05rem;
     line-height: 1.8;
 }
-
 
 /* Statistiche */
 
@@ -2024,7 +1972,6 @@ select.gallery-form-control {
         font-weight: 400;
     }
 
-
 /* Barra filtro */
 
 .inquiries-filter-bar {
@@ -2045,7 +1992,6 @@ select.gallery-form-control {
         color: var(--gallery-text);
         font-weight: 600;
     }
-
 
 /* Lista */
 
@@ -2121,7 +2067,6 @@ select.gallery-form-control {
         color: var(--gallery-text);
     }
 
-
 /* Stati */
 
 .inquiry-status {
@@ -2148,7 +2093,6 @@ select.gallery-form-control {
     color: var(--gallery-muted);
     background-color: var(--gallery-soft);
 }
-
 
 /* Dettaglio */
 
@@ -2195,7 +2139,6 @@ select.gallery-form-control {
         color: var(--gallery-text);
     }
 
-
 /* Messaggio */
 
 .inquiry-message {
@@ -2207,7 +2150,6 @@ select.gallery-form-control {
     line-height: 1.8;
     white-space: pre-line;
 }
-
 
 /* Form stato */
 
@@ -2221,7 +2163,6 @@ select.gallery-form-control {
     .inquiry-status-form > div {
         flex: 1;
     }
-
 
 /* Opera laterale */
 
@@ -2259,8 +2200,7 @@ select.gallery-form-control {
         color: var(--gallery-muted);
     }
 
-
-/* Empty state */
+/* Nessun risultato */
 
 .inquiry-empty-state {
     padding: 4rem;
@@ -2279,8 +2219,7 @@ select.gallery-form-control {
         color: var(--gallery-muted);
     }
 
-
-/* Responsive */
+/* Schermi piccoli */
 
 @media (max-width: 767.98px) {
 
@@ -2377,13 +2316,11 @@ select.gallery-form-control {
     font-size: 0.75rem;
 }
 
-
 .inquiry-reply-form {
     max-width: 750px;
 }
 
-
-/* Badge nuova risposta */
+/* Etichetta "nuova risposta" */
 
 .inquiry-unread-badge,
 .navbar-notification-badge {
@@ -2408,16 +2345,14 @@ select.gallery-form-control {
     border-radius: 999px;
 }
 
-
-/* Link navbar con notifica */
+/* Voce del menu con il numero di notifiche */
 
 .gallery-nav-notification {
     display: inline-flex;
     align-items: center;
 }
 
-
-/* Responsive */
+/* Schermi piccoli */
 
 @media (max-width: 767.98px) {
 
@@ -2436,14 +2371,12 @@ select.gallery-form-control {
     border-radius: 999px;
 }
 
-
 /* Disponibile */
 
 .artwork-availability-available {
     color: #2f6642;
     background-color: #e1eee5;
 }
-
 
 /* Disponibilità limitata */
 
@@ -2452,14 +2385,12 @@ select.gallery-form-control {
     background-color: #f4ead2;
 }
 
-
 /* Esaurita */
 
 .artwork-availability-sold-out {
     color: #813e38;
     background-color: #f1dfdc;
 }
-
 
 /* Non disponibile */
 
@@ -2484,13 +2415,11 @@ select.gallery-form-control {
     line-height: 1;
 }
 
-
 /* Esaurita */
 
 .artwork-catalog-availability-soldout {
     background-color: #151515;
 }
-
 
 /* Disponibilità limitata */
 
@@ -2498,16 +2427,13 @@ select.gallery-form-control {
     background-color: #9b7b4f;
 }
 
-
 /* Non disponibile */
 
 .artwork-catalog-availability-unavailable {
     background-color: #66615b;
 }
 
-/* =================================================
-   BADGE DISPONIBILITÀ OPERE
-   ================================================= */
+/* Badge disponibilità opere */
 
 /* Il wrapper dell'immagine deve essere relativo
    per permettere al badge di posizionarsi
@@ -2519,8 +2445,7 @@ select.gallery-form-control {
     overflow: hidden;
 }
 
-
-/* Badge base */
+/* Etichetta di base */
 
 .artwork-catalog-availability-badge {
     position: absolute;
@@ -2543,10 +2468,7 @@ select.gallery-form-control {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-
-/* =================================================
-   STATI
-   ================================================= */
+/* Stati */
 
 /* Esaurita */
 
@@ -2554,13 +2476,11 @@ select.gallery-form-control {
     background-color: #151515;
 }
 
-
 /* Disponibilità limitata */
 
 .artwork-catalog-availability-limited {
     background-color: var(--gallery-accent);
 }
-
 
 /* Non disponibile */
 
@@ -2568,10 +2488,7 @@ select.gallery-form-control {
     background-color: #66615b;
 }
 
-
-/* =================================================
-   TABLET
-   ================================================= */
+/* Tablet */
 
 @media (max-width: 991.98px) {
 
@@ -2585,10 +2502,7 @@ select.gallery-form-control {
     }
 }
 
-
-/* =================================================
-   MOBILE
-   ================================================= */
+/* Smartphone */
 
 @media (max-width: 767.98px) {
 
@@ -2602,10 +2516,7 @@ select.gallery-form-control {
     }
 }
 
-
-/* =================================================
-   MOBILE PICCOLO
-   ================================================= */
+/* Smartphone piccoli */
 
 @media (max-width: 575.98px) {
 
@@ -2619,16 +2530,13 @@ select.gallery-form-control {
     }
 }
 
-/* =================================================
-   CHI SIAMO
-   ================================================= */
+/* Chi siamo */
 
 .about-page {
     overflow: hidden;
 }
 
-
-/* Hero */
+/* Prima sezione della pagina */
 
 .about-hero {
     padding: 6rem 0;
@@ -2658,7 +2566,6 @@ select.gallery-form-control {
     line-height: 1.8;
 }
 
-
 /* Sezione descrizione */
 
 .about-section {
@@ -2687,7 +2594,6 @@ select.gallery-form-control {
             margin-bottom: 0;
         }
 
-
 /* Informazioni */
 
 .about-info-section {
@@ -2699,7 +2605,6 @@ select.gallery-form-control {
     margin-bottom: 2rem;
     font-size: clamp(2.7rem, 5vw, 4.5rem);
 }
-
 
 /* Card informative */
 
@@ -2738,7 +2643,6 @@ select.gallery-form-control {
         color: var(--gallery-accent);
     }
 
-
 /* Orari */
 
 .about-hours {
@@ -2768,8 +2672,7 @@ select.gallery-form-control {
         font-weight: 600;
     }
 
-
-/* CTA finale */
+/* Invito finale */
 
 .about-cta {
     padding: 7rem 0;
@@ -2822,10 +2725,7 @@ select.gallery-form-control {
         border-color: #ffffff;
     }
 
-
-/* =================================================
-   RESPONSIVE
-   ================================================= */
+/* Schermi piccoli */
 
 @media (max-width: 991.98px) {
 
@@ -2851,7 +2751,6 @@ select.gallery-form-control {
         padding: 3rem;
     }
 }
-
 
 @media (max-width: 575.98px) {
 
@@ -2900,7 +2799,7 @@ select.gallery-form-control {
         }
 }
 
-/* Immagine hero della homepage */
+/* Immagine della prima sezione della home */
 
 .gallery-hero-image-wrapper {
     position: relative;
@@ -2928,9 +2827,7 @@ select.gallery-form-control {
     z-index: -1;
 }
 
-/* =================================================
-   NAVBAR - AREA PERSONALE
-   ================================================= */
+/* Menu: area personale */
 
 .gallery-main-nav {
     align-items: center;
@@ -2961,7 +2858,6 @@ select.gallery-form-control {
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
 }
 
-
     .gallery-account-menu .dropdown-item {
         padding: 0.75rem 1.25rem;
         color: var(--gallery-text);
@@ -2969,19 +2865,16 @@ select.gallery-form-control {
         transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-
         .gallery-account-menu .dropdown-item:hover,
         .gallery-account-menu .dropdown-item:focus {
             color: var(--gallery-text);
             background-color: var(--gallery-soft);
         }
 
-
     .gallery-account-menu .dropdown-divider {
         margin: 0.5rem 0;
         border-color: var(--gallery-border);
     }
-
 
 .gallery-logout-link {
     width: 100%;
@@ -2990,10 +2883,7 @@ select.gallery-form-control {
     text-align: left;
 }
 
-
-/* =================================================
-   RESPONSIVE
-   ================================================= */
+/* Schermi piccoli */
 
 @media (max-width: 991.98px) {
 
@@ -3006,16 +2896,13 @@ select.gallery-form-control {
         border-top: 1px solid var(--gallery-border);
     }
 
-
     .gallery-account-menu {
         width: 100%;
         margin-top: 0.5rem;
         box-shadow: none;
     }
 }
-/* =================================================
-   CHI SIAMO - HERO CON SFONDO
-   ================================================= */
+/* Chi siamo: prima sezione con immagine di sfondo */
 
 .about-hero-background {
     position: relative;
@@ -3027,8 +2914,7 @@ select.gallery-form-control {
     overflow: hidden;
 }
 
-
-    /* Overlay chiaro per leggibilità testo */
+    /* Velo chiaro per leggere meglio il testo */
     .about-hero-background::before {
         content: "";
         position: absolute;
@@ -3037,13 +2923,11 @@ select.gallery-form-control {
         z-index: 0;
     }
 
-
-    /* Contenuto sopra overlay */
+    /* Contenuto sopra il velo */
     .about-hero-background .container {
         position: relative;
         z-index: 1;
     }
-
 
     /* Testi */
     .about-hero-background .gallery-eyebrow {
@@ -3067,8 +2951,7 @@ select.gallery-form-control {
         text-shadow: 0 1px 2px rgba(255, 255, 255, 0.25);
     }
 
-
-/* Responsive */
+/* Schermi piccoli */
 @media (max-width: 991.98px) {
     .about-hero-background {
         padding: 5.5rem 0 4.5rem;

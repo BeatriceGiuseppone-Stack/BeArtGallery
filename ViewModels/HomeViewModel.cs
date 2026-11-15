@@ -2,8 +2,7 @@ using BeArtGallery.Models.Enums;
 
 namespace BeArtGallery.ViewModels
 {
-    // Dati mostrati nella home: le opere esposte, i prossimi
-    // appuntamenti e gli artisti della galleria.
+    // Dati della home: opere esposte, prossimi eventi e artisti
     public class HomeViewModel
     {
         public List<HomeArtworkItem> FeaturedArtworks { get; set; } = new();
@@ -12,11 +11,13 @@ namespace BeArtGallery.ViewModels
 
         public List<HomeArtistItem> Artists { get; set; } = new();
 
+        // Numeri mostrati nella home
         public int ArtworksOnDisplayCount { get; set; }
 
         public int ArtistsCount { get; set; }
     }
 
+    // Opera mostrata nella home
     public class HomeArtworkItem
     {
         public int Id { get; set; }
@@ -32,6 +33,7 @@ namespace BeArtGallery.ViewModels
         public string ImageUrl { get; set; } = string.Empty;
     }
 
+    // Evento mostrato nella home
     public class HomeActivityItem
     {
         public int Id { get; set; }
@@ -51,6 +53,7 @@ namespace BeArtGallery.ViewModels
         public int AvailablePlaces => Math.Max(0, MaxParticipants - BookedParticipants);
     }
 
+    // Artista mostrato nella home
     public class HomeArtistItem
     {
         public int Id { get; set; }

@@ -4,6 +4,7 @@
 
 <div class="container py-5">
 
+    @* Intestazione della pagina *@
     <div class="gx-page-head">
 
         <div>
@@ -24,6 +25,7 @@
 
     </div>
 
+    @* Testo dell'informativa sulla privacy *@
     <div class="gx-prose">
 
         <h2>Quali dati raccogliamo</h2>
@@ -67,11 +69,10 @@
             tuo account.
         </p>
 
+        @* Link al profilo, solo per chi ha fatto l'accesso *@
         @if (User.Identity?.IsAuthenticated == true)
         {
-            <a asp-area="Identity"
-               asp-page="/Account/Manage/PersonalData"
-               class="btn gallery-btn-outline mt-2">
+            <a asp-area="Identity" asp-page="/Account/Manage/PersonalData" class="btn gallery-btn-outline mt-2">
                 Vai ai tuoi dati personali
             </a>
         }

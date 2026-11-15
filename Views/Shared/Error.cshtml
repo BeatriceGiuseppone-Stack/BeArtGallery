@@ -6,6 +6,7 @@
 
 <div class="container py-5">
 
+    @* Pagina di errore generica *@
     <div class="gx-prose">
 
         <div class="gallery-eyebrow mb-2">
@@ -21,6 +22,7 @@
             se il problema continua, contatta lo staff della galleria.
         </p>
 
+        @* Codice della richiesta, utile per cercare l'errore nei log *@
         @if (Model.ShowRequestId)
         {
             <p class="gx-notice-meta">
@@ -28,9 +30,7 @@
             </p>
         }
 
-        <a asp-controller="Home"
-           asp-action="Index"
-           class="btn gallery-btn-primary mt-3">
+        <a asp-controller="Home" asp-action="Index" class="btn gallery-btn-primary mt-3">
             Torna alla home
         </a>
 

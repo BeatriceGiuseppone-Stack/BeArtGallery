@@ -2,6 +2,7 @@
 
 namespace BeArtGallery.ViewModels
 {
+    // Dati del form con cui l'admin imposta una nuova password a un utente
     public class AdminResetPasswordViewModel
     {
         [Required]

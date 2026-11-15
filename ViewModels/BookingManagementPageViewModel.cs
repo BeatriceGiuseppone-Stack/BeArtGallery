@@ -2,14 +2,14 @@
 
 namespace BeArtGallery.ViewModels
 {
+    // Pagina dello staff con le prenotazioni e i filtri
     public class BookingManagementPageViewModel
     {
-        public List<BookingManagementViewModel> Bookings { get; set; }
-            = new();
+        public List<BookingManagementViewModel> Bookings { get; set; } = new();
 
-        public List<BookingActivityFilterViewModel> Activities { get; set; }
-            = new();
+        public List<BookingActivityFilterViewModel> Activities { get; set; } = new();
 
+        // Valori dei filtri scelti
         public int? ActivityId { get; set; }
 
         public BookingStatus? Status { get; set; }
@@ -22,6 +22,7 @@ namespace BeArtGallery.ViewModels
     }
 
 
+    // Attività da mostrare nel menu del filtro
     public class BookingActivityFilterViewModel
     {
         public int Id { get; set; }

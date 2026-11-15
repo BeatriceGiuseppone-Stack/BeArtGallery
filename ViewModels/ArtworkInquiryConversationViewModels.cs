@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BeArtGallery.ViewModels
 {
+    // Un messaggio della conversazione
     public class ArtworkInquiryMessageViewModel
     {
         public int Id { get; set; }
@@ -19,21 +20,18 @@ namespace BeArtGallery.ViewModels
     }
 
 
+    // Form per rispondere in una conversazione
     public class ArtworkInquiryReplyViewModel
     {
         [Required]
         public int InquiryId { get; set; }
 
-
         [Required(ErrorMessage = "Scrivi un messaggio.")]
-        [StringLength(
-            2000,
-            MinimumLength = 2,
-            ErrorMessage = "Il messaggio deve contenere almeno 2 caratteri.")]
+        [StringLength( 2000, MinimumLength = 2, ErrorMessage = "Il messaggio deve contenere almeno 2 caratteri.")]
         public string Message { get; set; } = string.Empty;
     }
 
-
+    // Riga dell'elenco "Le mie richieste"
     public class MyArtworkInquiryListItemViewModel
     {
         public int Id { get; set; }
@@ -51,15 +49,17 @@ namespace BeArtGallery.ViewModels
 
         public ArtworkInquiryStatus Status { get; set; }
 
+        // Risposte dello staff non ancora lette
         public int UnreadReplies { get; set; }
     }
 
 
+    // Conversazione vista dal visitatore
     public class MyArtworkInquiryDetailsViewModel
     {
         public int Id { get; set; }
 
-        // Null se l'opera è stata eliminata dal catalogo
+        // Opera della richiesta (null se è stata eliminata)
         public int? ArtworkId { get; set; }
 
         public bool ArtworkDeleted => ArtworkId == null;
@@ -74,13 +74,11 @@ namespace BeArtGallery.ViewModels
 
         public ArtworkInquiryStatus Status { get; set; }
 
-        public List<ArtworkInquiryMessageViewModel> Messages { get; set; }
-            = new();
+        public List<ArtworkInquiryMessageViewModel> Messages { get; set; } = new();
 
-        public ArtworkInquiryReplyViewModel Reply { get; set; }
-            = new();
+        public ArtworkInquiryReplyViewModel Reply { get; set; } = new();
 
-        public bool CanReply =>
-            Status != ArtworkInquiryStatus.Closed;
+        // Si può rispondere solo se la richiesta non è chiusa
+        public bool CanReply => Status != ArtworkInquiryStatus.Closed;
     }
 }

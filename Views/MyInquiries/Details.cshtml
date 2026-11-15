@@ -7,10 +7,10 @@
 
 <div class="container py-5">
 
+    @* Intestazione con il titolo dell'opera *@
     <div class="gx-band mb-5">
 
-        <a asp-action="Index"
-           class="gx-back-link gx-back-link-light">
+        <a asp-action="Index" class="gx-back-link gx-back-link-light">
 
             ← Torna alle mie richieste
 
@@ -24,6 +24,7 @@
             @Model.ArtworkTitle
         </h1>
 
+        @* Etichetta se l'opera è stata eliminata *@
         @if (Model.ArtworkDeleted)
         {
             <p class="mt-3 mb-0">
@@ -34,6 +35,7 @@
     </div>
 
 
+    @* Messaggio di errore (es. richiesta chiusa) *@
     @if (TempData["ErrorMessage"] != null)
     {
         <div class="gallery-management-note mb-4">
@@ -45,10 +47,9 @@
         </div>
     }
 
-
     <div class="inquiry-conversation mt-5">
 
-        @* Messaggio iniziale *@
+        @* Primo messaggio del visitatore *@
 
         <div class="inquiry-conversation-row inquiry-conversation-user">
 
@@ -70,26 +71,20 @@
 
         </div>
 
-
+        @* Risposte e messaggi successivi *@
         @foreach (var message in Model.Messages)
         {
-            var fromOperator =
-                message.SenderType ==
-                ArtworkInquiryMessageSenderType.Operator;
+            var fromOperator = message.SenderType == ArtworkInquiryMessageSenderType.Operator;
 
 
             <div class="inquiry-conversation-row
-                        @(fromOperator
-                            ? "inquiry-conversation-operator"
-                            : "inquiry-conversation-user")">
+                        @(fromOperator ? "inquiry-conversation-operator" : "inquiry-conversation-user")">
 
                 <div class="inquiry-conversation-bubble">
 
                     <div class="inquiry-conversation-author">
 
-                        @(fromOperator
-                            ? "BeArtGallery"
-                            : "Tu")
+                        @(fromOperator ? "BeArtGallery" : "Tu")
 
                     </div>
 
@@ -108,36 +103,23 @@
 
     </div>
 
-
+    @* Form per rispondere, solo se la richiesta non è chiusa *@
     @if (Model.CanReply)
     {
-        <form asp-action="Reply"
-              method="post"
-              class="inquiry-reply-form mt-5">
+        <form asp-action="Reply" method="post" class="inquiry-reply-form mt-5">
 
-            <input type="hidden"
-                   name="InquiryId"
-                   value="@Model.Id" />
+            <input type="hidden" name="InquiryId" value="@Model.Id" />
 
-
-            <label for="replyMessage"
-                   class="form-label gallery-form-label">
+            <label for="replyMessage" class="form-label gallery-form-label">
 
                 Scrivi un messaggio
 
             </label>
 
-            <textarea id="replyMessage"
-                      name="Message"
-                      class="form-control gallery-form-control"
-                      rows="4"
-                      required
-                      maxlength="2000"
-                      placeholder="Scrivi qui..."></textarea>
+            <textarea id="replyMessage" name="Message" class="form-control gallery-form-control" rows="4" required
+                      maxlength="2000" placeholder="Scrivi qui..."></textarea>
 
-
-            <button type="submit"
-                    class="btn gallery-btn-primary mt-3">
+            <button type="submit" class="btn gallery-btn-primary mt-3">
 
                 Invia messaggio
 
@@ -147,6 +129,7 @@
     }
     else
     {
+        @* Richiesta chiusa: non si può più scrivere *@
         <div class="gallery-management-note mt-5">
 
             <strong>

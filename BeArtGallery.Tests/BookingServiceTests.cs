@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 namespace BeArtGallery.Tests
 {
     /// <summary>
-    /// Test delle regole di business delle prenotazioni:
-    /// posti disponibili, doppie prenotazioni, annullamento e check-in.
+    /// Test delle regole delle prenotazioni:
+    /// posti disponibili, doppie prenotazioni, annullamento e check-in
     /// </summary>
     public sealed class BookingServiceTests : IDisposable
     {
-        // "Adesso" per tutti i test: 1 marzo 2026, ore 10:00
+        // Data e ora "attuali" per tutti i test: 1 marzo 2026, ore 10:00
         private static readonly DateTime Now = new(2026, 3, 1, 10, 0, 0);
 
         private readonly TestDatabase _db = new();
@@ -25,16 +25,16 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Alla fine di ogni test si cancella il database
         public void Dispose()
         {
             _db.Dispose();
         }
 
 
-        // =================================================
-        // CREAZIONE
-        // =================================================
+        // Creazione
 
+        // Prenotazione con posti liberi: confermata e con codice QR
         [Fact]
         public async Task Create_WithAvailablePlaces_CreatesConfirmedBookingWithQr()
         {
@@ -57,6 +57,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Più persone dei posti liberi: rifiutata
         [Fact]
         public async Task Create_MoreParticipantsThanAvailable_IsRejected()
         {
@@ -77,6 +78,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Esattamente i posti rimasti: accettata
         [Fact]
         public async Task Create_ExactlyRemainingPlaces_IsAccepted()
         {
@@ -95,6 +97,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Le prenotazioni annullate non occupano posti
         [Fact]
         public async Task Create_CancelledBookingsDoNotOccupyPlaces()
         {
@@ -113,6 +116,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Lo stesso utente non può prenotare due volte
         [Fact]
         public async Task Create_SameUserTwice_IsRejected()
         {
@@ -131,6 +135,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Attività già iniziata: rifiutata
         [Fact]
         public async Task Create_ActivityAlreadyStarted_IsRejected()
         {
@@ -147,6 +152,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Attività annullata: rifiutata
         [Fact]
         public async Task Create_CancelledActivity_IsRejected()
         {
@@ -165,6 +171,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Attività che non esiste: errore "non trovata"
         [Fact]
         public async Task Create_UnknownActivity_ReturnsNotFound()
         {
@@ -180,6 +187,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Numero di partecipanti fuori dai limiti (0 e 11): rifiutato
         [Theory]
         [InlineData(0)]
         [InlineData(11)]
@@ -201,10 +209,9 @@ namespace BeArtGallery.Tests
         }
 
 
-        // =================================================
-        // ANNULLAMENTO
-        // =================================================
+        // Annullamento
 
+        // Il titolare annulla prima dell'inizio: prenotazione annullata
         [Fact]
         public async Task Cancel_ByOwnerBeforeStart_MarksBookingAsCancelled()
         {
@@ -228,6 +235,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Non si può annullare la prenotazione di un altro utente
         [Fact]
         public async Task Cancel_BookingOfAnotherUser_ReturnsNotFound()
         {
@@ -246,6 +254,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Dopo l'inizio dell'attività non si può annullare
         [Fact]
         public async Task Cancel_AfterActivityStarted_IsRejected()
         {
@@ -263,10 +272,9 @@ namespace BeArtGallery.Tests
         }
 
 
-        // =================================================
-        // CHECK-IN
-        // =================================================
+        // Check-in
 
+        // QR valido: registra l'ingresso e l'operatore
         [Fact]
         public async Task CheckIn_ValidQr_RegistersEntryAndStaffMember()
         {
@@ -290,6 +298,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Lo stesso QR non si può usare due volte
         [Fact]
         public async Task CheckIn_SameQrTwice_IsRejected()
         {
@@ -312,6 +321,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // Prenotazione annullata: check-in rifiutato
         [Fact]
         public async Task CheckIn_CancelledBooking_IsRejected()
         {
@@ -334,6 +344,7 @@ namespace BeArtGallery.Tests
         }
 
 
+        // QR sconosciuto: errore "non trovata"
         [Fact]
         public async Task CheckIn_UnknownQr_ReturnsNotFound()
         {

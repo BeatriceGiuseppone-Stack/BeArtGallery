@@ -8,8 +8,7 @@
 <div class="container py-4">
 
     <div class="mb-4">
-        <a asp-action="Index"
-           class="gx-back-link">
+        <a asp-action="Index" class="gx-back-link">
             ← Torna agli eventi
         </a>
     </div>
@@ -32,127 +31,100 @@
                         Aggiorna le informazioni dell'attività selezionata.
                     </p>
 
+                    @* Form di modifica dell'attività *@
                     <form asp-action="Edit" method="post">
 
-                        <div asp-validation-summary="ModelOnly"
-                             class="text-danger mb-3">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3">
                         </div>
 
+                        @* Id dell'attività (nascosto) *@
                         <input type="hidden" asp-for="Id" />
 
                         <div class="mb-3">
-                            <label asp-for="Title"
-                                   class="form-label">
+                            <label asp-for="Title" class="form-label">
                                 Titolo
                             </label>
 
-                            <input asp-for="Title"
-                                   class="form-control" />
+                            @* Titolo e descrizione *@
+                            <input asp-for="Title" class="form-control" />
 
-                            <span asp-validation-for="Title"
-                                  class="text-danger">
-                            </span>
+                            <span asp-validation-for="Title" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Description"
-                                   class="form-label">
+                            <label asp-for="Description" class="form-label">
                                 Descrizione
                             </label>
 
-                            <textarea asp-for="Description"
-                                      class="form-control"
-                                      rows="4">
-                            </textarea>
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
 
-                            <span asp-validation-for="Description"
-                                  class="text-danger">
-                            </span>
+                            <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="ActivityType"
-                                   class="form-label">
+                            <label asp-for="ActivityType" class="form-label">
                                 Tipo di attività
                             </label>
 
-                            <select asp-for="ActivityType"
-                                    asp-items="Html.GetEnumSelectList<ActivityType>()"
-                                    class="form-select">
+                            @* Tipo: visita o evento *@
+                            <select asp-for="ActivityType" asp-items="Html.GetEnumSelectList<ActivityType>()" class="form-select">
                             </select>
 
-                            <span asp-validation-for="ActivityType"
-                                  class="text-danger">
+                            <span asp-validation-for="ActivityType" class="text-danger">
                             </span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="StartDateTime"
-                                   class="form-label">
+                            <label asp-for="StartDateTime" class="form-label">
                                 Data e ora
                             </label>
 
-                            <input asp-for="StartDateTime"
-                                   type="datetime-local"
-                                   class="form-control" />
+                            @* Data e ora di inizio (deve essere futura) *@
+                            <input asp-for="StartDateTime" type="datetime-local" class="form-control" />
 
-                            <span asp-validation-for="StartDateTime"
-                                  class="text-danger">
+                            <span asp-validation-for="StartDateTime" class="text-danger">
                             </span>
                         </div>
 
                         <div class="row">
 
                             <div class="col-md-6 mb-3">
-                                <label asp-for="DurationMinutes"
-                                       class="form-label">
+                                <label asp-for="DurationMinutes" class="form-label">
                                     Durata in minuti
                                 </label>
 
-                                <input asp-for="DurationMinutes"
-                                       type="number"
-                                       min="15"
-                                       max="480"
-                                       class="form-control" />
+                                @* Durata in minuti e numero massimo di partecipanti *@
+                                <input asp-for="DurationMinutes" type="number" min="15" max="480" class="form-control" />
 
-                                <span asp-validation-for="DurationMinutes"
-                                      class="text-danger">
+                                <span asp-validation-for="DurationMinutes" class="text-danger">
                                 </span>
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label asp-for="MaxParticipants"
-                                       class="form-label">
+                                <label asp-for="MaxParticipants" class="form-label">
                                     Numero massimo partecipanti
                                 </label>
 
-                                <input asp-for="MaxParticipants"
-                                       type="number"
-                                       min="1"
-                                       max="500"
-                                       class="form-control" />
+                                <input asp-for="MaxParticipants" type="number" min="1" max="500" class="form-control" />
 
-                                <span asp-validation-for="MaxParticipants"
-                                      class="text-danger">
+                                <span asp-validation-for="MaxParticipants" class="text-danger">
                                 </span>
                             </div>
 
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Location"
-                                   class="form-label">
+                            <label asp-for="Location" class="form-label">
                                 Luogo
                             </label>
 
-                            <input asp-for="Location"
-                                   class="form-control" />
+                            @* Luogo *@
+                            <input asp-for="Location" class="form-control" />
 
-                            <span asp-validation-for="Location"
-                                  class="text-danger">
-                            </span>
+                            <span asp-validation-for="Location" class="text-danger"></span>
                         </div>
 
+                       @* Campo non più usato: le attività restano sempre attive *@
                        @*  <div class="form-check mb-4">
 
                             <input asp-for="IsActive"
@@ -167,13 +139,12 @@
 
                         <div class="d-flex gap-2">
 
-                            <button type="submit"
-                                    class="btn gallery-btn-primary">
+                            @* Pulsanti Salva e Annulla *@
+                            <button type="submit" class="btn gallery-btn-primary">
                                 Salva modifiche
                             </button>
 
-                            <a asp-action="Index"
-                               class="btn gallery-btn-outline">
+                            <a asp-action="Index" class="btn gallery-btn-outline">
                                 Annulla
                             </a>
 
@@ -189,6 +160,7 @@
 
 </div>
 
+@* Script per controllare il form prima dell'invio *@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

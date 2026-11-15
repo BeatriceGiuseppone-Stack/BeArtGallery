@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeArtGallery.Controllers
 {
+    // Prenotazioni: pagina del visitatore e gestione per lo staff.
+    // Serve sempre l'accesso.
     [Authorize]
     public class BookingsController : Controller
     {
@@ -24,59 +26,36 @@ namespace BeArtGallery.Controllers
         }
 
         // GET: /Bookings
-        // GET: /Bookings
+        // Le prenotazioni dell'utente collegato
         public async Task<IActionResult> Index()
         {
-            var userId =
-                _userManager.GetUserId(User);
-
+            var userId = _userManager.GetUserId(User);
 
             if (string.IsNullOrWhiteSpace(userId))
             {
                 return Challenge();
             }
 
+            // Le prenotazioni create prima del QR code non hanno il codice:
+            // lo genera adesso
 
-            // =================================================
-            // GENERA IL TOKEN PER LE VECCHIE PRENOTAZIONI
-            // =================================================
-
-            var bookingsWithoutQr =
-                await _context.Bookings
-                    .Where(b =>
-                        b.UserId == userId &&
-                        b.QrToken == null)
-                    .ToListAsync();
-
+            var bookingsWithoutQr = await _context.Bookings.Where(b => b.UserId == userId && b.QrToken == null).ToListAsync();
 
             if (bookingsWithoutQr.Any())
             {
                 foreach (var booking in bookingsWithoutQr)
                 {
-                    booking.QrToken =
-                        Guid.NewGuid()
-                            .ToString("N");
+                    booking.QrToken = Guid.NewGuid().ToString("N");
                 }
-
 
                 await _context.SaveChangesAsync();
             }
 
+            // Carica le prenotazioni dell'utente con i dati dell'attività
 
-            // =================================================
-            // CARICAMENTO PRENOTAZIONI
-            // =================================================
-
-            var bookings =
-                await _context.Bookings
-                    .AsNoTracking()
-                    .Include(b => b.GalleryActivity)
-                    .Where(b =>
-                        b.UserId == userId)
-                    .OrderByDescending(b =>
-                        b.GalleryActivity!.StartDateTime)
-                    .Select(b =>
-                        new MyBookingViewModel
+            var bookings = await _context.Bookings.AsNoTracking().Include(b => b.GalleryActivity)
+                    .Where(b => b.UserId == userId).OrderByDescending(b => b.GalleryActivity!.StartDateTime)
+                    .Select(b => new MyBookingViewModel
                         {
                             BookingId = b.Id,
                             ActivityTitle = b.GalleryActivity != null ? b.GalleryActivity.Title : string.Empty,
@@ -93,43 +72,38 @@ namespace BeArtGallery.Controllers
                             CheckedInAt = b.CheckedInAt,
                             HasFeedback = b.Feedback != null,
                             FeedbackRating = b.Feedback != null ? (int?)b.Feedback.Rating : null
-                        })
-                    .ToListAsync();
-
+                        }).ToListAsync();
 
             return View(bookings);
         }
 
         // GET: /Bookings/Manage
+        // Elenco di tutte le prenotazioni con i filtri (solo Staff e Admin)
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
-        public async Task<IActionResult> Manage(
-            int? activityId,
-            BookingStatus? status,
-            DateTime? fromDate,
-            DateTime? toDate,
-            string? userEmail)
+        public async Task<IActionResult> Manage(int? activityId, BookingStatus? status, DateTime? fromDate,
+            DateTime? toDate, string? userEmail)
         {
             var query = _context.Bookings.AsNoTracking().Include(b => b.GalleryActivity).Include(b => b.User).AsQueryable();
 
-            // FILTRO ATTIVITÀ
+            // Filtro per attività
             if (activityId.HasValue)
             {
                 query = query.Where( b => b.GalleryActivityId == activityId.Value);
             }
 
-            // FILTRO STATO
+            // Filtro per stato della prenotazione
             if (status.HasValue)
             {
                 query = query.Where(b => b.Status == status.Value);
             }
 
-            // FILTRO DATA ATTIVITÀ - DA
+            // Filtro per data dell'attività: dal giorno
             if (fromDate.HasValue)
             {
                 query = query.Where(b => b.GalleryActivity != null && b.GalleryActivity.StartDateTime >= fromDate.Value);
             }
 
-            // FILTRO DATA ATTIVITÀ - A
+            // Filtro per data dell'attività: fino al giorno (compreso)
             if (toDate.HasValue)
             {
                 var endDate = toDate.Value.Date.AddDays(1);
@@ -137,12 +111,13 @@ namespace BeArtGallery.Controllers
                 query = query.Where(b => b.GalleryActivity != null && b.GalleryActivity.StartDateTime < endDate);
             }
 
-            // FILTRO EMAIL UTENTE
+            // Filtro per email del visitatore
             if (!string.IsNullOrWhiteSpace(userEmail))
             {
                 query = query.Where(b => b.User != null && b.User.Email != null && b.User.Email.Contains(userEmail));
             }
 
+            // Esegue la ricerca con i filtri scelti
             var bookings = await query.OrderByDescending(b => b.GalleryActivity!.StartDateTime)
                 .Select(b => new BookingManagementViewModel
                 {
@@ -158,6 +133,7 @@ namespace BeArtGallery.Controllers
                 })
                 .ToListAsync();
 
+            // Elenco delle attività per il menu del filtro
             var activities = await _context.GalleryActivities.AsNoTracking().OrderByDescending(a => a.StartDateTime)
                 .Select(a => new BookingActivityFilterViewModel
                 {
@@ -181,6 +157,7 @@ namespace BeArtGallery.Controllers
         }
 
         // GET: /Bookings/CancelByStaff/5
+        // Pagina in cui lo staff annulla una prenotazione indicando il motivo
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
         [HttpGet]
         public async Task<IActionResult> CancelByStaff(int id)
@@ -193,6 +170,7 @@ namespace BeArtGallery.Controllers
                 return NotFound();
             }
 
+            // Una prenotazione già annullata non si può annullare di nuovo
             if (booking.Status != BookingStatus.Confirmed)
             {
                 TempData["ErrorMessage"] = "La prenotazione risulta già annullata.";
@@ -200,6 +178,7 @@ namespace BeArtGallery.Controllers
                 return RedirectToAction(nameof(Manage));
             }
 
+            // Non si può annullare se l'attività è già iniziata
             if (booking.GalleryActivity == null || booking.GalleryActivity.StartDateTime <= DateTime.Now)
             {
                 TempData["ErrorMessage"] = "Non è possibile annullare una prenotazione relativa a un'attività già iniziata.";
@@ -219,6 +198,7 @@ namespace BeArtGallery.Controllers
         }
 
         // POST: /Bookings/CancelByStaff
+        // Salva l'annullamento fatto dallo staff
         [Authorize(Roles = RoleNames.StaffOrAdmin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -233,6 +213,7 @@ namespace BeArtGallery.Controllers
                 return NotFound();
             }
 
+            // Dati da mostrare di nuovo se il form ha errori
             model.UserEmail = booking.User?.Email ?? string.Empty;
 
             model.ActivityTitle = booking.GalleryActivity?.Title ?? string.Empty;
@@ -244,6 +225,7 @@ namespace BeArtGallery.Controllers
                 return View(model);
             }
 
+            // Ripete gli stessi controlli della pagina GET
             if (booking.Status != BookingStatus.Confirmed)
             {
                 TempData["ErrorMessage"] = "La prenotazione risulta già annullata.";
@@ -265,6 +247,7 @@ namespace BeArtGallery.Controllers
                 return Challenge();
             }
 
+            // Segna la prenotazione come annullata e salva chi l'ha annullata e perché
             booking.Status = BookingStatus.Cancelled;
             booking.CancelledAt = DateTime.UtcNow;
             booking.CancelledByUserId = currentUserId;

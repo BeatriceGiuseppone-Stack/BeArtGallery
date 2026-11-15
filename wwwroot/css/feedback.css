@@ -1,6 +1,4 @@
-/* =================================================
-   FEEDBACK DEI VISITATORI
-   ================================================= */
+/* Stili delle stelle e dei feedback dei visitatori */
 
 .feedback-stars {
     color: #876219;
@@ -8,8 +6,7 @@
     font-size: 1.05rem;
 }
 
-
-/* ---------- Inserimento valutazione a stelle ---------- */
+/* Stelle per dare il voto */
 
 .feedback-rating-input {
     display: inline-flex;
@@ -31,7 +28,7 @@
     transition: color .15s ease, transform .15s ease;
 }
 
-/* la stella selezionata e quelle "prima" di lei si colorano */
+/* Si colorano la stella scelta e quelle prima */
 .feedback-rating-input input:checked ~ label,
 .feedback-rating-input label:hover,
 .feedback-rating-input label:hover ~ label {
@@ -48,8 +45,7 @@
     border-radius: 4px;
 }
 
-
-/* ---------- Riquadro nella pagina "Le mie prenotazioni" ---------- */
+/* Riquadro nella pagina "Le mie prenotazioni" */
 
 .booking-feedback {
     margin-top: 1rem;
@@ -60,8 +56,7 @@
     color: #555;
 }
 
-
-/* ---------- Riepilogo staff ---------- */
+/* Pagina dei feedback per lo staff */
 
 .feedback-average {
     font-size: 3rem;

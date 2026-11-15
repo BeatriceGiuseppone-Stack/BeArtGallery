@@ -4,37 +4,33 @@ using System.ComponentModel.DataAnnotations;
 namespace BeArtGallery.Models
 {
     /// <summary>
-    /// Feedback lasciato da un visitatore dopo aver partecipato
-    /// a una visita o a un evento (check-in effettuato).
-    /// Ogni prenotazione può ricevere al massimo un feedback.
+    /// Feedback di un visitatore dopo aver partecipato a una visita o a un evento.
+    /// Ogni prenotazione può avere al massimo un feedback.
     /// </summary>
     public class VisitFeedback
     {
         public int Id { get; set; }
 
-
+        // Prenotazione a cui si riferisce
         [Required]
         public int BookingId { get; set; }
 
         public Booking? Booking { get; set; }
 
-
+        // Utente che ha lasciato il feedback
         [Required]
         public string UserId { get; set; } = string.Empty;
 
         public ApplicationUser? User { get; set; }
 
-
-        // Valutazione da 1 a 5 stelle.
+        // Voto da 1 a 5 stelle
         [Range(1, 5)]
         public int Rating { get; set; }
 
-
+        // Commento facoltativo
         [MaxLength(1000)]
         public string? Comment { get; set; }
 
-
-        public DateTime CreatedAt { get; set; }
-            = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -6,14 +6,11 @@
 
 <div class="container py-5">
 
-    @* Navigazione *@
+    @* Link per tornare alla scheda dell'artista *@
 
     <div class="mb-5">
 
-        <a asp-controller="Artists"
-           asp-action="Details"
-           asp-route-id="@Model.Id"
-           class="gallery-back-link">
+        <a asp-controller="Artists" asp-action="Details" asp-route-id="@Model.Id" class="gallery-back-link">
 
             ← Torna all'artista
 
@@ -46,36 +43,28 @@
             </p>
 
 
-            <form asp-action="Edit"
-                  method="post"
-                  class="gallery-form">
+            @* Form di modifica dell'artista *@
+            <form asp-action="Edit" method="post" class="gallery-form">
 
-                <input type="hidden"
-                       asp-for="Id" />
+                @* Id dell'artista (nascosto) *@
+                <input type="hidden" asp-for="Id" />
 
-
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4">
                 </div>
 
-
                 <div class="row g-4">
-
 
                     @* Nome *@
 
                     <div class="col-md-6">
 
-                        <label asp-for="FirstName"
-                               class="form-label gallery-form-label">
+                        <label asp-for="FirstName" class="form-label gallery-form-label">
 
                             Nome
 
                         </label>
 
-                        <input asp-for="FirstName"
-                               class="form-control gallery-form-control"
-                               placeholder="Es. Vincent" />
+                        <input asp-for="FirstName" class="form-control gallery-form-control" placeholder="Es. Vincent" />
 
                         <span asp-validation-for="FirstName"
                               class="text-danger small">
@@ -83,46 +72,36 @@
 
                     </div>
 
-
                     @* Cognome *@
 
                     <div class="col-md-6">
 
-                        <label asp-for="LastName"
-                               class="form-label gallery-form-label">
+                        <label asp-for="LastName" class="form-label gallery-form-label">
 
                             Cognome
 
                         </label>
 
-                        <input asp-for="LastName"
-                               class="form-control gallery-form-control"
-                               placeholder="Es. Van Gogh" />
+                        <input asp-for="LastName" class="form-control gallery-form-control" placeholder="Es. Van Gogh" />
 
-                        <span asp-validation-for="LastName"
-                              class="text-danger small">
+                        <span asp-validation-for="LastName" class="text-danger small">
                         </span>
 
                     </div>
-
 
                     @* Data di nascita *@
 
                     <div class="col-md-6">
 
-                        <label asp-for="BirthDate"
-                               class="form-label gallery-form-label">
+                        <label asp-for="BirthDate" class="form-label gallery-form-label">
 
                             Data di nascita
 
                         </label>
 
-                        <input asp-for="BirthDate"
-                               type="date"
-                               class="form-control gallery-form-control" />
+                        <input asp-for="BirthDate" type="date" class="form-control gallery-form-control" />
 
-                        <span asp-validation-for="BirthDate"
-                              class="text-danger small">
+                        <span asp-validation-for="BirthDate" class="text-danger small">
                         </span>
 
                     </div>
@@ -132,19 +111,15 @@
 
                     <div class="col-md-6">
 
-                        <label asp-for="DeathDate"
-                               class="form-label gallery-form-label">
+                        <label asp-for="DeathDate" class="form-label gallery-form-label">
 
                             Data di morte
 
                         </label>
 
-                        <input asp-for="DeathDate"
-                               type="date"
-                               class="form-control gallery-form-control" />
+                        <input asp-for="DeathDate" type="date" class="form-control gallery-form-control" />
 
-                        <span asp-validation-for="DeathDate"
-                              class="text-danger small">
+                        <span asp-validation-for="DeathDate" class="text-danger small">
                         </span>
 
                         <div class="form-text">
@@ -160,16 +135,13 @@
 
                     <div class="col-12">
 
-                        <label asp-for="Nationality"
-                               class="form-label gallery-form-label">
+                        <label asp-for="Nationality" class="form-label gallery-form-label">
 
                             Nazionalità
 
                         </label>
 
-                        <input asp-for="Nationality"
-                               class="form-control gallery-form-control"
-                               placeholder="Es. Olandese" />
+                        <input asp-for="Nationality" class="form-control gallery-form-control" placeholder="Es. Olandese" />
 
                         <span asp-validation-for="Nationality"
                               class="text-danger small">
@@ -177,46 +149,37 @@
 
                     </div>
 
-
                     @* Biografia *@
 
                     <div class="col-12">
 
-                        <label asp-for="Biography"
-                               class="form-label gallery-form-label">
+                        <label asp-for="Biography" class="form-label gallery-form-label">
 
                             Biografia
 
                         </label>
 
-                        <textarea asp-for="Biography"
-                                  class="form-control gallery-form-control"
-                                  rows="8"
+                        <textarea asp-for="Biography" class="form-control gallery-form-control" rows="8"
                                   placeholder="Inserisci una breve biografia dell'artista..."></textarea>
 
-                        <span asp-validation-for="Biography"
-                              class="text-danger small">
+                        <span asp-validation-for="Biography" class="text-danger small">
                         </span>
 
                     </div>
 
                 </div>
 
-
+                @* Pulsanti Salva e Annulla *@
                 <div class="gallery-form-actions">
 
-                    <button type="submit"
-                            class="btn gallery-btn-primary">
+                    <button type="submit" class="btn gallery-btn-primary">
 
                         Salva modifiche
 
                     </button>
 
 
-                    <a asp-controller="Artists"
-                       asp-action="Details"
-                       asp-route-id="@Model.Id"
-                       class="btn gallery-btn-outline">
+                    <a asp-controller="Artists" asp-action="Details" asp-route-id="@Model.Id" class="btn gallery-btn-outline">
 
                         Annulla
 
@@ -229,7 +192,7 @@
         </div>
 
 
-        @* Pannello informativo *@
+        @* Pannello laterale con le indicazioni *@
 
         <div class="col-lg-4 d-none d-lg-block">
 
@@ -265,7 +228,7 @@
 
 </div>
 
-
+@* Script per controllare il form prima dell'invio *@
 @section Scripts {
 
     <partial name="_ValidationScriptsPartial" />

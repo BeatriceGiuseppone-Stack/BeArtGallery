@@ -10,6 +10,7 @@ using BeArtGallery.Models;
 
 namespace BeArtGallery.Controllers
 {
+    // Gestione delle richieste di informazioni da parte dello staff
     [Authorize(Roles = RoleNames.StaffOrAdmin)]
     public class ArtworkInquiriesController : Controller
     {
@@ -25,347 +26,191 @@ namespace BeArtGallery.Controllers
             _userManager = userManager;
         }
 
-        // -------------------------------------------------
-        // ELENCO RICHIESTE
-        // -------------------------------------------------
+        // Elenco delle richieste
 
         // GET: ArtworkInquiries
-        public async Task<IActionResult> Index(
-            ArtworkInquiryStatus? status = null)
+        // Elenco delle richieste con il filtro per stato
+        public async Task<IActionResult> Index( ArtworkInquiryStatus? status = null)
         {
-            var baseQuery =
-                _context.ArtworkInquiries
-                    .AsNoTracking();
+            var baseQuery =  _context.ArtworkInquiries.AsNoTracking();
 
+            // Conta le richieste per ogni stato con una sola query
+            var statusCounts = await baseQuery .GroupBy(i => i.Status).Select(g => new
+                    { Status = g.Key, Count = g.Count() }).ToDictionaryAsync( x => x.Status, x => x.Count);
 
-            // Recuperiamo i contatori con una sola query raggruppata.
-            var statusCounts =
-                await baseQuery
-                    .GroupBy(i => i.Status)
-                    .Select(g => new
-                    {
-                        Status = g.Key,
-                        Count = g.Count()
-                    })
-                    .ToDictionaryAsync(
-                        x => x.Status,
-                        x => x.Count);
+            statusCounts.TryGetValue( ArtworkInquiryStatus.New, out var newCount);
 
+            statusCounts.TryGetValue( ArtworkInquiryStatus.InProgress, out var inProgressCount);
 
-            statusCounts.TryGetValue(
-                ArtworkInquiryStatus.New,
-                out var newCount);
+            statusCounts.TryGetValue( ArtworkInquiryStatus.Closed, out var closedCount);
 
-            statusCounts.TryGetValue(
-                ArtworkInquiryStatus.InProgress,
-                out var inProgressCount);
-
-            statusCounts.TryGetValue(
-                ArtworkInquiryStatus.Closed,
-                out var closedCount);
-
-
+            // Applica il filtro per stato, se scelto
             var query = baseQuery;
-
 
             if (status.HasValue)
             {
-                query =
-                    query.Where(i =>
-                        i.Status == status.Value);
+                query = query.Where(i => i.Status == status.Value);
             }
 
-
-            var inquiries =
-                await query
-                    .OrderBy(i =>
-                        i.Status == ArtworkInquiryStatus.New
-                            ? 0
-                            : i.Status == ArtworkInquiryStatus.InProgress
-                                ? 1
-                                : 2)
-                    .ThenByDescending(i => i.CreatedAt)
-                    .Select(i =>
+            // Ordina: prima le nuove, poi quelle in lavorazione, poi le chiuse.
+            // Se l'opera è stata eliminata si usano titolo e artista salvati nella richiesta.
+            var inquiries = await query.OrderBy(i => i.Status == ArtworkInquiryStatus.New
+                            ? 0 : i.Status == ArtworkInquiryStatus.InProgress ? 1 : 2)
+                    .ThenByDescending(i => i.CreatedAt).Select(i =>
                         new ArtworkInquiryListItemViewModel
                         {
                             Id = i.Id,
-
                             ArtworkId = i.ArtworkId,
-
-                            ArtworkTitle =
-                                i.Artwork != null
-                                    ? i.Artwork.Title
-                                    : i.ArtworkTitle,
-
-                            ArtistName =
-                                i.Artwork != null &&
-                                i.Artwork.Artist != null
-                                    ? i.Artwork.Artist.FirstName
-                                      + " "
-                                      + i.Artwork.Artist.LastName
+                            ArtworkTitle = i.Artwork != null ? i.Artwork.Title : i.ArtworkTitle,
+                            ArtistName = i.Artwork != null && i.Artwork.Artist != null
+                                    ? i.Artwork.Artist.FirstName + " " + i.Artwork.Artist.LastName
                                     : i.ArtistName ?? string.Empty,
-
                             Name = i.Name,
-
                             Email = i.Email,
-
                             CreatedAt = i.CreatedAt,
-
                             Status = i.Status,
+                            IsRegisteredUser = i.UserId != null
+                        }).ToListAsync();
 
-                            IsRegisteredUser =
-                                i.UserId != null
-                        })
-                    .ToListAsync();
-
-
-            var viewModel =
-                new ArtworkInquiryIndexViewModel
+            // Dati per la vista
+            var viewModel = new ArtworkInquiryIndexViewModel
                 {
                     StatusFilter = status,
-
-                    TotalCount =
-                        newCount +
-                        inProgressCount +
-                        closedCount,
-
+                    TotalCount = newCount + inProgressCount + closedCount,
                     NewCount = newCount,
-
-                    InProgressCount =
-                        inProgressCount,
-
+                    InProgressCount = inProgressCount,
                     ClosedCount = closedCount,
-
                     Inquiries = inquiries
                 };
-
 
             return View(viewModel);
         }
 
 
-        // -------------------------------------------------
-        // DETTAGLIO RICHIESTA
-        // -------------------------------------------------
+        // Dettaglio di una richiesta
 
         // GET: ArtworkInquiries/Details/5
+        // Conversazione completa con il visitatore
         public async Task<IActionResult> Details(int id)
         {
-            var inquiry =
-                await _context.ArtworkInquiries
-                    .AsNoTracking()
-                    .Where(i => i.Id == id)
-                    .Select(i =>
-                        new ArtworkInquiryDetailsViewModel
+            var inquiry =  await _context.ArtworkInquiries.AsNoTracking().Where(i => i.Id == id)
+                    .Select(i => new ArtworkInquiryDetailsViewModel
                         {
                             Id = i.Id,
-
                             ArtworkId = i.ArtworkId,
-
-                            ArtworkTitle =
-                                i.Artwork != null
-                                    ? i.Artwork.Title
-                                    : i.ArtworkTitle,
-
-                            ArtworkImageUrl =
-                                i.Artwork != null
-                                    ? i.Artwork.ImageUrl
-                                    : null,
-
-                            ArtistName =
-                                i.Artwork != null &&
-                                i.Artwork.Artist != null
-                                    ? i.Artwork.Artist.FirstName
-                                      + " "
-                                      + i.Artwork.Artist.LastName
-                                    : i.ArtistName ?? string.Empty,
-
+                            ArtworkTitle = i.Artwork != null ? i.Artwork.Title : i.ArtworkTitle,
+                            ArtworkImageUrl = i.Artwork != null ? i.Artwork.ImageUrl : null,
+                            ArtistName = i.Artwork != null && i.Artwork.Artist != null ? i.Artwork.Artist.FirstName
+                                      + " " + i.Artwork.Artist.LastName : i.ArtistName ?? string.Empty,
                             Name = i.Name,
-
                             Email = i.Email,
-
                             Message = i.Message,
-
                             CreatedAt = i.CreatedAt,
-
                             Status = i.Status,
-
-                            IsRegisteredUser =
-                                i.UserId != null
-                        })
-                    .FirstOrDefaultAsync();
-
+                            IsRegisteredUser = i.UserId != null
+                        }).FirstOrDefaultAsync();
 
             if (inquiry == null)
             {
                 return NotFound();
             }
 
-            inquiry.Messages =
-    await _context.ArtworkInquiryMessages
-        .AsNoTracking()
-        .Where(m =>
-            m.ArtworkInquiryId == id)
-        .OrderBy(m => m.CreatedAt)
-        .Select(m =>
+            // Messaggi della conversazione in ordine di data
+            inquiry.Messages = await _context.ArtworkInquiryMessages.AsNoTracking().Where(m =>
+            m.ArtworkInquiryId == id).OrderBy(m => m.CreatedAt).Select(m =>
             new ArtworkInquiryMessageViewModel
             {
                 Id = m.Id,
-
                 Message = m.Message,
-
                 CreatedAt = m.CreatedAt,
-
                 ReadAt = m.ReadAt,
-
                 SenderType = m.SenderType,
-
-                SenderEmail =
-                    m.SenderUser != null
-                        ? m.SenderUser.Email
-                        : null
-            })
-        .ToListAsync();
+                SenderEmail =  m.SenderUser != null ? m.SenderUser.Email : null
+            }).ToListAsync();
 
 
-            inquiry.Reply =
-                new ArtworkInquiryReplyViewModel
-                {
-                    InquiryId = id
-                };
+            // Form vuoto per la risposta dello staff
+            inquiry.Reply =  new ArtworkInquiryReplyViewModel{ InquiryId = id  };
 
             return View(inquiry);
         }
 
+        // POST: ArtworkInquiries/Reply
+        // Lo staff risponde al visitatore
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reply(
-            ArtworkInquiryReplyViewModel model)
+        public async Task<IActionResult> Reply(ArtworkInquiryReplyViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                TempData["ErrorMessage"] =
-                    "Inserisci un messaggio valido.";
+                TempData["ErrorMessage"] = "Inserisci un messaggio valido.";
 
-                return RedirectToAction(
-                    nameof(Details),
-                    new
-                    {
-                        id = model.InquiryId
-                    });
+                return RedirectToAction( nameof(Details), new { id = model.InquiryId });
             }
 
-
-            var inquiry =
-                await _context.ArtworkInquiries
-                    .FirstOrDefaultAsync(i =>
-                        i.Id == model.InquiryId);
-
+            var inquiry =  await _context.ArtworkInquiries.FirstOrDefaultAsync(i => i.Id == model.InquiryId);
 
             if (inquiry == null)
             {
                 return NotFound();
             }
 
-
-            var userId =
-                _userManager.GetUserId(User);
-
+            // Operatore che risponde
+            var userId =  _userManager.GetUserId(User);
 
             var message =
                 new ArtworkInquiryMessage
                 {
-                    ArtworkInquiryId =
-                        inquiry.Id,
-
-                    SenderUserId =
-                        userId,
-
-                    SenderType =
-                        ArtworkInquiryMessageSenderType.Operator,
-
-                    Message =
-                        model.Message.Trim(),
-
-                    CreatedAt =
-                        DateTime.UtcNow
+                    ArtworkInquiryId = inquiry.Id,
+                    SenderUserId = userId,
+                    SenderType = ArtworkInquiryMessageSenderType.Operator,
+                    Message = model.Message.Trim(),
+                    CreatedAt = DateTime.UtcNow
                 };
 
+            _context.ArtworkInquiryMessages.Add( message);
 
-            _context.ArtworkInquiryMessages.Add(
-                message);
-
-
-            if (inquiry.Status ==
-                ArtworkInquiryStatus.New)
+            // Alla prima risposta la richiesta passa da "Nuova" a "In lavorazione"
+            if (inquiry.Status == ArtworkInquiryStatus.New)
             {
-                inquiry.Status =
-                    ArtworkInquiryStatus.InProgress;
+                inquiry.Status = ArtworkInquiryStatus.InProgress;
             }
-
 
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Risposta inviata correttamente.";
 
-            TempData["SuccessMessage"] =
-                "Risposta inviata correttamente.";
-
-
-            return RedirectToAction(
-                nameof(Details),
-                new
-                {
-                    id = inquiry.Id
-                });
+            return RedirectToAction( nameof(Details), new{ id = inquiry.Id });
         }
 
-        // -------------------------------------------------
-        // CAMBIO STATO
-        // -------------------------------------------------
+        // Cambio di stato
 
         // POST: ArtworkInquiries/UpdateStatus/5
+        // Cambia lo stato della richiesta (Nuova, In lavorazione, Chiusa)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateStatus(
-            int id,
-            ArtworkInquiryStatus status)
+        public async Task<IActionResult> UpdateStatus(int id, ArtworkInquiryStatus status)
         {
-            if (!Enum.IsDefined(
-                typeof(ArtworkInquiryStatus),
-                status))
+            // Rifiuta valori di stato non previsti
+            if (!Enum.IsDefined(typeof(ArtworkInquiryStatus), status))
             {
                 return BadRequest();
             }
 
-
-            var inquiry =
-                await _context.ArtworkInquiries
-                    .FirstOrDefaultAsync(i =>
-                        i.Id == id);
-
+            var inquiry = await _context.ArtworkInquiries.FirstOrDefaultAsync(i => i.Id == id);
 
             if (inquiry == null)
             {
                 return NotFound();
             }
 
-
             inquiry.Status = status;
-
 
             await _context.SaveChangesAsync();
 
+            TempData["SuccessMessage"] = "Lo stato della richiesta è stato aggiornato correttamente.";
 
-            TempData["SuccessMessage"] =
-                "Lo stato della richiesta è stato aggiornato correttamente.";
-
-
-            return RedirectToAction(
-                nameof(Details),
-                new
-                {
-                    id
-                });
+            return RedirectToAction(nameof(Details), new {id});
         }
     }
 }

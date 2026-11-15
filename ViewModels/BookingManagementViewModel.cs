@@ -2,6 +2,7 @@
 
 namespace BeArtGallery.ViewModels
 {
+    // Riga dell'elenco delle prenotazioni per lo staff
     public class BookingManagementViewModel
     {
         public int BookingId { get; set; }

@@ -9,8 +9,7 @@
 
     <div class="mb-5">
 
-        <a asp-action="Index"
-           class="gallery-back-link">
+        <a asp-action="Index" class="gallery-back-link">
 
             ← Torna alle richieste
 
@@ -19,6 +18,7 @@
     </div>
 
 
+    @* Messaggio di conferma *@
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="gallery-management-note mb-5">
@@ -34,7 +34,6 @@
         </div>
     }
 
-
     <div class="row g-5">
 
         <div class="col-lg-8">
@@ -43,15 +42,11 @@
                 Richiesta #@Model.Id
             </div>
 
-
-            <div class="d-flex
-                        align-items-start
-                        justify-content-between
-                        flex-wrap
-                        gap-3">
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
 
                 <div>
 
+                    @* Titolo dell'opera ed etichetta se è stata eliminata *@
                     <h1 class="inquiry-details-title">
                         @Model.ArtworkTitle
                     </h1>
@@ -61,8 +56,7 @@
                         <span class="gx-unavailable-badge">Opera non più disponibile</span>
                     }
 
-                    @if (!string.IsNullOrWhiteSpace(
-                        Model.ArtistName))
+                    @if (!string.IsNullOrWhiteSpace(Model.ArtistName))
                     {
                         <p class="inquiry-details-artist">
                             @Model.ArtistName
@@ -71,7 +65,7 @@
 
                 </div>
 
-
+                @* Stato della richiesta *@
                 @switch (Model.Status)
                 {
                     case ArtworkInquiryStatus.New:
@@ -104,6 +98,7 @@
             </div>
 
 
+            @* Dati del visitatore *@
             <div class="inquiry-details-section">
 
                 <div class="gallery-eyebrow mb-3">
@@ -137,7 +132,6 @@
                         </a>
 
                     </div>
-
 
                     <div>
 
@@ -191,7 +185,7 @@
 
     <div class="inquiry-conversation">
 
-        @* Messaggio iniziale *@
+        @* Primo messaggio del visitatore *@
 
         <div class="inquiry-conversation-row inquiry-conversation-user">
 
@@ -214,17 +208,12 @@
         </div>
 
 
+        @* Messaggi successivi: a destra quelli dello staff, a sinistra quelli del visitatore *@
         @foreach (var message in Model.Messages)
         {
-            var isOperator =
-                message.SenderType ==
-                ArtworkInquiryMessageSenderType.Operator;
+            var isOperator = message.SenderType == ArtworkInquiryMessageSenderType.Operator;
 
-
-            <div class="inquiry-conversation-row
-                        @(isOperator
-                            ? "inquiry-conversation-operator"
-                            : "inquiry-conversation-user")">
+            <div class="inquiry-conversation-row @(isOperator ? "inquiry-conversation-operator" : "inquiry-conversation-user")">
 
                 <div class="inquiry-conversation-bubble">
 
@@ -261,36 +250,25 @@
     </div>
 
 
-    <form asp-action="Reply"
-          method="post"
-          class="inquiry-reply-form">
+    @* Form per rispondere al visitatore *@
+    <form asp-action="Reply" method="post" class="inquiry-reply-form">
 
-        <input type="hidden"
-               name="InquiryId"
-               value="@Model.Id" />
+        <input type="hidden" name="InquiryId" value="@Model.Id" />
 
 
-        <label for="replyMessage"
-               class="form-label gallery-form-label">
+        <label for="replyMessage" class="form-label gallery-form-label">
 
             Rispondi al visitatore
 
         </label>
 
 
-        <textarea id="replyMessage"
-                  name="Message"
-                  class="form-control gallery-form-control"
-                  rows="4"
-                  maxlength="2000"
-                  required
+        <textarea id="replyMessage" name="Message" class="form-control gallery-form-control" rows="4" maxlength="2000" required
                   placeholder="Scrivi la risposta della galleria..."></textarea>
-
 
         <div class="mt-3">
 
-            <button type="submit"
-                    class="btn gallery-btn-primary">
+            <button type="submit" class="btn gallery-btn-primary">
 
                 Invia risposta
 
@@ -303,6 +281,7 @@
 </div>
 
 
+            @* Cambio dello stato della richiesta *@
             <div class="inquiry-details-section">
 
                 <div class="gallery-eyebrow mb-3">
@@ -310,79 +289,67 @@
                 </div>
 
 
-                <form asp-action="UpdateStatus"
-                      method="post"
-                      class="inquiry-status-form">
+                <form asp-action="UpdateStatus" method="post" class="inquiry-status-form">
 
-                    <input type="hidden"
-                           name="id"
-                           value="@Model.Id" />
-
+                    <input type="hidden" name="id" value="@Model.Id" />
 
                     <div>
 
-                        <label for="status"
-                               class="form-label gallery-form-label">
+                        <label for="status" class="form-label gallery-form-label">
 
                             Aggiorna stato
 
                         </label>
 
-                        <select id="status"
-        name="status"
-        class="form-select gallery-form-control">
+                        <select id="status" name="status" class="form-select gallery-form-control">
 
-    @if (Model.Status == ArtworkInquiryStatus.New)
-    {
-        <option value="@ArtworkInquiryStatus.New"
-                selected>
-            Nuova
-        </option>
-    }
-    else
-    {
-        <option value="@ArtworkInquiryStatus.New">
-            Nuova
-        </option>
-    }
+                            @if (Model.Status == ArtworkInquiryStatus.New)
+                            {
+                                <option value="@ArtworkInquiryStatus.New" selected>
+                                    Nuova
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@ArtworkInquiryStatus.New">
+                                    Nuova
+                                </option>
+                            }
 
 
-    @if (Model.Status == ArtworkInquiryStatus.InProgress)
-    {
-        <option value="@ArtworkInquiryStatus.InProgress"
-                selected>
-            In lavorazione
-        </option>
-    }
-    else
-    {
-        <option value="@ArtworkInquiryStatus.InProgress">
-            In lavorazione
-        </option>
-    }
+                            @if (Model.Status == ArtworkInquiryStatus.InProgress)
+                            {
+                                <option value="@ArtworkInquiryStatus.InProgress" selected>
+                                    In lavorazione
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@ArtworkInquiryStatus.InProgress">
+                                    In lavorazione
+                                </option>
+                            }
 
 
-    @if (Model.Status == ArtworkInquiryStatus.Closed)
-    {
-        <option value="@ArtworkInquiryStatus.Closed"
-                selected>
-            Chiusa
-        </option>
-    }
-    else
-    {
-        <option value="@ArtworkInquiryStatus.Closed">
-            Chiusa
-        </option>
-    }
+                            @if (Model.Status == ArtworkInquiryStatus.Closed)
+                            {
+                                <option value="@ArtworkInquiryStatus.Closed"
+                                        selected>
+                                    Chiusa
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@ArtworkInquiryStatus.Closed">
+                                    Chiusa
+                                </option>
+                            }
 
-</select>
+                        </select>
 
                     </div>
 
-
-                    <button type="submit"
-                            class="btn gallery-btn-primary">
+                    <button type="submit" class="btn gallery-btn-primary">
 
                         Salva stato
 
@@ -397,10 +364,10 @@
 
         <div class="col-lg-4">
 
+            @* Riquadro con l'opera della richiesta *@
             <aside class="inquiry-artwork-card">
 
-                @if (!string.IsNullOrWhiteSpace(
-                    Model.ArtworkImageUrl))
+                @if (!string.IsNullOrWhiteSpace(Model.ArtworkImageUrl))
                 {
                     <div class="inquiry-artwork-image">
 
@@ -421,8 +388,7 @@
                         @Model.ArtworkTitle
                     </h2>
 
-                    @if (!string.IsNullOrWhiteSpace(
-                        Model.ArtistName))
+                    @if (!string.IsNullOrWhiteSpace(Model.ArtistName))
                     {
                         <p>
                             @Model.ArtistName
@@ -430,6 +396,7 @@
                     }
 
 
+                    @* Se l'opera è stata eliminata non c'è il link alla scheda *@
                     @if (Model.ArtworkDeleted)
                     {
                         <p class="mb-0">
@@ -439,10 +406,7 @@
                     }
                     else
                     {
-                        <a asp-controller="Artworks"
-                           asp-action="Details"
-                           asp-route-id="@Model.ArtworkId"
-                           class="artwork-artist-link">
+                        <a asp-controller="Artworks" asp-action="Details" asp-route-id="@Model.ArtworkId" class="artwork-artist-link">
 
                             Apri la scheda dell'opera →
 

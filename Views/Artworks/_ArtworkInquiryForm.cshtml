@@ -1,38 +1,28 @@
 ﻿@model BeArtGallery.ViewModels.ArtworkInquiryViewModel
 
-<form asp-controller="Artworks"
-      asp-action="RequestInformation"
-      method="post"
-      class="artwork-inquiry-form">
+@* Form "Richiedi informazioni" mostrato nella scheda dell'opera *@
+<form asp-controller="Artworks" asp-action="RequestInformation" method="post" class="artwork-inquiry-form">
 
-    <input asp-for="ArtworkId"
-           type="hidden" />
+    @* Id dell'opera (nascosto) *@
+    <input asp-for="ArtworkId" type="hidden" />
 
-
-    <div asp-validation-summary="ModelOnly"
-         class="text-danger mb-4"
-         role="alert">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-4" role="alert">
     </div>
-
 
     <div class="row g-4">
 
         <div class="col-md-6">
 
-            <label asp-for="Name"
-                   class="form-label gallery-form-label">
+            <label asp-for="Name" class="form-label gallery-form-label">
 
                 Nome
 
             </label>
 
-            <input asp-for="Name"
-                   class="form-control gallery-form-control"
-                   autocomplete="name"
-                   placeholder="Il tuo nome" />
+            @* Nome del visitatore *@
+            <input asp-for="Name" class="form-control gallery-form-control" autocomplete="name" placeholder="Il tuo nome" />
 
-            <span asp-validation-for="Name"
-                  class="text-danger small">
+            <span asp-validation-for="Name" class="text-danger small">
             </span>
 
         </div>
@@ -40,20 +30,16 @@
 
         <div class="col-md-6">
 
-            <label asp-for="Email"
-                   class="form-label gallery-form-label">
+            <label asp-for="Email" class="form-label gallery-form-label">
 
                 Email
 
             </label>
 
-            <input asp-for="Email"
-                   class="form-control gallery-form-control"
-                   autocomplete="email"
-                   placeholder="nome@email.it" />
+            @* Email per la risposta *@
+            <input asp-for="Email" class="form-control gallery-form-control" autocomplete="email" placeholder="nome@email.it" />
 
-            <span asp-validation-for="Email"
-                  class="text-danger small">
+            <span asp-validation-for="Email" class="text-danger small">
             </span>
 
         </div>
@@ -61,27 +47,24 @@
 
         <div class="col-12">
 
-            <label asp-for="Message"
-                   class="form-label gallery-form-label">
+            <label asp-for="Message" class="form-label gallery-form-label">
 
                 Messaggio
 
             </label>
 
-            <textarea asp-for="Message"
-                      class="form-control gallery-form-control"
-                      rows="5"
+            @* Messaggio *@
+            <textarea asp-for="Message" class="form-control gallery-form-control" rows="5"
                       placeholder="Scrivi qui la tua richiesta..."></textarea>
 
-            <span asp-validation-for="Message"
-                  class="text-danger small">
+            <span asp-validation-for="Message" class="text-danger small">
             </span>
 
         </div>
 
     </div>
 
-
+    @* Nota sulla privacy e pulsante di invio *@
     <div class="artwork-inquiry-form-footer">
 
         <p>
@@ -90,8 +73,7 @@
         </p>
 
 
-        <button type="submit"
-                class="btn gallery-btn-primary">
+        <button type="submit" class="btn gallery-btn-primary">
 
             Invia richiesta
 

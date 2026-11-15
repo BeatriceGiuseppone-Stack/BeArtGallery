@@ -2,9 +2,10 @@
 
 namespace BeArtGallery.ViewModels
 {
+    // Tutti i dati mostrati nella dashboard
     public class DashboardViewModel
     {
-        // KPI principali
+        // Numeri principali
 
         public int TotalUsers { get; set; }
 
@@ -22,6 +23,7 @@ namespace BeArtGallery.ViewModels
 
         public int UpcomingActivities { get; set; }
 
+        // Percentuali (con un decimale)
         public decimal OccupancyRate { get; set; }
 
         public int TotalArtworkViews { get; set; }
@@ -30,9 +32,7 @@ namespace BeArtGallery.ViewModels
 
         public decimal FavoriteToInquiryRate { get; set; }
 
-        // =================================================
-        // CHECK-IN E PRESENZE
-        // =================================================
+        // Check-in e presenze
 
         public int ExpectedVisitors { get; set; }
 
@@ -44,44 +44,24 @@ namespace BeArtGallery.ViewModels
 
         public double AttendanceRate { get; set; }
 
-        // =================================================
-        // FEEDBACK DEI VISITATORI
-        // =================================================
+        // Feedback dei visitatori
 
         public int TotalFeedbacks { get; set; }
 
         public double AverageRating { get; set; }
 
-        public List<DashboardFeedbackViewModel> LatestFeedbacks
-        {
-            get;
-            set;
-        } = new();
+        public List<DashboardFeedbackViewModel> LatestFeedbacks { get; set; } = new();
 
-        public List<DashboardArtworkStatisticViewModel> MostViewedArtworks
-        {
-            get;
-            set;
-        } = new();
+        // Classifica delle opere più viste
+        public List<DashboardArtworkStatisticViewModel> MostViewedArtworks { get; set; } = new();
 
+        // Avvisi automatici
+        public List<DashboardInsightViewModel> Insights { get; set; } = new();
 
-        public List<DashboardInsightViewModel> Insights
-        {
-            get;
-            set;
-        } = new();
+        // Dati del grafico delle prenotazioni per mese
+        public List<DashboardMonthlyDataViewModel> BookingsByMonth { get; set; } = new();
 
-        // Grafico prenotazioni
-
-        public List<DashboardMonthlyDataViewModel> BookingsByMonth
-        {
-            get;
-            set;
-        } = new();
-
-
-        // Stato richieste
-
+        // Richieste per stato
         public int NewInquiries { get; set; }
 
         public int InProgressInquiries { get; set; }
@@ -89,31 +69,16 @@ namespace BeArtGallery.ViewModels
         public int ClosedInquiries { get; set; }
 
 
-        // Classifiche opere
+        // Classifiche delle opere più salvate e più richieste
+        public List<DashboardArtworkStatisticViewModel> MostFavoritedArtworks { get; set; } = new();
 
-        public List<DashboardArtworkStatisticViewModel> MostFavoritedArtworks
-        {
-            get;
-            set;
-        } = new();
-
-        public List<DashboardArtworkStatisticViewModel> MostRequestedArtworks
-        {
-            get;
-            set;
-        } = new();
-
+        public List<DashboardArtworkStatisticViewModel> MostRequestedArtworks { get; set; } = new();
 
         // Prossime attività
-
-        public List<DashboardActivityViewModel> UpcomingActivitiesList
-        {
-            get;
-            set;
-        } = new();
+        public List<DashboardActivityViewModel> UpcomingActivitiesList { get; set; } = new();
     }
 
-
+    // Un mese del grafico: etichetta e numero di prenotazioni
     public class DashboardMonthlyDataViewModel
     {
         public string Label { get; set; } = string.Empty;
@@ -122,6 +87,7 @@ namespace BeArtGallery.ViewModels
     }
 
 
+    // Un'opera di una classifica con il suo conteggio
     public class DashboardArtworkStatisticViewModel
     {
         public int ArtworkId { get; set; }
@@ -136,6 +102,7 @@ namespace BeArtGallery.ViewModels
     }
 
 
+    // Una delle prossime attività con i posti prenotati
     public class DashboardActivityViewModel
     {
         public int Id { get; set; }
@@ -148,34 +115,24 @@ namespace BeArtGallery.ViewModels
 
         public int BookedParticipants { get; set; }
 
-        public int AvailablePlaces
-        {
-            get
-            {
-                return Math.Max(
-                    0,
-                    MaxParticipants - BookedParticipants);
-            }
-        }
+        // Posti ancora liberi
+        public int AvailablePlaces { get { return Math.Max( 0, MaxParticipants - BookedParticipants); } }
 
-        public decimal OccupancyRate
-        {
-            get
+        // Percentuale di posti occupati
+        public decimal OccupancyRate { 
+            get 
             {
                 if (MaxParticipants <= 0)
                 {
                     return 0;
                 }
 
-                return Math.Round(
-                    (decimal)BookedParticipants /
-                    MaxParticipants *
-                    100,
-                    1);
+                return Math.Round(  (decimal)BookedParticipants / MaxParticipants * 100, 1);
             }
         }
     }
 
+    // Uno degli ultimi feedback
     public class DashboardFeedbackViewModel
     {
         public string ActivityTitle { get; set; } = string.Empty;
@@ -187,15 +144,13 @@ namespace BeArtGallery.ViewModels
         public DateTime CreatedAt { get; set; }
     }
 
+    // Un avviso automatico: titolo, descrizione e tipo (per il colore)
     public class DashboardInsightViewModel
     {
-        public string Title { get; set; }
-            = string.Empty;
+        public string Title { get; set; } = string.Empty;
 
-        public string Description { get; set; }
-            = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
-        public string Type { get; set; }
-            = "info";
+        public string Type { get; set; } = "info";
     }
 }

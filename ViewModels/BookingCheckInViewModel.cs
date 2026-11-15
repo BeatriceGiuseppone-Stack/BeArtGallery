@@ -2,8 +2,10 @@
 
 namespace BeArtGallery.ViewModels
 {
+    // Dati mostrati allo staff quando scansiona il QR di una prenotazione
     public class BookingCheckInViewModel
     {
+        // Falso se il QR non è valido; in quel caso c'è il messaggio di errore
         public bool IsValid { get; set; }
 
         public string? ErrorMessage { get; set; }
@@ -30,6 +32,7 @@ namespace BeArtGallery.ViewModels
 
         public string? CheckedInByEmail { get; set; }
 
+        // Il check-in si può fare solo su una prenotazione confermata e non ancora usata
         public bool CanCheckIn => IsValid && Status == BookingStatus.Confirmed && !CheckedInAt.HasValue;
     }
 }

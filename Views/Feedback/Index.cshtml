@@ -3,20 +3,18 @@
 @{
     ViewData["Title"] = "Feedback dei visitatori";
 
-    var maxCount = Model.RatingDistribution.Length > 0
-        ? Math.Max(1, Model.RatingDistribution.Max())
-        : 1;
+    var maxCount = Model.RatingDistribution.Length > 0 ? Math.Max(1, Model.RatingDistribution.Max()) : 1;
 }
 
+@* Stili delle stelle *@
 @section Styles
 {
-    <link rel="stylesheet"
-          href="~/css/feedback.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/feedback.css" asp-append-version="true" />
 }
 
 <div class="container py-5">
 
+    @* Intestazione della pagina *@
     <div class="gx-page-head">
 
         <div>
@@ -38,11 +36,11 @@
 
     </div>
 
-
     <div class="row g-4 mb-4">
 
         <div class="col-md-4">
 
+            @* Media dei voti *@
             <div class="card border-0 shadow-sm h-100">
 
                 <div class="card-body p-4 text-center">
@@ -66,9 +64,9 @@
 
         </div>
 
-
         <div class="col-md-8">
 
+            @* Quanti feedback per ogni voto (cliccando si filtra) *@
             <div class="card border-0 shadow-sm h-100">
 
                 <div class="card-body p-4">
@@ -82,9 +80,7 @@
                         var count = Model.RatingDistribution[stars - 1];
                         var width = (int)Math.Round((double)count / maxCount * 100);
 
-                        <a class="feedback-distribution-row"
-                           asp-action="Index"
-                           asp-route-rating="@stars">
+                        <a class="feedback-distribution-row" asp-action="Index" asp-route-rating="@stars">
 
                             <span class="feedback-distribution-label">
                                 @stars ★
@@ -109,7 +105,7 @@
 
     </div>
 
-
+    @* Filtro attivo, con il link per toglierlo *@
     @if (Model.RatingFilter.HasValue)
     {
         <div class="gx-notice mb-4 d-flex flex-row justify-content-between align-items-center">
@@ -119,15 +115,14 @@
                 <strong>@Model.RatingFilter stelle</strong>.
             </span>
 
-            <a asp-action="Index"
-               class="btn btn-sm gallery-btn-outline">
+            <a asp-action="Index" class="btn btn-sm gallery-btn-outline">
                 Mostra tutti
             </a>
 
         </div>
     }
 
-
+    @* Nessun feedback *@
     @if (!Model.Feedbacks.Any())
     {
         <div class="card border-0 shadow-sm">
@@ -140,6 +135,7 @@
     }
     else
     {
+        @* Tabella dei feedback *@
         <div class="card border-0 shadow-sm">
 
             <div class="table-responsive">
@@ -181,6 +177,7 @@
                                 </td>
 
                                 <td>
+                                    @* Commento o trattino se manca *@
                                     @if (string.IsNullOrWhiteSpace(feedback.Comment))
                                     {
                                         <span class="text-muted">—</span>

@@ -1,15 +1,10 @@
-﻿/* =================================================
-   BEARTGALLERY - DASHBOARD
-   ================================================= */
+﻿/* Stili della dashboard per Staff e Admin */
 
 .dashboard-page {
     padding: 5rem 0 7rem;
 }
 
-
-/* =================================================
-   HEADER
-   ================================================= */
+/* Intestazione della dashboard */
 
 .dashboard-header {
     display: flex;
@@ -19,13 +14,11 @@
     margin-bottom: 4rem;
 }
 
-
     .dashboard-header h1 {
         margin: 0.5rem 0 1rem;
         font-size: clamp(3.5rem, 6vw, 6.5rem);
         line-height: 0.95;
     }
-
 
     .dashboard-header p {
         max-width: 700px;
@@ -35,10 +28,7 @@
         line-height: 1.7;
     }
 
-
-/* =================================================
-   KPI
-   ================================================= */
+/* Riquadri con i numeri principali (KPI) */
 
 .dashboard-kpis {
     display: grid;
@@ -47,7 +37,6 @@
     border-top: 1px solid var(--gallery-border);
     border-left: 1px solid var(--gallery-border);
 }
-
 
 .dashboard-kpi {
     min-height: 190px;
@@ -59,7 +48,6 @@
     border-bottom: 1px solid var(--gallery-border);
 }
 
-
     .dashboard-kpi > span {
         color: var(--gallery-muted);
         font-size: 0.78rem;
@@ -68,7 +56,6 @@
         text-transform: uppercase;
     }
 
-
     .dashboard-kpi > strong {
         margin: auto 0 0.75rem;
         font-family: Georgia, "Times New Roman", serif;
@@ -76,28 +63,22 @@
         font-weight: 400;
     }
 
-
     .dashboard-kpi > small {
         color: var(--gallery-muted);
         font-size: 0.82rem;
     }
-
 
 .dashboard-kpi-highlight {
     color: #ffffff;
     background-color: var(--gallery-dark);
 }
 
-
     .dashboard-kpi-highlight > span,
     .dashboard-kpi-highlight > small {
         color: rgba(255,255,255,0.65);
     }
 
-
-/* =================================================
-   GRID
-   ================================================= */
+/* Griglia */
 
 .dashboard-grid {
     display: grid;
@@ -106,22 +87,17 @@
     margin-top: 2rem;
 }
 
-
 .dashboard-chart-grid {
     grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.8fr);
 }
 
-
-/* =================================================
-   PANNELLI
-   ================================================= */
+/* Pannelli con titolo */
 
 .dashboard-panel {
     padding: 2rem;
     background-color: var(--gallery-surface);
     border: 1px solid var(--gallery-border);
 }
-
 
 .dashboard-panel-header {
     display: flex;
@@ -131,22 +107,17 @@
     margin-bottom: 2rem;
 }
 
-
     .dashboard-panel-header h2 {
         margin: 0.35rem 0 0;
         font-size: 2rem;
     }
-
 
 .dashboard-panel-note {
     color: var(--gallery-muted);
     font-size: 0.78rem;
 }
 
-
-/* =================================================
-   GRAFICI
-   ================================================= */
+/* Grafici */
 
 .dashboard-chart-container {
     position: relative;
@@ -154,11 +125,9 @@
     height: 340px;
 }
 
-
 .dashboard-chart-small {
     height: 260px;
 }
-
 
 .dashboard-chart-legend {
     display: grid;
@@ -167,18 +136,15 @@
     border-top: 1px solid var(--gallery-border);
 }
 
-
     .dashboard-chart-legend > div {
         padding: 1rem;
         text-align: center;
         border-right: 1px solid var(--gallery-border);
     }
 
-
         .dashboard-chart-legend > div:last-child {
             border-right: 0;
         }
-
 
     .dashboard-chart-legend span {
         display: block;
@@ -187,21 +153,16 @@
         font-size: 0.75rem;
     }
 
-
     .dashboard-chart-legend strong {
         font-size: 1.3rem;
     }
 
-
-/* =================================================
-   CLASSIFICA OPERE
-   ================================================= */
+/* Classifiche delle opere */
 
 .dashboard-ranking {
     display: flex;
     flex-direction: column;
 }
-
 
 .dashboard-ranking-item {
     display: grid;
@@ -215,24 +176,20 @@
     transition: opacity 0.2s ease;
 }
 
-
     .dashboard-ranking-item:last-child {
         border-bottom: 0;
     }
-
 
     .dashboard-ranking-item:hover {
         color: var(--gallery-text);
         opacity: 0.7;
     }
 
-
 .dashboard-ranking-position {
     color: var(--gallery-accent);
     font-size: 0.75rem;
     font-weight: 700;
 }
-
 
 .dashboard-artwork-image {
     width: 64px;
@@ -241,17 +198,14 @@
     background-color: var(--gallery-soft);
 }
 
-
 .dashboard-ranking-content {
     min-width: 0;
 }
-
 
     .dashboard-ranking-content strong,
     .dashboard-ranking-content span {
         display: block;
     }
-
 
     .dashboard-ranking-content strong {
         overflow: hidden;
@@ -259,50 +213,40 @@
         white-space: nowrap;
     }
 
-
     .dashboard-ranking-content span {
         margin-top: 0.25rem;
         color: var(--gallery-muted);
         font-size: 0.82rem;
     }
 
-
 .dashboard-ranking-value {
     text-align: right;
 }
-
 
     .dashboard-ranking-value strong,
     .dashboard-ranking-value span {
         display: block;
     }
 
-
     .dashboard-ranking-value strong {
         font-size: 1.3rem;
     }
-
 
     .dashboard-ranking-value span {
         color: var(--gallery-muted);
         font-size: 0.72rem;
     }
 
-
-/* =================================================
-   ATTIVITÀ
-   ================================================= */
+/* Prossime attività */
 
 .dashboard-activities-panel {
     margin-top: 2rem;
 }
 
-
 .dashboard-activities {
     display: flex;
     flex-direction: column;
 }
-
 
 .dashboard-activity {
     display: grid;
@@ -315,34 +259,28 @@
     border-bottom: 1px solid var(--gallery-border);
 }
 
-
     .dashboard-activity:last-child {
         border-bottom: 0;
     }
-
 
     .dashboard-activity:hover {
         color: var(--gallery-text);
     }
 
-
 .dashboard-activity-date {
     text-align: center;
 }
-
 
     .dashboard-activity-date strong,
     .dashboard-activity-date span {
         display: block;
     }
 
-
     .dashboard-activity-date strong {
         font-family: Georgia, "Times New Roman", serif;
         font-size: 2rem;
         font-weight: 400;
     }
-
 
     .dashboard-activity-date span {
         color: var(--gallery-muted);
@@ -352,19 +290,16 @@
         text-transform: uppercase;
     }
 
-
 .dashboard-activity-content strong,
 .dashboard-activity-content span {
     display: block;
 }
-
 
 .dashboard-activity-content span {
     margin-top: 0.25rem;
     color: var(--gallery-muted);
     font-size: 0.82rem;
 }
-
 
 .dashboard-activity-capacity > div:first-child {
     display: flex;
@@ -373,11 +308,9 @@
     font-size: 0.78rem;
 }
 
-
 .dashboard-activity-capacity span {
     color: var(--gallery-muted);
 }
-
 
 .dashboard-progress {
     height: 4px;
@@ -385,17 +318,13 @@
     background-color: var(--gallery-soft);
 }
 
-
     .dashboard-progress > span {
         display: block;
         height: 100%;
         background-color: var(--gallery-accent);
     }
 
-
-/* =================================================
-   LINK / EMPTY
-   ================================================= */
+/* Link e messaggi senza dati */
 
 .dashboard-text-link {
     color: var(--gallery-text);
@@ -404,11 +333,9 @@
     text-decoration: none;
 }
 
-
     .dashboard-text-link:hover {
         color: var(--gallery-accent);
     }
-
 
 .dashboard-empty {
     padding: 2rem 0;
@@ -416,10 +343,7 @@
     font-size: 0.9rem;
 }
 
-
-/* =================================================
-   TABLET
-   ================================================= */
+/* Tablet */
 
 @media (max-width: 991.98px) {
 
@@ -427,17 +351,13 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
-
     .dashboard-grid,
     .dashboard-chart-grid {
         grid-template-columns: 1fr;
     }
 }
 
-
-/* =================================================
-   MOBILE
-   ================================================= */
+/* Smartphone */
 
 @media (max-width: 767.98px) {
 
@@ -445,52 +365,42 @@
         padding: 3.5rem 0 5rem;
     }
 
-
     .dashboard-header {
         margin-bottom: 3rem;
     }
-
 
         .dashboard-header h1 {
             font-size: 3.7rem;
         }
 
-
     .dashboard-kpis {
         grid-template-columns: 1fr;
     }
-
 
     .dashboard-kpi {
         min-height: 150px;
     }
 
-
     .dashboard-panel {
         padding: 1.25rem;
     }
-
 
     .dashboard-activity {
         grid-template-columns: 55px 1fr;
     }
 
-
     .dashboard-activity-capacity {
         grid-column: 1 / -1;
     }
-
 
     .dashboard-ranking-item {
         grid-template-columns: 28px 54px minmax(0, 1fr);
     }
 
-
     .dashboard-artwork-image {
         width: 54px;
         height: 54px;
     }
-
 
     .dashboard-ranking-value {
         grid-column: 3;
@@ -498,14 +408,11 @@
     }
 }
 
-/* =================================================
-   CLASSIFICHE OPERE
-   ================================================= */
+/* Classifiche delle opere: tre colonne */
 
 .dashboard-artworks-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-
 
 @media (max-width: 1199.98px) {
 
@@ -514,14 +421,11 @@
     }
 }
 
-/* =================================================
-   INSIGHT AUTOMATICI
-   ================================================= */
+/* Avvisi automatici */
 
 .dashboard-insights {
     margin-top: 4rem;
 }
-
 
 .dashboard-section-heading {
     display: flex;
@@ -531,12 +435,10 @@
     margin-bottom: 2rem;
 }
 
-
     .dashboard-section-heading h2 {
         margin: 0.35rem 0 0;
         font-size: 2.5rem;
     }
-
 
     .dashboard-section-heading p {
         max-width: 520px;
@@ -546,13 +448,11 @@
         line-height: 1.6;
     }
 
-
 .dashboard-insights-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
 }
-
 
 .dashboard-insight {
     min-height: 190px;
@@ -561,7 +461,6 @@
     border: 1px solid var(--gallery-border);
     border-top: 4px solid var(--gallery-accent);
 }
-
 
 .dashboard-insight-label {
     display: block;
@@ -573,12 +472,10 @@
     text-transform: uppercase;
 }
 
-
 .dashboard-insight h3 {
     margin-bottom: 0.75rem;
     font-size: 1.4rem;
 }
-
 
 .dashboard-insight p {
     margin: 0;
@@ -586,26 +483,21 @@
     line-height: 1.7;
 }
 
-
 .dashboard-insight-success {
     border-top-color: #718065;
 }
-
 
 .dashboard-insight-attention {
     border-top-color: #a86d52;
 }
 
-
 .dashboard-insight-opportunity {
     border-top-color: var(--gallery-accent);
 }
 
-
 .dashboard-insight-info {
     border-top-color: var(--gallery-dark);
 }
-
 
 @media (max-width: 767.98px) {
 
@@ -615,31 +507,24 @@
         gap: 1rem;
     }
 
-
     .dashboard-insights-grid {
         grid-template-columns: 1fr;
     }
 }
 
-/* =================================================
-   PRESENZE E CHECK-IN
-   ================================================= */
+/* Presenze e check-in */
 
 .dashboard-attendance-section {
     margin-top: 4rem;
     margin-bottom: 4rem;
 }
 
-
-    /* =================================================
-   HEADER SEZIONE
-   ================================================= */
+    /* Titolo della sezione */
 
     .dashboard-attendance-section
     .dashboard-section-heading {
         margin-bottom: 2rem;
     }
-
 
         .dashboard-attendance-section
         .dashboard-section-heading h2 {
@@ -650,7 +535,6 @@
             font-weight: 400;
         }
 
-
         .dashboard-attendance-section
         .dashboard-section-heading p {
             max-width: 600px;
@@ -658,10 +542,7 @@
             line-height: 1.7;
         }
 
-
-/* =================================================
-   GRID
-   ================================================= */
+/* Griglia */
 
 .dashboard-attendance-grid {
     display: grid;
@@ -669,10 +550,7 @@
     gap: 1rem;
 }
 
-
-/* =================================================
-   CARD
-   ================================================= */
+/* Riquadri delle presenze */
 
 .dashboard-attendance-card {
     display: flex;
@@ -683,7 +561,6 @@
     border: 1px solid var(--gallery-border);
 }
 
-
 .dashboard-attendance-label {
     color: var(--gallery-muted);
     font-size: 0.72rem;
@@ -691,7 +568,6 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
-
 
 .dashboard-attendance-value {
     display: block;
@@ -703,7 +579,6 @@
     line-height: 1;
 }
 
-
 .dashboard-attendance-card small {
     display: block;
     margin-top: auto;
@@ -713,49 +588,37 @@
     line-height: 1.5;
 }
 
-
-/* =================================================
-   CHECK-IN EFFETTUATI
-   ================================================= */
+/* Check-in effettuati */
 
 .dashboard-attendance-card-success {
     background: #f1f6f2;
     border-color: #c7dbc9;
 }
 
-
     .dashboard-attendance-card-success
     .dashboard-attendance-value {
         color: #315f3c;
     }
 
-
-/* =================================================
-   NO-SHOW
-   ================================================= */
+/* No-show */
 
 .dashboard-attendance-card-warning {
     background: #faf4ec;
     border-color: #e4d0b7;
 }
 
-
     .dashboard-attendance-card-warning
     .dashboard-attendance-value {
         color: #8a5b29;
     }
 
-
-/* =================================================
-   TASSO PRESENZA
-   ================================================= */
+/* Tasso di presenza */
 
 .dashboard-attendance-card-highlight {
     color: #ffffff;
     background: var(--gallery-dark);
     border-color: var(--gallery-dark);
 }
-
 
     .dashboard-attendance-card-highlight
     .dashboard-attendance-label,
@@ -764,20 +627,15 @@
         color: #ffffff;
     }
 
-
     .dashboard-attendance-card-highlight small {
         color: rgba(255, 255, 255, 0.65);
     }
-
 
 .dashboard-attendance-rate {
     margin-top: 0.2rem;
 }
 
-
-/* =================================================
-   PROGRESS BAR
-   ================================================= */
+/* Barra di avanzamento */
 
 .dashboard-attendance-progress {
     position: relative;
@@ -788,7 +646,6 @@
     background: rgba(255, 255, 255, 0.18);
 }
 
-
     .dashboard-attendance-progress span {
         display: block;
         height: 100%;
@@ -796,10 +653,7 @@
         transition: width 0.4s ease;
     }
 
-
-/* =================================================
-   RESPONSIVE
-   ================================================= */
+/* Schermi piccoli */
 
 @media (max-width: 1199.98px) {
 
@@ -808,14 +662,12 @@
     }
 }
 
-
 @media (max-width: 767.98px) {
 
     .dashboard-attendance-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
-
 
 @media (max-width: 575.98px) {
 
@@ -824,11 +676,9 @@
         margin-bottom: 3rem;
     }
 
-
     .dashboard-attendance-grid {
         grid-template-columns: 1fr;
     }
-
 
     .dashboard-attendance-card {
         min-height: 160px;

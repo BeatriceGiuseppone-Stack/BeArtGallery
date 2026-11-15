@@ -1,6 +1,7 @@
 @model IEnumerable<BeArtGallery.Models.Artist>
 @using BeArtGallery.Authorization
 
+@* Dati per la paginazione e il contatore "Artisti 1–9 di 20" *@
 @{
     ViewData["Title"] = "Artisti";
 
@@ -17,11 +18,7 @@
 
     @* Intestazione della pagina *@
 
-    <div class="gx-band d-flex justify-content-between
-                align-items-end
-                flex-wrap
-                gap-3
-                mb-5">
+    <div class="gx-band d-flex justify-content-between align-items-end flex-wrap gap-3 mb-5">
 
         <div>
 
@@ -42,12 +39,10 @@
         </div>
 
 
-        @if (User.IsInRole(RoleNames.Staff) ||
-             User.IsInRole(RoleNames.Admin))
+        @* Pulsante "Nuovo artista" solo per Staff e Admin *@
+        @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
         {
-            <a asp-controller="Artists"
-               asp-action="Create"
-               class="btn gallery-btn-primary">
+            <a asp-controller="Artists" asp-action="Create" class="btn gallery-btn-primary">
 
                 Nuovo artista
 
@@ -56,29 +51,28 @@
 
     </div>
 
+    @* Nota per lo staff sull'eliminazione degli artisti *@
+    @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
+        {
+            <div class="gallery-management-note mb-4">
+        
+                <div class="gallery-management-note-title">
+                    Gestione artisti
+                </div>
+        
+                <p class="mb-0">
+                    Un artista può essere eliminato solamente se
+                    non ha opere associate nel catalogo.
+                    Per questo motivo il pulsante
+                    <strong>Elimina</strong> viene mostrato solo
+                    quando non sono presenti opere collegate.
+                </p>
+        
+            </div>
+        }
 
-    @if (User.IsInRole(RoleNames.Staff) ||
-     User.IsInRole(RoleNames.Admin))
-{
-    <div class="gallery-management-note mb-4">
 
-        <div class="gallery-management-note-title">
-            Gestione artisti
-        </div>
-
-        <p class="mb-0">
-            Un artista può essere eliminato solamente se
-            non ha opere associate nel catalogo.
-            Per questo motivo il pulsante
-            <strong>Elimina</strong> viene mostrato solo
-            quando non sono presenti opere collegate.
-        </p>
-
-    </div>
-}
-
-
-    @* Messaggi *@
+    @* Messaggi di conferma o di errore *@
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -102,6 +96,7 @@
 
     @* Elenco degli artisti *@
 
+    @* Nessun artista nel catalogo *@
     @if (!Model.Any())
     {
         <div class="artist-empty-state">
@@ -127,33 +122,28 @@
             Artisti @(firstShown)–@(lastShown) di @totalCount
         </p>
 
-        @* Indice degli artisti: i nomi in grande, raggruppati per iniziale
-           del cognome, come nei registri delle gallerie. Al passaggio del
-           mouse compare un'opera dell'artista. *@
+        @* Indice degli artisti: nomi grandi raggruppati per iniziale del cognome.
+           Passando con il mouse su un nome compare una sua opera. *@
 
         <div class="gx-artist-index">
 
-            @foreach (var group in Model.GroupBy(a =>
-                string.IsNullOrEmpty(a.LastName)
-                    ? "#"
+            @* Raggruppa gli artisti per iniziale del cognome *@
+            @foreach (var group in Model.GroupBy(a => string.IsNullOrEmpty(a.LastName) ? "#"
                     : a.LastName.Substring(0, 1).ToUpperInvariant()))
             {
-                <section class="gx-artist-group"
-                         aria-labelledby="lettera-@group.Key">
+                <section class="gx-artist-group" aria-labelledby="lettera-@group.Key">
 
-                    <h2 class="gx-artist-letter"
-                        id="lettera-@group.Key">
+                    <h2 class="gx-artist-letter" id="lettera-@group.Key">
                         @group.Key
                     </h2>
 
                     <ol class="gx-artist-list">
 
+                        @* Una riga per ogni artista *@
                         @foreach (var artist in group)
                         {
-                            var cover = artist.Artworks
-                                .Where(w => !string.IsNullOrWhiteSpace(w.ImageUrl))
-                                .OrderBy(w => w.Id)
-                                .FirstOrDefault();
+                            var cover = artist.Artworks.Where(w => !string.IsNullOrWhiteSpace(w.ImageUrl))
+                                .OrderBy(w => w.Id).FirstOrDefault();
 
                             var worksCount = artist.Artworks.Count;
 
@@ -163,10 +153,7 @@
 
                                     <h3 class="gx-artist-name">
 
-                                        <a asp-controller="Artists"
-                                           asp-action="Details"
-                                           asp-route-id="@artist.Id"
-                                           class="gx-artist-link">
+                                        <a asp-controller="Artists" asp-action="Details" asp-route-id="@artist.Id" class="gx-artist-link">
 
                                             <span class="gx-artist-first">@artist.FirstName</span>
                                             <span class="gx-artist-last">@artist.LastName</span>
@@ -177,6 +164,7 @@
 
                                     <p class="gx-artist-meta">
 
+                                        @* Nazionalità e anni *@
                                         @if (!string.IsNullOrWhiteSpace(artist.Nationality))
                                         {
                                             <span>@artist.Nationality</span>
@@ -196,25 +184,21 @@
                                 </div>
 
 
+                                @* Numero di opere e pulsanti per lo staff *@
                                 <div class="gx-artist-side">
 
                                     <span class="gx-artist-count">
-                                        @(worksCount == 0
-                                            ? "Opere in arrivo"
-                                            : worksCount == 1
-                                                ? "1 opera"
+                                        @(worksCount == 0 ? "Opere in arrivo"
+                                            : worksCount == 1 ? "1 opera"
                                                 : $"{worksCount} opere")
                                     </span>
 
 
-                                    @if (User.IsInRole(RoleNames.Staff) ||
-                                         User.IsInRole(RoleNames.Admin))
+                                    @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
                                     {
                                         <div class="gx-artist-admin">
 
-                                            <a asp-controller="Artists"
-                                               asp-action="Edit"
-                                               asp-route-id="@artist.Id"
+                                            <a asp-controller="Artists" asp-action="Edit" asp-route-id="@artist.Id"
                                                class="btn btn-sm gallery-btn-outline">
 
                                                 Modifica
@@ -224,11 +208,10 @@
 
                                             </a>
 
+                                            @* Si può eliminare solo un artista senza opere *@
                                             @if (!artist.Artworks.Any())
                                             {
-                                                <a asp-controller="Artists"
-                                                   asp-action="Delete"
-                                                   asp-route-id="@artist.Id"
+                                                <a asp-controller="Artists" asp-action="Delete" asp-route-id="@artist.Id"
                                                    class="btn btn-sm gallery-btn-danger">
 
                                                     Elimina
@@ -244,17 +227,13 @@
 
                                 </div>
 
-
                                 @if (cover != null)
                                 {
-                                    @* Anteprima decorativa: il nome resta il vero link *@
+                                    @* Anteprima di un'opera, solo decorativa: il link vero è il nome *@
 
-                                    <figure class="gx-artist-preview"
-                                            aria-hidden="true">
+                                    <figure class="gx-artist-preview" aria-hidden="true">
 
-                                        <img src="@cover.ImageUrl"
-                                             alt=""
-                                             loading="lazy" />
+                                        <img src="@cover.ImageUrl" alt="" loading="lazy" />
 
                                         <figcaption>
                                             @(cover.Year.HasValue ? $"{cover.Title}, {cover.Year}" : cover.Title)
@@ -273,10 +252,9 @@
 
         </div>
 
-        @* Paginazione: 9 artisti per pagina *@
+        @* Barra delle pagine (9 artisti per pagina) *@
 
-        @(await Html.PartialAsync("_Pagination",
-            new BeArtGallery.ViewModels.PaginationViewModel
+        @(await Html.PartialAsync("_Pagination", new BeArtGallery.ViewModels.PaginationViewModel
             {
                 CurrentPage = currentPage,
                 TotalPages = totalPages,

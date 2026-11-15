@@ -7,14 +7,11 @@
 
 <div class="container py-5">
 
-    @* Navigazione *@
+    @* Link per tornare alla scheda dell'opera *@
 
     <div class="mb-5">
 
-        <a asp-controller="Artworks"
-           asp-action="Details"
-           asp-route-id="@Model.Id"
-           class="gallery-back-link">
+        <a asp-controller="Artworks" asp-action="Details" asp-route-id="@Model.Id" class="gallery-back-link">
 
             ← Torna all'opera
 
@@ -41,22 +38,16 @@
             </p>
 
 
-            <form asp-action="Edit"
-                  method="post"
-                  enctype="multipart/form-data"
-                  class="gallery-form">
+            @* Form di modifica dell'opera *@
+            <form asp-action="Edit" method="post" enctype="multipart/form-data" class="gallery-form">
 
-                <input type="hidden"
-                       asp-for="Id" />
+                @* Id dell'opera e immagine attuale (nascosti) *@
+                <input type="hidden" asp-for="Id" />
 
-                <input type="hidden"
-                       asp-for="ImageUrl" />
+                <input type="hidden" asp-for="ImageUrl" />
 
-
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4">
                 </div>
-
 
                 <div class="row g-4">
 
@@ -64,69 +55,57 @@
 
                     <div class="col-12">
 
-                        <label asp-for="Title"
-                               class="form-label gallery-form-label">
+                        <label asp-for="Title" class="form-label gallery-form-label">
 
                             Titolo
 
                         </label>
 
-                        <input asp-for="Title"
-                               class="form-control gallery-form-control" />
+                        <input asp-for="Title" class="form-control gallery-form-control" />
 
-                        <span asp-validation-for="Title"
-                              class="text-danger small">
+                        <span asp-validation-for="Title" class="text-danger small">
                         </span>
 
                     </div>
-
 
                     @* Anno *@
 
                     <div class="col-md-6">
 
-                        <label asp-for="Year"
-                               class="form-label gallery-form-label">
+                        <label asp-for="Year" class="form-label gallery-form-label">
 
                             Anno
 
                         </label>
 
-                        <input asp-for="Year"
-                               type="number"
-                               class="form-control gallery-form-control" />
+                        <input asp-for="Year" type="number" class="form-control gallery-form-control" />
 
-                        <span asp-validation-for="Year"
-                              class="text-danger small">
+                        <span asp-validation-for="Year" class="text-danger small">
                         </span>
 
                     </div>
-
 
                     @* Tecnica *@
 
                     <div class="col-md-6">
 
-                        <label asp-for="Technique"
-                               class="form-label gallery-form-label">
+                        <label asp-for="Technique" class="form-label gallery-form-label">
 
                             Tecnica
 
                         </label>
 
-                        <input asp-for="Technique"
-                               class="form-control gallery-form-control" />
+                        <input asp-for="Technique" class="form-control gallery-form-control" />
 
-                        <span asp-validation-for="Technique"
-                              class="text-danger small">
+                        <span asp-validation-for="Technique" class="text-danger small">
                         </span>
 
                     </div>
 
+                    @* Larghezza in centimetri *@
                     <div class="col-md-6">
 
-                        <label asp-for="WidthCm"
-                               class="form-label gallery-form-label">
+                        <label asp-for="WidthCm" class="form-label gallery-form-label">
 
                             Larghezza
 
@@ -134,11 +113,7 @@
 
                         <div class="input-group">
 
-                            <input asp-for="WidthCm"
-                                   type="number"
-                                   step="0.1"
-                                   min="0.1"
-                                   class="form-control gallery-form-control"
+                            <input asp-for="WidthCm" type="number" step="0.1" min="0.1" class="form-control gallery-form-control"
                                    placeholder="Es. 73.7" />
 
                             <span class="input-group-text">
@@ -147,17 +122,15 @@
 
                         </div>
 
-                        <span asp-validation-for="WidthCm"
-                              class="text-danger small">
+                        <span asp-validation-for="WidthCm" class="text-danger small">
                         </span>
 
                     </div>
 
-                    @*Dimensioni*@
+                    @* Altezza in centimetri *@
                     <div class="col-md-6">
 
-                        <label asp-for="HeightCm"
-                               class="form-label gallery-form-label">
+                        <label asp-for="HeightCm" class="form-label gallery-form-label">
 
                             Altezza
 
@@ -165,11 +138,7 @@
 
                         <div class="input-group">
 
-                            <input asp-for="HeightCm"
-                                   type="number"
-                                   step="0.1"
-                                   min="0.1"
-                                   class="form-control gallery-form-control"
+                            <input asp-for="HeightCm" type="number" step="0.1" min="0.1" class="form-control gallery-form-control"
                                    placeholder="Es. 92.1" />
 
                             <span class="input-group-text">
@@ -178,26 +147,22 @@
 
                         </div>
 
-                        <span asp-validation-for="HeightCm"
-                              class="text-danger small">
+                        <span asp-validation-for="HeightCm" class="text-danger small">
                         </span>
 
                     </div>
 
-                    @* Artista *@
+                    @* Artista, scelto da un elenco *@
 
                     <div class="col-12">
 
-                        <label asp-for="ArtistId"
-                               class="form-label gallery-form-label">
+                        <label asp-for="ArtistId" class="form-label gallery-form-label">
 
                             Artista
 
                         </label>
 
-                        <select asp-for="ArtistId"
-                                asp-items="ViewBag.ArtistId"
-                                class="form-select gallery-form-control">
+                        <select asp-for="ArtistId" asp-items="ViewBag.ArtistId" class="form-select gallery-form-control">
 
                             <option value="">
                                 Seleziona un artista
@@ -205,47 +170,45 @@
 
                         </select>
 
-                        <span asp-validation-for="ArtistId"
-                              class="text-danger small">
+                        <span asp-validation-for="ArtistId" class="text-danger small">
                         </span>
 
                     </div>
 
+                    @* Disponibilità dell'opera *@
                     <div class="col-12">
 
-    <label asp-for="AvailabilityStatus"
-           class="form-label gallery-form-label">
-
-        Disponibilità
-
-    </label>
-
-    <select asp-for="AvailabilityStatus"
-            class="form-select gallery-form-control">
-
-        <option value="@ArtworkAvailabilityStatus.Available">
-            Disponibile
-        </option>
-
-        <option value="@ArtworkAvailabilityStatus.LimitedAvailability">
-            Disponibilità limitata
-        </option>
-
-        <option value="@ArtworkAvailabilityStatus.SoldOut">
-            Esaurita
-        </option>
-
-        <option value="@ArtworkAvailabilityStatus.Unavailable">
-            Non disponibile
-        </option>
-
-    </select>
-
-    <span asp-validation-for="AvailabilityStatus"
-          class="text-danger small">
-    </span>
-
-</div>
+                        <label asp-for="AvailabilityStatus" class="form-label gallery-form-label">
+                    
+                            Disponibilità
+                    
+                        </label>
+                    
+                        <select asp-for="AvailabilityStatus" class="form-select gallery-form-control">
+                    
+                            <option value="@ArtworkAvailabilityStatus.Available">
+                                Disponibile
+                            </option>
+                    
+                            <option value="@ArtworkAvailabilityStatus.LimitedAvailability">
+                                Disponibilità limitata
+                            </option>
+                    
+                            <option value="@ArtworkAvailabilityStatus.SoldOut">
+                                Esaurita
+                            </option>
+                    
+                            <option value="@ArtworkAvailabilityStatus.Unavailable">
+                                Non disponibile
+                            </option>
+                    
+                        </select>
+                    
+                        <span asp-validation-for="AvailabilityStatus"
+                              class="text-danger small">
+                        </span>
+                    
+                    </div>
 
                     @* Descrizione *@
 
@@ -281,8 +244,7 @@
 
                             <div class="artwork-current-image">
 
-                                <img src="@Model.ImageUrl"
-                                     alt="@Model.Title" />
+                                <img src="@Model.ImageUrl" alt="@Model.Title" />
 
                             </div>
 
@@ -290,22 +252,18 @@
                     }
 
 
-                    @* Sostituzione immagine *@
+                    @* Nuova immagine (facoltativa), con anteprima *@
 
                     <div class="col-12">
 
-                        <label for="imageFile"
-                               class="form-label gallery-form-label">
+                        <label for="imageFile" class="form-label gallery-form-label">
 
                             Sostituisci immagine
 
                         </label>
 
-                        <input type="file"
-                               id="imageFile"
-                               name="imageFile"
-                               class="form-control gallery-form-control"
-                               accept=".jpg,.jpeg,.png,.webp" />
+                        <input type="file" id="imageFile" name="imageFile" class="form-control gallery-form-control" 
+                            accept=".jpg,.jpeg,.png,.webp" />
 
                         <div class="form-text">
                             Lascia vuoto per mantenere
@@ -315,33 +273,28 @@
                         </div>
 
 
-                        <div id="imagePreviewContainer"
-                             class="artwork-upload-preview d-none">
+                        <div id="imagePreviewContainer" class="artwork-upload-preview d-none">
 
                             <div class="gallery-eyebrow mb-2">
                                 Nuova anteprima
                             </div>
 
-                            <img id="imagePreview"
-                                 src=""
-                                 alt="Anteprima della nuova immagine" />
+                            <img id="imagePreview" src="" alt="Anteprima della nuova immagine" />
 
                         </div>
 
                     </div>
 
 
-                    @* Stato esposizione *@
+                    @* Opera esposta in galleria *@
 
                     <div class="col-12">
 
                         <div class="gallery-checkbox-wrapper">
 
-                            <input asp-for="IsOnDisplay"
-                                   class="form-check-input" />
+                            <input asp-for="IsOnDisplay" class="form-check-input" />
 
-                            <label asp-for="IsOnDisplay"
-                                   class="form-check-label">
+                            <label asp-for="IsOnDisplay" class="form-check-label">
 
                                 Opera attualmente esposta in galleria
 
@@ -354,19 +307,16 @@
                 </div>
 
 
+                @* Pulsanti Salva e Annulla *@
                 <div class="gallery-form-actions">
 
-                    <button type="submit"
-                            class="btn gallery-btn-primary">
+                    <button type="submit" class="btn gallery-btn-primary">
 
                         Salva modifiche
 
                     </button>
 
-                    <a asp-controller="Artworks"
-                       asp-action="Details"
-                       asp-route-id="@Model.Id"
-                       class="btn gallery-btn-outline">
+                    <a asp-controller="Artworks" asp-action="Details" asp-route-id="@Model.Id" class="btn gallery-btn-outline">
 
                         Annulla
 
@@ -379,7 +329,7 @@
         </div>
 
 
-        @* Pannello informativo *@
+        @* Pannello laterale con le indicazioni *@
 
         <div class="col-lg-4 d-none d-lg-block">
 
@@ -412,57 +362,45 @@
 </div>
 
 
+@* Script: controllo del form e anteprima della nuova immagine *@
 @section Scripts {
 
     <partial name="_ValidationScriptsPartial" />
 
     <script>
 
-        const imageFile =
-            document.getElementById("imageFile");
+        const imageFile = document.getElementById("imageFile");
 
-        const imagePreview =
-            document.getElementById("imagePreview");
+        const imagePreview = document.getElementById("imagePreview");
 
-        const imagePreviewContainer =
-            document.getElementById("imagePreviewContainer");
+        const imagePreviewContainer = document.getElementById("imagePreviewContainer");
 
 
-        imageFile?.addEventListener(
-            "change",
+        // Quando si sceglie un file, l'immagine viene mostrata subito
+        imageFile?.addEventListener("change",
             function () {
 
-                const file =
-                    this.files?.[0];
-
+                const file = this.files?.[0];
 
                 if (!file) {
 
                     imagePreview.src = "";
 
-                    imagePreviewContainer
-                        .classList
-                        .add("d-none");
+                    imagePreviewContainer.classList.add("d-none");
 
                     return;
                 }
 
+                const reader = new FileReader();
 
-                const reader =
-                    new FileReader();
-
-
+                // Legge il file e lo mostra nell'anteprima
                 reader.onload = function (event) {
 
-                    imagePreview.src =
-                        event.target.result;
+                    imagePreview.src = event.target.result;
 
-                    imagePreviewContainer
-                        .classList
-                        .remove("d-none");
+                    imagePreviewContainer.classList.remove("d-none");
 
                 };
-
 
                 reader.readAsDataURL(file);
 

@@ -4,11 +4,10 @@
     ViewData["Title"] = "Lascia un feedback";
 }
 
+@* Stili delle stelle *@
 @section Styles
 {
-    <link rel="stylesheet"
-          href="~/css/feedback.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/feedback.css" asp-append-version="true" />
 }
 
 <div class="container py-5">
@@ -35,14 +34,13 @@
 
                 <div>
 
-                    <form asp-action="Create"
-                          method="post">
+                    @* Form del feedback *@
+                    <form asp-action="Create" method="post">
 
-                        <input asp-for="BookingId"
-                               type="hidden" />
+                        @* Id della prenotazione (nascosto) *@
+                        <input asp-for="BookingId" type="hidden" />
 
-                        <div asp-validation-summary="ModelOnly"
-                             class="text-danger mb-3">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3">
                         </div>
 
                         <fieldset class="mb-4">
@@ -51,21 +49,15 @@
                                 Valutazione
                             </legend>
 
-                            @* Le stelle sono radio button: funzionano anche
-                               da tastiera e senza JavaScript. L'ordine 5→1
-                               serve all'effetto "hover" definito nel CSS. *@
+                            @* Le stelle sono pulsanti radio: funzionano anche da tastiera e senza JavaScript.
+                               Sono in ordine da 5 a 1 per l'effetto al passaggio del mouse (vedi CSS). *@
                             <div class="feedback-rating-input">
 
                                 @for (var i = 5; i >= 1; i--)
                                 {
-                                    <input type="radio"
-                                           id="rating-@i"
-                                           name="Rating"
-                                           value="@i"
-                                           checked="@(Model.Rating == i)" />
+                                    <input type="radio" id="rating-@i" name="Rating" value="@i" checked="@(Model.Rating == i)" />
 
-                                    <label for="rating-@i"
-                                           title="@i su 5">
+                                    <label for="rating-@i" title="@i su 5">
                                         ★
                                         <span class="visually-hidden">@i su 5</span>
                                     </label>
@@ -73,38 +65,30 @@
 
                             </div>
 
-                            <span asp-validation-for="Rating"
-                                  class="text-danger d-block mt-1">
+                            <span asp-validation-for="Rating" class="text-danger d-block mt-1">
                             </span>
 
                         </fieldset>
 
                         <div class="mb-4">
 
-                            <label asp-for="Comment"
-                                   class="form-label">
+                            <label asp-for="Comment" class="form-label">
                             </label>
 
-                            <textarea asp-for="Comment"
-                                      class="form-control"
-                                      rows="4"
-                                      maxlength="1000"
+                            @* Commento facoltativo *@
+                            <textarea asp-for="Comment" class="form-control" rows="4" maxlength="1000"
                                       placeholder="Cosa ti è piaciuto? Cosa possiamo migliorare?"></textarea>
 
-                            <span asp-validation-for="Comment"
-                                  class="text-danger">
+                            <span asp-validation-for="Comment" class="text-danger">
                             </span>
 
                         </div>
 
-                        <button type="submit"
-                                class="btn gallery-btn-primary">
+                        <button type="submit" class="btn gallery-btn-primary">
                             Invia feedback
                         </button>
 
-                        <a asp-controller="Bookings"
-                           asp-action="Index"
-                           class="btn gallery-btn-outline">
+                        <a asp-controller="Bookings" asp-action="Index" class="btn gallery-btn-outline">
                             Torna alle prenotazioni
                         </a>
 
@@ -120,6 +104,7 @@
 
 </div>
 
+@* Script per controllare il form prima dell'invio *@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

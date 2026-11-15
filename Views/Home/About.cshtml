@@ -2,9 +2,10 @@
     ViewData["Title"] = "Chi siamo";
 }
 
+@* Pagina "Chi siamo" *@
 <div class="about-page">
 
-    @* Hero *@
+    @* Titolo della pagina *@
 
     <section class="about-hero about-hero-background">
 
@@ -30,7 +31,6 @@
 
                 </div>
 
-
                 <div class="col-lg-4">
 
                     <p class="about-side-text">
@@ -48,7 +48,7 @@
 
     </section>
 
-    @* Introduzione *@
+    @* Presentazione della galleria *@
 
     <section class="about-section">
 
@@ -67,7 +67,6 @@
                     </h2>
 
                 </div>
-
 
                 <div class="col-lg-7 offset-lg-1">
 
@@ -102,8 +101,7 @@
 
     </section>
 
-
-    @* Informazioni visita *@
+    @* Informazioni per la visita *@
 
     <section class="about-info-section">
 
@@ -117,10 +115,9 @@
                 Informazioni utili
             </h2>
 
-
             <div class="row g-4 mt-3">
 
-                @* Dove siamo *@
+                @* Indirizzo *@
 
                 <div class="col-md-6 col-lg-4">
 
@@ -144,8 +141,7 @@
 
                 </div>
 
-
-                @* Orari *@
+                @* Orari di apertura *@
 
                 <div class="col-md-6 col-lg-4">
 
@@ -181,7 +177,6 @@
                     </div>
 
                 </div>
-
 
                 @* Contatti *@
 
@@ -219,8 +214,7 @@
 
     </section>
 
-
-    @* CTA finale *@
+    @* Invito finale verso opere ed eventi *@
 
     <section class="about-cta">
 
@@ -245,21 +239,15 @@
 
                 </div>
 
-
                 <div class="about-cta-actions">
 
-                    <a asp-controller="Artworks"
-                       asp-action="Index"
-                       class="btn gallery-btn-primary">
+                    <a asp-controller="Artworks" asp-action="Index" class="btn gallery-btn-primary">
 
                         Esplora le opere
 
                     </a>
 
-
-                    <a asp-controller="GalleryActivities"
-                       asp-action="Index"
-                       class="btn gallery-btn-outline">
+                    <a asp-controller="GalleryActivities" asp-action="Index" class="btn gallery-btn-outline">
 
                         Eventi
 

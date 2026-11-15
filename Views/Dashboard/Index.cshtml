@@ -7,22 +7,18 @@
 }
 
 
+@* Stili della dashboard *@
 @section Styles
 {
-    <link rel="stylesheet"
-          href="~/css/dashboard.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 }
 
-
+@* Dashboard per Staff e Admin: numeri, presenze, feedback, grafici e classifiche *@
 <div class="dashboard-page">
 
     <div class="container">
 
-
-        @* =================================================
-           HEADER
-           ================================================= *@
+        @* Intestazione con la data di aggiornamento *@
 
         <header class="dashboard-header">
 
@@ -44,11 +40,8 @@
             </div>
 
         </header>
-
-
-        @* =================================================
-           KPI
-           ================================================= *@
+         
+        @* Numeri principali (KPI) *@
 
         <section class="dashboard-kpis">
 
@@ -68,7 +61,6 @@
 
             </div>
 
-
             <div class="dashboard-kpi">
 
                 <span>
@@ -84,7 +76,6 @@
                 </small>
 
             </div>
-
 
             <div class="dashboard-kpi">
 
@@ -102,7 +93,6 @@
 
             </div>
 
-
             <div class="dashboard-kpi">
 
                 <span>
@@ -118,7 +108,6 @@
                 </small>
 
             </div>
-
 
             <div class="dashboard-kpi">
 
@@ -136,7 +125,7 @@
 
             </div>
 
-
+            @* Percentuali in evidenza *@
             <div class="dashboard-kpi dashboard-kpi-highlight">
 
                 <span>
@@ -169,7 +158,6 @@
 
             </div>
 
-
             <div class="dashboard-kpi">
 
                 <span>
@@ -185,7 +173,6 @@
                 </small>
 
             </div>
-
 
             <div class="dashboard-kpi dashboard-kpi-highlight">
 
@@ -205,9 +192,7 @@
 
         </section>
 
-        @* =================================================
-           PRESENZE E CHECK-IN
-           ================================================= *@
+        @* Presenze e check-in *@
 
         <section class="dashboard-attendance-section">
 
@@ -225,7 +210,6 @@
 
                 </div>
 
-
                 <p>
                     Analisi degli ingressi registrati tramite
                     i QR code delle prenotazioni.
@@ -233,11 +217,9 @@
 
             </div>
 
-
             <div class="dashboard-attendance-grid">
 
-
-                @* VISITATORI ATTESI *@
+                @* Visitatori attesi *@
 
                 <article class="dashboard-attendance-card">
 
@@ -260,11 +242,9 @@
 
                 </article>
 
+                @* Persone entrate *@
 
-                @* CHECK-IN *@
-
-                <article class="dashboard-attendance-card
-                    dashboard-attendance-card-success">
+                <article class="dashboard-attendance-card dashboard-attendance-card-success">
 
                     <span class="dashboard-attendance-label">
                         Ingressi registrati
@@ -285,8 +265,7 @@
 
                 </article>
 
-
-                @* DA ARRIVARE *@
+                @* Persone ancora da arrivare *@
 
                 <article class="dashboard-attendance-card">
 
@@ -309,11 +288,9 @@
 
                 </article>
 
+                @* No-show: prenotati che non si sono presentati *@
 
-                @* NO-SHOW *@
-
-                <article class="dashboard-attendance-card
-                    dashboard-attendance-card-warning">
+                <article class="dashboard-attendance-card dashboard-attendance-card-warning">
 
                     <span class="dashboard-attendance-label">
                         No-show
@@ -334,11 +311,9 @@
 
                 </article>
 
+                @* Tasso di presenza (solo attività finite) *@
 
-                @* TASSO DI PRESENZA *@
-
-                <article class="dashboard-attendance-card
-                    dashboard-attendance-card-highlight">
+                <article class="dashboard-attendance-card dashboard-attendance-card-highlight">
 
                     <span class="dashboard-attendance-label">
                         Tasso di presenza
@@ -375,9 +350,7 @@
 
         </section>
 
-        @* =================================================
-           SODDISFAZIONE VISITATORI (FEEDBACK)
-           ================================================= *@
+        @* Soddisfazione dei visitatori (feedback) *@
 
         <section class="dashboard-attendance-section">
 
@@ -399,19 +372,16 @@
                 <p>
                     Valutazioni lasciate dai visitatori dopo
                     il check-in agli eventi.
-                    <a asp-controller="Feedback"
-                       asp-action="Index">
+                    <a asp-controller="Feedback" asp-action="Index">
                         Vedi tutti i feedback
                     </a>
                 </p>
 
             </div>
 
-
             <div class="dashboard-attendance-grid">
 
-                <article class="dashboard-attendance-card
-                    dashboard-attendance-card-highlight">
+                <article class="dashboard-attendance-card dashboard-attendance-card-highlight">
 
                     <span class="dashboard-attendance-label">
                         Valutazione media
@@ -419,9 +389,7 @@
 
                     <strong class="dashboard-attendance-value">
 
-                        @(Model.TotalFeedbacks > 0
-                            ? Model.AverageRating.ToString("0.0") + "/5"
-                            : "—")
+                        @(Model.TotalFeedbacks > 0 ? Model.AverageRating.ToString("0.0") + "/5" : "—")
 
                     </strong>
 
@@ -450,7 +418,7 @@
 
                 </article>
 
-
+                @* Ultimi due commenti *@
                 @foreach (var feedback in Model.LatestFeedbacks.Take(2))
                 {
                     <article class="dashboard-attendance-card">
@@ -467,10 +435,8 @@
 
                         <small>
 
-                            @(string.IsNullOrWhiteSpace(feedback.Comment)
-                                ? "Nessun commento"
-                                : feedback.Comment.Length > 90
-                                    ? feedback.Comment.Substring(0, 90) + "…"
+                            @(string.IsNullOrWhiteSpace(feedback.Comment) ? "Nessun commento"
+                                : feedback.Comment.Length > 90 ? feedback.Comment.Substring(0, 90) + "…"
                                     : feedback.Comment)
 
                         </small>
@@ -482,10 +448,7 @@
 
         </section>
 
-
-        @* =================================================
-           GRAFICI
-           ================================================= *@
+        @* Grafici: prenotazioni per mese e richieste per stato *@
 
         <section class="dashboard-grid dashboard-chart-grid">
 
@@ -514,13 +477,13 @@
 
                 <div class="dashboard-chart-container">
 
+                    @* Grafico disegnato da dashboard.js con Chart.js *@
                     <canvas id="bookingsChart">
                     </canvas>
 
                 </div>
 
             </article>
-
 
             <article class="dashboard-panel">
 
@@ -540,7 +503,6 @@
 
                 </div>
 
-
                 <div class="dashboard-chart-container dashboard-chart-small">
 
                     <canvas id="inquiriesChart">
@@ -548,7 +510,7 @@
 
                 </div>
 
-
+                @* Legenda del grafico delle richieste *@
                 <div class="dashboard-chart-legend">
 
                     <div>
@@ -587,14 +549,11 @@
 
         </section>
 
-
-        @* =================================================
-           OPERE
-           ================================================= *@
+        @* Classifiche delle opere *@
 
         <section class="dashboard-grid dashboard-artworks-grid">
 
-            @* Visualizzazioni *@
+            @* Opere più viste *@
 
             <article class="dashboard-panel">
 
@@ -619,30 +578,23 @@
                 {
                     <div class="dashboard-ranking">
 
+                        @* Posizione in classifica *@
                         @{
                             var position = 1;
                         }
 
                         @foreach (var artwork in Model.MostViewedArtworks)
                         {
-                            <a asp-controller="Artworks"
-                               asp-action="Details"
-                               asp-route-id="@artwork.ArtworkId"
-                               class="dashboard-ranking-item">
+                            <a asp-controller="Artworks" asp-action="Details" asp-route-id="@artwork.ArtworkId" class="dashboard-ranking-item">
 
                                 <span class="dashboard-ranking-position">
                                     @position.ToString("00")
                                 </span>
 
-
-                                @if (!string.IsNullOrWhiteSpace(
-                                    artwork.ImageUrl))
+                                @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl))
                                 {
-                                    <img src="@artwork.ImageUrl"
-                                         alt=""
-                                         class="dashboard-artwork-image" />
+                                    <img src="@artwork.ImageUrl" alt="" class="dashboard-artwork-image" />
                                 }
-
 
                                 <div class="dashboard-ranking-content">
 
@@ -655,7 +607,6 @@
                                     </span>
 
                                 </div>
-
 
                                 <div class="dashboard-ranking-value">
 
@@ -688,7 +639,7 @@
 
             </article>
 
-            @* Preferiti *@
+            @* Opere più aggiunte ai preferiti *@
 
             <article class="dashboard-panel">
 
@@ -708,7 +659,6 @@
 
                 </div>
 
-
                 @if (Model.MostFavoritedArtworks.Any())
                 {
                     <div class="dashboard-ranking">
@@ -719,24 +669,17 @@
 
                         @foreach (var artwork in Model.MostFavoritedArtworks)
                         {
-                            <a asp-controller="Artworks"
-                               asp-action="Details"
-                               asp-route-id="@artwork.ArtworkId"
-                               class="dashboard-ranking-item">
+                            <a asp-controller="Artworks" asp-action="Details" asp-route-id="@artwork.ArtworkId" class="dashboard-ranking-item">
 
                                 <span class="dashboard-ranking-position">
                                     @position.ToString("00")
                                 </span>
 
 
-                                @if (!string.IsNullOrWhiteSpace(
-                                    artwork.ImageUrl))
+                                @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl))
                                 {
-                                    <img src="@artwork.ImageUrl"
-                                         alt=""
-                                         class="dashboard-artwork-image" />
-                                }
-
+                                    <img src="@artwork.ImageUrl" alt="" class="dashboard-artwork-image" />
+                                } 
 
                                 <div class="dashboard-ranking-content">
 
@@ -749,7 +692,6 @@
                                     </span>
 
                                 </div>
-
 
                                 <div class="dashboard-ranking-value">
 
@@ -779,8 +721,7 @@
 
             </article>
 
-
-            @* Richieste *@
+            @* Opere con più richieste di informazioni *@
 
             <article class="dashboard-panel">
 
@@ -800,7 +741,6 @@
 
                 </div>
 
-
                 @if (Model.MostRequestedArtworks.Any())
                 {
                     <div class="dashboard-ranking">
@@ -811,24 +751,16 @@
 
                         @foreach (var artwork in Model.MostRequestedArtworks)
                         {
-                            <a asp-controller="Artworks"
-                               asp-action="Details"
-                               asp-route-id="@artwork.ArtworkId"
-                               class="dashboard-ranking-item">
+                            <a asp-controller="Artworks" asp-action="Details" asp-route-id="@artwork.ArtworkId" class="dashboard-ranking-item">
 
                                 <span class="dashboard-ranking-position">
                                     @position.ToString("00")
                                 </span>
 
-
-                                @if (!string.IsNullOrWhiteSpace(
-                                    artwork.ImageUrl))
+                                @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl))
                                 {
-                                    <img src="@artwork.ImageUrl"
-                                         alt=""
-                                         class="dashboard-artwork-image" />
+                                    <img src="@artwork.ImageUrl" alt="" class="dashboard-artwork-image" />
                                 }
-
 
                                 <div class="dashboard-ranking-content">
 
@@ -841,7 +773,6 @@
                                     </span>
 
                                 </div>
-
 
                                 <div class="dashboard-ranking-value">
 
@@ -873,6 +804,7 @@
 
         </section>
 
+        @* Avvisi automatici *@
         @if (Model.Insights.Any())
         {
             <section class="dashboard-insights">
@@ -903,9 +835,7 @@
 
                     @foreach (var insight in Model.Insights)
                     {
-                        <article class="
-                            dashboard-insight
-                            dashboard-insight-@insight.Type">
+                        <article class="dashboard-insight dashboard-insight-@insight.Type">
 
                             <span class="dashboard-insight-label">
                                 Insight
@@ -927,9 +857,7 @@
             </section>
         }
 
-        @* =================================================
-           PROSSIME ATTIVITÀ
-           ================================================= *@
+        @* Prossime attività con i posti prenotati *@
 
         <section class="dashboard-panel dashboard-activities-panel">
 
@@ -957,17 +885,13 @@
 
             </div>
 
-
             @if (Model.UpcomingActivitiesList.Any())
             {
                 <div class="dashboard-activities">
 
                     @foreach (var activity in Model.UpcomingActivitiesList)
                     {
-                        <a asp-controller="GalleryActivities"
-                           asp-action="Details"
-                           asp-route-id="@activity.Id"
-                           class="dashboard-activity">
+                        <a asp-controller="GalleryActivities" asp-action="Details" asp-route-id="@activity.Id" class="dashboard-activity">
 
                             <div class="dashboard-activity-date">
 
@@ -981,7 +905,6 @@
 
                             </div>
 
-
                             <div class="dashboard-activity-content">
 
                                 <strong>
@@ -993,7 +916,6 @@
                                 </span>
 
                             </div>
-
 
                             <div class="dashboard-activity-capacity">
 
@@ -1009,7 +931,6 @@
                                     </strong>
 
                                 </div>
-
 
                                 <div class="dashboard-progress">
 
@@ -1036,29 +957,21 @@
         </section>
 
 
-        @* =================================================
-           DATI PER I GRAFICI
-           ================================================= *@
+        @* Dati dei grafici in formato JSON, letti da dashboard.js *@
 
-        <script id="dashboardData"
-                type="application/json">
+        <script id="dashboardData" type="application/json">
 
-                    @Html.Raw(
-                            JsonSerializer.Serialize(
+                    @Html.Raw(JsonSerializer.Serialize(
                                     new
                                     {
                                             bookings = Model.BookingsByMonth,
-
                                             inquiries = new
                                             {
-                                                    newCount =
-                                                            Model.NewInquiries,
+                                                    newCount = Model.NewInquiries,
 
-                                                    inProgressCount =
-                                                            Model.InProgressInquiries,
+                                                    inProgressCount = Model.InProgressInquiries,
 
-                                                    closedCount =
-                                                            Model.ClosedInquiries
+                                                    closedCount = Model.ClosedInquiries
                                             }
                                     }
                             )
@@ -1073,12 +986,12 @@
 
 @section Scripts
 {
-    @* Versione fissata: un aggiornamento della libreria
-       non può rompere i grafici senza preavviso. *@
+    @* Chart.js da CDN con versione fissa:
+       un aggiornamento della libreria non può rompere i grafici *@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.6.1">
     </script>
 
-    <script src="~/js/dashboard.js"
-            asp-append-version="true">
+    @* Script che disegna i grafici *@
+    <script src="~/js/dashboard.js" asp-append-version="true">
     </script>
 }

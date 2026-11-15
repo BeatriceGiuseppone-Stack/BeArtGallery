@@ -1,5 +1,4 @@
-﻿/* BeArtGallery – tema "parete da galleria"
-   Si carica DOPO site.css: sovrascrive solo l'aspetto, non la struttura. */
+﻿/* Primo tema grafico della galleria: file non più collegato alle pagine, sostituito da gallery-experience.css */
 
 :root {
     --wall: #fbfbfa; /* parete */
@@ -76,7 +75,7 @@ a {
     text-decoration-thickness: 1px;
 }
 
-/* Navbar */
+/* Menu in alto */
 .gallery-header .navbar {
     background: var(--wall) !important;
     border-bottom: 1px solid var(--hairline) !important;
@@ -191,7 +190,7 @@ a {
     border-radius: 0;
 }
 
-/* Footer */
+/* Piè di pagina */
 .footer {
     position: static;
     line-height: 1.6;
@@ -231,9 +230,7 @@ a {
     }
 }
 
-/* =================================================
-   IMMAGINE GALLERIA - CHI SIAMO
-   ================================================= */
+/* Immagine della galleria nella pagina "Chi siamo" */
 
 .about-gallery-image-section {
     padding: 0 0 2rem;
@@ -267,10 +264,7 @@ a {
     background-color: var(--gallery-accent);
 }
 
-
-/* =================================================
-   TABLET
-   ================================================= */
+/* Tablet */
 
 @media (max-width: 991.98px) {
 
@@ -279,10 +273,7 @@ a {
     }
 }
 
-
-/* =================================================
-   MOBILE
-   ================================================= */
+/* Mobile */
 
 @media (max-width: 767.98px) {
 

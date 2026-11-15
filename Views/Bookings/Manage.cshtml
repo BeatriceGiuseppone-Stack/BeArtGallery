@@ -7,7 +7,7 @@
 
 <div class="container py-5 gx-manage">
 
-    <!-- INTESTAZIONE -->
+    @* Intestazione della pagina *@
     <div class="gx-page-head">
 
         <div>
@@ -29,7 +29,7 @@
 
     </div>
 
-    <!-- MESSAGGI -->
+    @* Messaggi di conferma o di errore *@
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success">
@@ -44,26 +44,23 @@
         </div>
     }
 
-    <!-- FILTRI -->
+    @* Filtri della ricerca *@
     <div class="card border-0 shadow-sm mb-4">
 
         <div class="card-body">
 
-            <form asp-controller="Bookings"
-                  asp-action="Manage"
-                  method="get">
+            <form asp-controller="Bookings" asp-action="Manage" method="get">
 
                 <div class="row g-3 align-items-end">
 
-                    <!-- ATTIVITÀ -->
+                    @* Filtro per attività *@
                     <div class="col-lg-3 col-md-6">
 
                         <label class="form-label" for="filter-activityId">
                             Attività
                         </label>
 
-                        <select id="filter-activityId" name="activityId"
-                                class="form-select">
+                        <select id="filter-activityId" name="activityId" class="form-select">
 
                             <option value="">
                                 Tutte le attività
@@ -73,8 +70,7 @@
                             {
                                 if (Model.ActivityId == activity.Id)
                                 {
-                                    <option value="@activity.Id"
-                                            selected>
+                                    <option value="@activity.Id" selected>
                                         @activity.Title
                                     </option>
                                 }
@@ -88,15 +84,14 @@
                         </select>
                     </div>
 
-                    <!-- STATO -->
+                    @* Filtro per stato *@
                     <div class="col-lg-2 col-md-6">
 
                         <label class="form-label" for="filter-status">
                             Stato
                         </label>
 
-                        <select id="filter-status" name="status"
-                                class="form-select">
+                        <select id="filter-status" name="status" class="form-select">
 
                             <option value="">
                                 Tutti
@@ -104,8 +99,7 @@
 
                             @if (Model.Status == BookingStatus.Confirmed)
                             {
-                                <option value="@BookingStatus.Confirmed"
-                                        selected>
+                                <option value="@BookingStatus.Confirmed" selected>
                                     Confermata
                                 </option>
                             }
@@ -118,8 +112,7 @@
 
                             @if (Model.Status == BookingStatus.Cancelled)
                             {
-                                <option value="@BookingStatus.Cancelled"
-                                        selected>
+                                <option value="@BookingStatus.Cancelled" selected>
                                     Annullata
                                 </option>
                             }
@@ -134,7 +127,7 @@
 
                     </div>
 
-                    <!-- DATA DA -->
+                    @* Filtro per data: dal giorno *@
                     <div class="col-lg-2 col-md-6">
 
                         <label class="form-label" for="filter-fromDate">
@@ -145,7 +138,7 @@
 
                     </div>
 
-                    <!-- DATA A -->
+                    @* Filtro per data: fino al giorno *@
                     <div class="col-lg-2 col-md-6">
 
                         <label class="form-label" for="filter-toDate">
@@ -156,7 +149,7 @@
 
                     </div>
 
-                    <!-- EMAIL VISITATORE -->
+                    @* Filtro per email del visitatore *@
                     <div class="col-lg-3 col-md-6">
 
                         <label class="form-label" for="filter-userEmail">
@@ -167,7 +160,7 @@
 
                     </div>
 
-                    <!-- PULSANTI FILTRI -->
+                    @* Pulsanti Cerca e Azzera *@
                     <div class="col-12">
 
                         <div class="d-flex flex-wrap gap-2">
@@ -177,9 +170,7 @@
                                 Filtra
                             </button>
 
-                            <a asp-controller="Bookings"
-                               asp-action="Manage"
-                               class="btn gallery-btn-outline">
+                            <a asp-controller="Bookings" asp-action="Manage" class="btn gallery-btn-outline">
                                 Azzera filtri
                             </a>
 
@@ -195,7 +186,7 @@
 
     </div>
 
-    <!-- RISULTATI -->
+    @* Risultati della ricerca *@
     @if (!Model.Bookings.Any())
     {
         <div class="alert alert-light border">
@@ -254,10 +245,10 @@
                             </tr>
 
                         </thead>
-
-
+                         
                         <tbody>
 
+                            @* Una riga per ogni prenotazione *@
                             @foreach (var booking in Model.Bookings)
                             {
                                 <tr>
@@ -286,8 +277,7 @@
                                             }
                                         </small>
 
-                                        @if (!string.IsNullOrWhiteSpace(
-                                            booking.Location))
+                                        @if (!string.IsNullOrWhiteSpace(booking.Location))
                                         {
                                             <div>
                                                 <small class="text-muted">
@@ -319,6 +309,7 @@
                                     </td>
 
                                     <td>
+                                        @* Stato della prenotazione *@
                                         @if (booking.Status == BookingStatus.Confirmed)
                                         {
                                             <span class="gx-tag gx-tag-ok">
@@ -335,12 +326,10 @@
 
                                     <td class="pe-4">
 
-                                        @if (booking.Status == BookingStatus.Confirmed &&
-                                             booking.StartDateTime > DateTime.Now)
+                                        @* Pulsante per annullare, solo se confermata e non ancora iniziata *@
+                                        @if (booking.Status == BookingStatus.Confirmed && booking.StartDateTime > DateTime.Now)
                                         {
-                                            <a asp-controller="Bookings"
-                                               asp-action="CancelByStaff"
-                                               asp-route-id="@booking.BookingId"
+                                            <a asp-controller="Bookings" asp-action="CancelByStaff" asp-route-id="@booking.BookingId"
                                                class="gx-link-danger">
                                                 Annulla
                                             </a>

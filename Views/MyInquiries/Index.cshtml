@@ -7,6 +7,7 @@
 
 <div class="container py-5">
 
+    @* Intestazione della pagina *@
     <div class="gx-band mb-5">
 
         <div class="gallery-eyebrow mb-3">
@@ -24,7 +25,7 @@
 
     </div>
 
-
+    @* Nessuna richiesta inviata *@
     @if (!Model.Any())
     {
         <div class="inquiry-empty-state">
@@ -44,42 +45,37 @@
     {
         <div class="inquiries-list">
 
+            @* Una scheda per ogni richiesta *@
             @foreach (var inquiry in Model)
             {
                 <article class="inquiry-list-item">
 
                     <div class="inquiry-list-main">
 
-                        <div class="d-flex
-                                    align-items-center
-                                    flex-wrap
-                                    gap-3">
+                        <div class="d-flex align-items-center flex-wrap gap-3">
 
                             <h2 class="mb-0">
                                 @inquiry.ArtworkTitle
                             </h2>
 
-
+                            @* Etichetta se l'opera è stata eliminata *@
                             @if (inquiry.ArtworkDeleted)
                             {
                                 <span class="gx-unavailable-badge">Opera non più disponibile</span>
                             }
 
-
+                            @* Numero di risposte non lette *@
                             @if (inquiry.UnreadReplies > 0)
                             {
                                 <span class="inquiry-unread-badge">
 
                                     @inquiry.UnreadReplies
-                                    @(inquiry.UnreadReplies == 1
-                                        ? "nuova risposta"
-                                        : "nuove risposte")
+                                    @(inquiry.UnreadReplies == 1 ? "nuova risposta" : "nuove risposte")
 
                                 </span>
                             }
 
                         </div>
-
 
                         <div class="inquiry-requester">
 
@@ -95,7 +91,6 @@
 
                             </div>
 
-
                             <div>
 
                                 <span>
@@ -108,13 +103,13 @@
 
                             </div>
 
-
                             <div>
 
                                 <span>
                                     Stato
                                 </span>
 
+                                @* Stato della richiesta *@
                                 @switch (inquiry.Status)
                                 {
                                     case ArtworkInquiryStatus.New:
@@ -136,12 +131,10 @@
 
                     </div>
 
-
+                    @* Link alla conversazione *@
                     <div class="inquiry-list-action">
 
-                        <a asp-action="Details"
-                           asp-route-id="@inquiry.Id"
-                           class="btn gallery-btn-outline">
+                        <a asp-action="Details" asp-route-id="@inquiry.Id" class="btn gallery-btn-outline">
 
                             Apri conversazione
 

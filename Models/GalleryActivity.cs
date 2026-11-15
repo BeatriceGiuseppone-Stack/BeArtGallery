@@ -4,10 +4,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BeArtGallery.Models
 {
+    // Visita o evento organizzato dalla galleria
     public class GalleryActivity
     {
         public int Id { get; set; }
 
+        // Titolo e descrizione
         [Required]
         [MaxLength(200)]
         public string Title { get; set; } = string.Empty;
@@ -15,28 +17,36 @@ namespace BeArtGallery.Models
         [MaxLength(2000)]
         public string? Description { get; set; }
 
+        // Tipo: visita o evento
         [Required]
         public ActivityType ActivityType { get; set; }
 
+        // Data e ora di inizio (ora locale della galleria)
         [Required]
         public DateTime StartDateTime { get; set; }
 
+        // Durata in minuti
         [Range(15, 480)]
         public int DurationMinutes { get; set; }
 
+        // Numero massimo di partecipanti
         [Range(1, 500)]
         public int MaxParticipants { get; set; }
 
+        // Luogo dell'attività
         [MaxLength(150)]
         public string? Location { get; set; }
 
+        // Attività attiva o disattivata
         public bool IsActive { get; set; } = true;
 
-        public ICollection<Booking> Bookings { get; set; }
-            = new List<Booking>();
+        // Prenotazioni dell'attività
+        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
+        // Stato: programmata o annullata
         public GalleryActivityStatus Status { get; set; } = GalleryActivityStatus.Scheduled;
 
+        // Dati dell'annullamento: quando, chi e motivo
         public DateTime? CancelledAt { get; set; }
 
         public string? CancelledByUserId { get; set; }

@@ -1,5 +1,6 @@
 namespace BeArtGallery.Models
 {
+    // Dati per la pagina di errore
     public class ErrorViewModel
     {
         public string? RequestId { get; set; }

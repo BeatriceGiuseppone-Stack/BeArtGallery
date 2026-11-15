@@ -2,6 +2,7 @@
 
 namespace BeArtGallery.ViewModels
 {
+    // Dati di un'attività da mostrare nell'elenco e nella scheda
     public class GalleryActivityViewModel
     {
         public int Id { get; set; }
@@ -20,6 +21,7 @@ namespace BeArtGallery.ViewModels
 
         public string? Location { get; set; }
 
+        // Posti già prenotati e posti liberi
         public int BookedParticipants { get; set; }
 
         public int AvailablePlaces => Math.Max(0, MaxParticipants - BookedParticipants);
@@ -30,6 +32,7 @@ namespace BeArtGallery.ViewModels
 
         public DateTime? CancelledAt { get; set; }
 
+        // Vero se l'attività ha prenotazioni (allora non si può eliminare)
         public bool HasBookings { get; set; }
     }
 }

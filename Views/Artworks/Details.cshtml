@@ -2,67 +2,55 @@
 @using BeArtGallery.Authorization
 @using BeArtGallery.Models.Enums
 
+@* Dati usati in tutta la pagina *@
 @{
     var artwork = Model.Artwork;
 
     ViewData["Title"] = artwork.Title;
 
-    var inquiryHasErrors =
-        !ViewData.ModelState.IsValid;
+    var inquiryHasErrors = !ViewData.ModelState.IsValid;
 }
 
 
+@* Fogli di stile delle audioguide e del QR *@
 @section Styles
 {
-    <link rel="stylesheet"
-          href="~/css/artwork-room-preview.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/artwork-room-preview.css" asp-append-version="true" />
 
-    <link rel="stylesheet"
-          href="~/css/artwork-audio-guide.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/artwork-audio-guide.css" asp-append-version="true" />
 
-    <link rel="stylesheet"
-          href="~/css/artwork-audio-guide.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/artwork-audio-guide.css" asp-append-version="true" />
 
-    <link rel="stylesheet"
-          href="~/css/artwork-qr.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/artwork-qr.css" asp-append-version="true" />
 }
-
 
 <div class="container py-5">
 
+    @* Messaggi di errore (es. eliminazione non permessa) *@
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger mb-5"
-             role="alert">
+        <div class="alert alert-danger mb-5" role="alert">
 
             @TempData["ErrorMessage"]
 
         </div>
     }
 
+    @* Conferma dopo aver salvato un'audioguida *@
     @if (TempData["AudioGuideSuccess"] != null)
     {
-        <div class="alert alert-success mb-5"
-             role="status">
+        <div class="alert alert-success mb-5" role="status">
 
             @TempData["AudioGuideSuccess"]
 
         </div>
     }
 
-    @* =================================================
-       NAVIGAZIONE
-       ================================================= *@
+    @* Link per tornare al catalogo *@
 
     <div class="mb-5">
 
-        <a asp-controller="Artworks"
-           asp-action="Index"
-           class="gallery-back-link">
+        <a asp-controller="Artworks" asp-action="Index" class="gallery-back-link">
 
             ← Torna al catalogo
 
@@ -71,25 +59,20 @@
     </div>
 
 
-    @* =================================================
-       SCHEDA PRINCIPALE
-       ================================================= *@
+    @* Scheda principale: immagine e informazioni *@
 
     <div class="row g-5 align-items-start">
 
 
-        @* Immagine *@
+        @* Immagine dell'opera o segnaposto *@
 
         <div class="col-lg-6">
 
             <div class="artwork-detail-image-wrapper">
 
-                @if (!string.IsNullOrWhiteSpace(
-                    artwork.ImageUrl))
+                @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl))
                 {
-                    <img src="@artwork.ImageUrl"
-                         alt="@artwork.Title"
-                         class="artwork-detail-image" />
+                    <img src="@artwork.ImageUrl" alt="@artwork.Title" class="artwork-detail-image" />
                 }
                 else
                 {
@@ -105,7 +88,7 @@
         </div>
 
 
-        @* Informazioni *@
+        @* Titolo, artista e azioni *@
 
         <div class="col-lg-6">
 
@@ -114,7 +97,6 @@
                 <div class="gallery-eyebrow mb-3">
                     Opera
                 </div>
-
 
                 <h1 class="artwork-detail-title">
 
@@ -125,10 +107,7 @@
 
                 @if (artwork.Artist != null)
                 {
-                    <a asp-controller="Artists"
-                       asp-action="Details"
-                       asp-route-id="@artwork.ArtistId"
-                       class="artwork-detail-artist">
+                    <a asp-controller="Artists" asp-action="Details" asp-route-id="@artwork.ArtistId" class="artwork-detail-artist">
 
                         @artwork.Artist.FirstName
                         @artwork.Artist.LastName
@@ -136,32 +115,21 @@
                     </a>
                 }
 
-
-                @* =================================================
-                   AZIONI PRINCIPALI
-                   ================================================= *@
+                @* Azioni principali *@
 
                 <div class="artwork-primary-actions">
 
-
-                    @* Preferiti *@
+                    @* Preferiti: chi non ha fatto l'accesso viene mandato al login *@
 
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        <form asp-controller="Artworks"
-                              asp-action="ToggleFavorite"
-                              method="post">
+                        <form asp-controller="Artworks" asp-action="ToggleFavorite" method="post">
 
-                            <input type="hidden"
-                                   name="id"
-                                   value="@artwork.Id" />
-
+                            <input type="hidden" name="id" value="@artwork.Id" />
 
                             @if (Model.IsFavorite)
                             {
-                                <button type="submit"
-                                        class="gallery-favorite-button active"
-                                        aria-label="Rimuovi l'opera dai preferiti">
+                                <button type="submit" class="gallery-favorite-button active" aria-label="Rimuovi l'opera dai preferiti">
 
                                     <span class="gallery-favorite-heart">
                                         ♥
@@ -173,9 +141,7 @@
                             }
                             else
                             {
-                                <button type="submit"
-                                        class="gallery-favorite-button"
-                                        aria-label="Aggiungi l'opera ai preferiti">
+                                <button type="submit" class="gallery-favorite-button" aria-label="Aggiungi l'opera ai preferiti">
 
                                     <span class="gallery-favorite-heart">
                                         ♡
@@ -190,10 +156,7 @@
                     }
                     else
                     {
-                        <a asp-area="Identity"
-                           asp-page="/Account/Login"
-                           asp-route-returnUrl="@Context.Request.Path"
-                           class="gallery-favorite-button">
+                        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Context.Request.Path" class="gallery-favorite-button">
 
                             <span class="gallery-favorite-heart">
                                 ♡
@@ -205,14 +168,10 @@
                     }
 
 
-                    @* Richiesta informazioni *@
+                    @* Pulsante che porta al form della richiesta *@
 
-                    <button type="button"
-                            class="btn gallery-btn-primary"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#artworkInquiry"
-                            aria-expanded="@(inquiryHasErrors.ToString().ToLower())"
-                            aria-controls="artworkInquiry">
+                    <button type="button" class="btn gallery-btn-primary" data-bs-toggle="collapse" data-bs-target="#artworkInquiry"
+                            aria-expanded="@(inquiryHasErrors.ToString().ToLower())" aria-controls="artworkInquiry">
 
                         Richiedi informazioni
 
@@ -221,14 +180,11 @@
                 </div>
 
 
-                @* =================================================
-                   CONFERMA RICHIESTA
-                   ================================================= *@
+                @* Conferma dopo l'invio della richiesta *@
 
                 @if (TempData["InquirySuccess"] != null)
                 {
-                    <div class="artwork-inquiry-success"
-                         role="status">
+                    <div class="artwork-inquiry-success" role="status">
 
                         <div class="artwork-inquiry-success-title">
                             Richiesta inviata
@@ -241,13 +197,9 @@
                     </div>
                 }
 
+                @* Form "Richiedi informazioni" *@
 
-                @* =================================================
-                   FORM RICHIESTA
-                   ================================================= *@
-
-                <div class="collapse @(inquiryHasErrors ? "show" : "")"
-                     id="artworkInquiry">
+                <div class="collapse @(inquiryHasErrors ? "show" : "")" id="artworkInquiry">
 
                     <div class="artwork-inquiry-panel">
 
@@ -270,30 +222,22 @@
                         </p>
 
 
-                        @await Html.PartialAsync(
-                            "_ArtworkInquiryForm",
-                            Model.Inquiry)
+                        @await Html.PartialAsync("_ArtworkInquiryForm", Model.Inquiry)
 
                     </div>
 
                 </div>
 
-
                 <div class="artwork-detail-divider">
                 </div>
 
-
-                @* =================================================
-                   SCHEDA TECNICA
-                   ================================================= *@
+                @* Scheda tecnica: anno, tecnica, dimensioni, esposizione e disponibilità *@
 
                 <div class="gallery-eyebrow mb-3">
                     Scheda tecnica
                 </div>
 
-
                 <dl class="artwork-metadata">
-
 
                     @if (artwork.Year.HasValue)
                     {
@@ -311,8 +255,7 @@
                     }
 
 
-                    @if (!string.IsNullOrWhiteSpace(
-                        artwork.Technique))
+                    @if (!string.IsNullOrWhiteSpace(artwork.Technique))
                     {
                         <div class="artwork-metadata-row">
 
@@ -328,8 +271,7 @@
                     }
 
 
-                    @if (artwork.WidthCm.HasValue &&
-                         artwork.HeightCm.HasValue)
+                    @if (artwork.WidthCm.HasValue && artwork.HeightCm.HasValue)
                     {
                         <div class="artwork-metadata-row">
 
@@ -348,7 +290,6 @@
 
                         </div>
                     }
-
 
                     <div class="artwork-metadata-row">
 
@@ -388,6 +329,7 @@
 
                         <dd>
 
+                            @* Testo e colore in base alla disponibilità *@
                             @switch (artwork.AvailabilityStatus)
                             {
                                 case ArtworkAvailabilityStatus.Available:
@@ -451,33 +393,21 @@
     </div>
 
 
-    @* =================================================
-       AUDIOGUIDE
-       ================================================= *@
+    @* Audioguide *@
 
+    @* Separa le audioguide attive da quelle non pubblicate *@
     @{
-        var canManageAudio =
-            User.IsInRole(RoleNames.Staff) ||
-            User.IsInRole(RoleNames.Admin);
+        var canManageAudio = User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin);
 
-
-        var activeAudioGuides =
-            artwork.AudioGuides
-                .Where(a => a.IsActive)
-                .OrderBy(a => a.LanguageCode)
-                .ToList();
+        var activeAudioGuides = artwork.AudioGuides.Where(a => a.IsActive).OrderBy(a => a.LanguageCode).ToList();
     }
 
-
-    @if (activeAudioGuides.Any() ||
-         canManageAudio)
+    @if (activeAudioGuides.Any() || canManageAudio)
     {
         <section class="artwork-audio-section">
 
 
-            @* =================================================
-               HEADER AUDIOGUIDA
-               ================================================= *@
+            @* Titolo della sezione e pulsante per aggiungerne una *@
 
             <div class="artwork-audio-header">
 
@@ -510,10 +440,7 @@
 
                 @if (canManageAudio)
                 {
-                    <a asp-controller="ArtworkAudioGuides"
-                       asp-action="Create"
-                       asp-route-artworkId="@artwork.Id"
-                       class="btn gallery-btn-outline">
+                    <a asp-controller="ArtworkAudioGuides" asp-action="Create" asp-route-artworkId="@artwork.Id" class="btn gallery-btn-outline">
 
                         + Aggiungi audioguida
 
@@ -523,9 +450,7 @@
             </div>
 
 
-            @* =================================================
-               AUDIOGUIDE ATTIVE
-               ================================================= *@
+            @* Audioguide pubblicate *@
 
             @if (activeAudioGuides.Any())
             {
@@ -533,8 +458,7 @@
 
                     @foreach (var guide in activeAudioGuides)
                     {
-                        var languageName =
-                            guide.LanguageCode switch
+                        var languageName = guide.LanguageCode switch
                             {
                                 "it-IT" => "Italiano",
                                 "en-US" => "Inglese",
@@ -545,7 +469,6 @@
 
 
                         <article class="artwork-audio-card">
-
 
                             <div class="artwork-audio-card-header">
 
@@ -569,19 +492,13 @@
                                 {
                                     <div class="artwork-audio-admin-actions">
 
-                                        <a asp-controller="ArtworkAudioGuides"
-                                           asp-action="Edit"
-                                           asp-route-id="@guide.Id">
+                                        <a asp-controller="ArtworkAudioGuides" asp-action="Edit" asp-route-id="@guide.Id">
 
                                             Modifica
 
                                         </a>
 
-
-                                        <a asp-controller="ArtworkAudioGuides"
-                                           asp-action="Delete"
-                                           asp-route-id="@guide.Id"
-                                           class="text-danger">
+                                        <a asp-controller="ArtworkAudioGuides" asp-action="Delete" asp-route-id="@guide.Id" class="text-danger">
 
                                             Elimina
 
@@ -593,11 +510,9 @@
                             </div>
 
 
-                            @* Player audio *@
+                            @* Lettore audio *@
 
-                            <audio controls
-                                   preload="metadata"
-                                   class="artwork-audio-player">
+                            <audio controls preload="metadata" class="artwork-audio-player">
 
                                 <source src="@guide.AudioUrl" />
 
@@ -607,27 +522,21 @@
                             </audio>
 
 
-                            @* Trascrizione *@
+                            @* Trascrizione del testo *@
 
-                            @if (!string.IsNullOrWhiteSpace(
-                                guide.Transcript))
+                            @if (!string.IsNullOrWhiteSpace(guide.Transcript))
                             {
                                 <div class="artwork-audio-transcript">
 
-                                    <button class="artwork-transcript-toggle"
-                                            type="button"
-                                            data-bs-toggle="collapse"
-                                            data-bs-target="#transcript-@guide.Id"
-                                            aria-expanded="false"
-                                            aria-controls="transcript-@guide.Id">
+                                    <button class="artwork-transcript-toggle" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#transcript-@guide.Id" aria-expanded="false" aria-controls="transcript-@guide.Id">
 
                                         Leggi la trascrizione
 
                                     </button>
 
 
-                                    <div class="collapse"
-                                         id="transcript-@guide.Id">
+                                    <div class="collapse" id="transcript-@guide.Id">
 
                                         <div class="artwork-transcript-content">
 
@@ -647,6 +556,7 @@
             }
             else if (canManageAudio)
             {
+                @* Nessuna audioguida: messaggio per lo staff *@
                 <div class="artwork-audio-empty">
 
                     <strong>
@@ -665,18 +575,11 @@
             }
 
 
-            @* =================================================
-               AUDIOGUIDE NON PUBBLICATE
-               SOLO STAFF / ADMIN
-               ================================================= *@
+            @* Audioguide non pubblicate, visibili solo a Staff e Admin *@
 
             @if (canManageAudio)
             {
-                var inactiveAudioGuides =
-                    artwork.AudioGuides
-                        .Where(a => !a.IsActive)
-                        .OrderBy(a => a.LanguageCode)
-                        .ToList();
+                var inactiveAudioGuides = artwork.AudioGuides.Where(a => !a.IsActive).OrderBy(a => a.LanguageCode).ToList();
 
 
                 if (inactiveAudioGuides.Any())
@@ -692,8 +595,7 @@
 
                         @foreach (var guide in inactiveAudioGuides)
                         {
-                            var inactiveLanguageName =
-                                guide.LanguageCode switch
+                            var inactiveLanguageName = guide.LanguageCode switch
                                 {
                                     "it-IT" => "Italiano",
                                     "en-US" => "Inglese",
@@ -720,19 +622,14 @@
 
                                 <div>
 
-                                    <a asp-controller="ArtworkAudioGuides"
-                                       asp-action="Edit"
-                                       asp-route-id="@guide.Id">
+                                    <a asp-controller="ArtworkAudioGuides" asp-action="Edit" asp-route-id="@guide.Id">
 
                                         Modifica
 
                                     </a>
 
 
-                                    <a asp-controller="ArtworkAudioGuides"
-                                       asp-action="Delete"
-                                       asp-route-id="@guide.Id"
-                                       class="text-danger ms-3">
+                                    <a asp-controller="ArtworkAudioGuides" asp-action="Delete" asp-route-id="@guide.Id" class="text-danger ms-3">
 
                                         Elimina
 
@@ -751,28 +648,18 @@
     }
 
 
-    @* =================================================
-       VISUALIZZA NELLA TUA STANZA
-       ================================================= *@
+    @* Anteprima dell'opera su una parete ("Visualizza nella tua stanza") *@
 
-    @if (!string.IsNullOrWhiteSpace(
-            artwork.ImageUrl) &&
-         artwork.WidthCm.HasValue &&
-         artwork.WidthCm.Value > 0 &&
-         artwork.HeightCm.HasValue &&
-         artwork.HeightCm.Value > 0)
+    @if (!string.IsNullOrWhiteSpace(artwork.ImageUrl) && artwork.WidthCm.HasValue && artwork.WidthCm.Value > 0 &&
+         artwork.HeightCm.HasValue && artwork.HeightCm.Value > 0)
     {
-        <partial name="_ArtworkRoomPreview"
-                 model="artwork" />
+        <partial name="_ArtworkRoomPreview" model="artwork" />
     }
 
 
-    @* =================================================
-       DESCRIZIONE
-       ================================================= *@
+    @* Descrizione dell'opera *@
 
-    @if (!string.IsNullOrWhiteSpace(
-        artwork.Description))
+    @if (!string.IsNullOrWhiteSpace(artwork.Description))
     {
         <section class="artwork-editorial-section">
 
@@ -806,9 +693,7 @@
     }
 
 
-    @* =================================================
-       ARTISTA
-       ================================================= *@
+    @* Informazioni sull'artista *@
 
     @if (artwork.Artist != null)
     {
@@ -838,8 +723,7 @@
                     <div class="artwork-artist-data">
 
 
-                        @if (!string.IsNullOrWhiteSpace(
-                            artwork.Artist.Nationality))
+                        @if (!string.IsNullOrWhiteSpace(artwork.Artist.Nationality))
                         {
                             <div>
 
@@ -889,19 +773,14 @@
                     </div>
 
 
-                    @if (!string.IsNullOrWhiteSpace(
-                        artwork.Artist.Biography))
+                    @if (!string.IsNullOrWhiteSpace(artwork.Artist.Biography))
                     {
                         <p class="artwork-artist-biography">
                             @artwork.Artist.Biography
                         </p>
                     }
 
-
-                    <a asp-controller="Artists"
-                       asp-action="Details"
-                       asp-route-id="@artwork.ArtistId"
-                       class="artwork-artist-link">
+                    <a asp-controller="Artists" asp-action="Details" asp-route-id="@artwork.ArtistId" class="artwork-artist-link">
 
                         Scopri l'artista →
 
@@ -915,9 +794,7 @@
     }
 
 
-    @* =================================================
-       ALTRE OPERE DELLO STESSO ARTISTA
-       ================================================= *@
+    @* Altre opere dello stesso artista *@
 
     @if (Model.RelatedArtworks.Any())
     {
@@ -942,10 +819,7 @@
                 </div>
 
 
-                <a asp-controller="Artists"
-                   asp-action="Details"
-                   asp-route-id="@artwork.ArtistId"
-                   class="artwork-artist-link">
+                <a asp-controller="Artists" asp-action="Details" asp-route-id="@artwork.ArtistId" class="artwork-artist-link">
 
                     Vedi l'artista →
 
@@ -962,17 +836,11 @@
 
                         <article class="related-artwork-card">
 
-                            <a asp-controller="Artworks"
-                               asp-action="Details"
-                               asp-route-id="@related.Id"
-                               class="related-artwork-image-wrapper">
+                            <a asp-controller="Artworks" asp-action="Details" asp-route-id="@related.Id" class="related-artwork-image-wrapper">
 
-                                @if (!string.IsNullOrWhiteSpace(
-                                    related.ImageUrl))
+                                @if (!string.IsNullOrWhiteSpace(related.ImageUrl))
                                 {
-                                    <img src="@related.ImageUrl"
-                                         alt="@related.Title"
-                                         class="related-artwork-image" />
+                                    <img src="@related.ImageUrl" alt="@related.Title" class="related-artwork-image" />
                                 }
                                 else
                                 {
@@ -990,9 +858,7 @@
 
                                 <h3>
 
-                                    <a asp-controller="Artworks"
-                                       asp-action="Details"
-                                       asp-route-id="@related.Id">
+                                    <a asp-controller="Artworks" asp-action="Details" asp-route-id="@related.Id">
 
                                         @related.Title
 
@@ -1021,12 +887,9 @@
     }
 
 
-    @* =================================================
-       GESTIONE STAFF / ADMIN
-       ================================================= *@
+    @* QR code dell'opera, solo per Staff e Admin *@
 
-    @if (User.IsInRole(RoleNames.Staff) ||
-  User.IsInRole(RoleNames.Admin))
+    @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
     {
         <section class="artwork-qr-admin-section">
 
@@ -1039,12 +902,8 @@
 
                 <div class="artwork-qr-image-wrapper">
 
-                    <img src="@Url.Action(
-                             "Image",
-                             "ArtworkQr",
-                             new { id = artwork.Id })"
-                         alt="QR code per @artwork.Title"
-                         class="artwork-qr-image" />
+                    <img src="@Url.Action("Image", "ArtworkQr", new { id = artwork.Id })" alt="QR code per @artwork.Title" 
+                    class="artwork-qr-image" />
 
                 </div>
 
@@ -1065,10 +924,7 @@
 
                     <div class="artwork-qr-actions">
 
-                        <a asp-controller="ArtworkQr"
-                           asp-action="Download"
-                           asp-route-id="@artwork.Id"
-                           class="btn gallery-btn-primary">
+                        <a asp-controller="ArtworkQr" asp-action="Download" asp-route-id="@artwork.Id" class="btn gallery-btn-primary">
 
                             Scarica QR
 
@@ -1083,25 +939,19 @@
         </section>
     }
 
-    @if (User.IsInRole(RoleNames.Staff) ||
-         User.IsInRole(RoleNames.Admin))
+    @* Modifica ed eliminazione dell'opera *@
+    @if (User.IsInRole(RoleNames.Staff) || User.IsInRole(RoleNames.Admin))
     {
         <div class="artwork-admin-actions">
 
-            <a asp-controller="Artworks"
-               asp-action="Edit"
-               asp-route-id="@artwork.Id"
-               class="btn gallery-btn-outline">
+            <a asp-controller="Artworks" asp-action="Edit" asp-route-id="@artwork.Id" class="btn gallery-btn-outline">
 
                 Modifica opera
 
             </a>
 
 
-            <a asp-controller="Artworks"
-               asp-action="Delete"
-               asp-route-id="@artwork.Id"
-               class="btn gallery-btn-danger">
+            <a asp-controller="Artworks" asp-action="Delete" asp-route-id="@artwork.Id" class="btn gallery-btn-danger">
 
                 Elimina opera
 
@@ -1113,11 +963,11 @@
 </div>
 
 
+@* Script del form e dell'anteprima nella stanza *@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial" />
 
-    <script src="~/js/artwork-room-preview.js"
-            asp-append-version="true">
+    <script src="~/js/artwork-room-preview.js" asp-append-version="true">
     </script>
 }

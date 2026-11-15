@@ -6,9 +6,7 @@
 
 <div class="container py-5">
 
-    <a asp-action="Details"
-       asp-route-id="@Model.Id"
-       class="gx-back-link">
+    <a asp-action="Details" asp-route-id="@Model.Id" class="gx-back-link">
         ← Torna all'artista
     </a>
 
@@ -16,6 +14,7 @@
 
         <div class="col-lg-7">
 
+            @* Riepilogo dell'artista da eliminare *@
             <div class="gx-form-card">
 
                 <div class="gallery-eyebrow mb-2">
@@ -59,6 +58,7 @@
 
                 </dl>
 
+                @* Conferma dell'eliminazione *@
                 <form asp-action="Delete" method="post">
 
                     <input type="hidden" asp-for="Id" />

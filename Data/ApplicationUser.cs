@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 namespace BeArtGallery.Data;
-// Add profile data for application users by adding properties to the ApplicationUser class
+// Utente dell'applicazione: usa i campi standard di Identity (email, password, ...)
 public class ApplicationUser : IdentityUser
 {
 }
