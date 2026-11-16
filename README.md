@@ -142,7 +142,9 @@ Il progetto `BeArtGallery.Tests` (xUnit) usa un database **SQLite in memoria** e
 
 `PaginationTests` verifica la paginazione dell'elenco artisti (9 per pagina): ordine alfabetico, ultima pagina parziale e numeri di pagina fuori intervallo riportati entro i limiti.
 
-In totale i test sono 32.
+`ArtworkDeletionTests` verifica che, eliminando un'opera, le richieste di informazioni collegate restino nel database: perdono solo il collegamento all'opera (`ON DELETE SET NULL`) e conservano titolo e artista salvati al momento dell'invio.
+
+In totale i test sono 33.
 
 Esecuzione: in Visual Studio *Test → Esegui tutti i test*, oppure
 

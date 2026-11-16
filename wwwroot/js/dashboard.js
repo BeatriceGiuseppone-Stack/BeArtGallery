@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     createInquiriesChart(data.inquiries);
 });
 
-// Grafico a barre delle prenotazioni negli ultimi 6 mesi
+// Grafico a linee delle prenotazioni negli ultimi 6 mesi
 function createBookingsChart(data) {
 
     const canvas = document.getElementById("bookingsChart");
