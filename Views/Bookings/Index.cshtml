@@ -36,7 +36,7 @@
             </h1>
 
             <p class="gx-page-intro">
-                I tuoi biglietti per gli eventi della galleria. Il giorno della visita
+                I tuoi biglietti per gli eventi della galleria. Il giorno dell'evento
                 mostra il QR code all'ingresso.
             </p>
 
@@ -125,14 +125,7 @@
 
                         <div class="gx-event-tags">
 
-                            @if (booking.ActivityType == ActivityType.Visita)
-                            {
-                                <span class="gx-tag">Visita guidata</span>
-                            }
-                            else
-                            {
-                                <span class="gx-tag">Evento</span>
-                            }
+                            <span class="gx-tag">Evento</span>
 
                             @if (isCancelled)
                             {
@@ -283,7 +276,7 @@
 
                                 </div>
 
-                                @* Feedback sulla visita: si può lasciare dopo il check-in *@
+                                @* Feedback sull'evento: si può lasciare dopo il check-in *@
 
                                 <div class="booking-feedback">
 

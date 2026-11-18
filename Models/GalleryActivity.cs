@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BeArtGallery.Models
 {
-    // Visita o evento organizzato dalla galleria
+    // Evento organizzato dalla galleria
     public class GalleryActivity
     {
         public int Id { get; set; }
@@ -17,7 +17,7 @@ namespace BeArtGallery.Models
         [MaxLength(2000)]
         public string? Description { get; set; }
 
-        // Tipo: visita o evento
+        // Tipo di attività (nel sito si usano solo eventi)
         [Required]
         public ActivityType ActivityType { get; set; }
 

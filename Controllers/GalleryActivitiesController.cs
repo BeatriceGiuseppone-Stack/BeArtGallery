@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeArtGallery.Controllers
 {
-    // Visite ed eventi: elenco pubblico, scheda e gestione per lo staff
+    // Eventi: elenco pubblico, scheda e gestione per lo staff
     public class GalleryActivitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -167,6 +167,9 @@ namespace BeArtGallery.Controllers
             )]
             GalleryActivity galleryActivity)
         {
+            // Nel sito si creano solo eventi
+            galleryActivity.ActivityType = ActivityType.Evento;
+
             // La data dell'attività deve essere futura
             if (galleryActivity.StartDateTime <= DateTime.Now)
             {
@@ -297,7 +300,7 @@ namespace BeArtGallery.Controllers
                 // Aggiorna solo i campi che si possono modificare
                 existingActivity.Title = galleryActivity.Title;
                 existingActivity.Description = galleryActivity.Description;
-                existingActivity.ActivityType = galleryActivity.ActivityType;
+                existingActivity.ActivityType = ActivityType.Evento;
                 existingActivity.StartDateTime = galleryActivity.StartDateTime;
                 existingActivity.DurationMinutes = galleryActivity.DurationMinutes;
                 existingActivity.MaxParticipants = galleryActivity.MaxParticipants;

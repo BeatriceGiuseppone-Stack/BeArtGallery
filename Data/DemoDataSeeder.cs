@@ -200,9 +200,9 @@ namespace BeArtGallery.Data
 
             var pastVisit = new GalleryActivity
             {
-                Title = "Visita guidata: la laguna di Elena Marchetti",
-                Description = "Percorso guidato tra i dipinti della serie Maree.",
-                ActivityType = ActivityType.Visita,
+                Title = "Inaugurazione della mostra «Maree» di Elena Marchetti",
+                Description = "Apertura della mostra con la presentazione dei dipinti della serie Maree.",
+                ActivityType = ActivityType.Evento,
                 StartDateTime = today.AddDays(-10).AddHours(10),
                 DurationMinutes = 60,
                 MaxParticipants = 20,
@@ -222,9 +222,9 @@ namespace BeArtGallery.Data
 
             var nextVisit = new GalleryActivity
             {
-                Title = "Visita guidata del sabato",
-                Description = "Visita guidata alle opere in sala.",
-                ActivityType = ActivityType.Visita,
+                Title = "Presentazione delle nuove opere in sala",
+                Description = "Lo staff presenta le opere entrate da poco nella collezione.",
+                ActivityType = ActivityType.Evento,
                 StartDateTime = today.AddDays(4).AddHours(11),
                 DurationMinutes = 60,
                 MaxParticipants = 15,
@@ -259,7 +259,7 @@ namespace BeArtGallery.Data
             // Prenotazioni e feedback del visitatore di prova
             var utcNow = timeProvider.GetUtcNow().UtcDateTime;
 
-            // Visita passata: check-in fatto e feedback lasciato
+            // Evento passato: check-in fatto e feedback lasciato
             var attendedWithFeedback = new Booking
             {
                 GalleryActivity = pastVisit,
@@ -285,7 +285,7 @@ namespace BeArtGallery.Data
                 CheckedInByUserId = staff.Id
             };
 
-            // Visita futura: prenotazione confermata con QR
+            // Evento futuro: prenotazione confermata con QR
             var upcoming = new Booking
             {
                 GalleryActivity = nextVisit,

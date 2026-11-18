@@ -142,7 +142,7 @@ namespace BeArtGallery.Data
             // Il codice del QR deve essere unico
             builder.Entity<Booking>().HasIndex(b => b.QrToken).IsUnique().HasFilter("[QrToken] IS NOT NULL");
 
-            // Feedback delle visite
+            // Feedback degli eventi
 
             // Relazione uno a uno: un solo feedback per prenotazione
 

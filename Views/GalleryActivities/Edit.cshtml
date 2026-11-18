@@ -24,7 +24,7 @@
                     </div>
 
                     <h1 class="gx-form-title">
-                        Modifica visita o evento
+                        Modifica evento
                     </h1>
 
                     <p class="gx-page-intro mb-4">
@@ -61,18 +61,8 @@
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="ActivityType" class="form-label">
-                                Tipo di attività
-                            </label>
-
-                            @* Tipo: visita o evento *@
-                            <select asp-for="ActivityType" asp-items="Html.GetEnumSelectList<ActivityType>()" class="form-select">
-                            </select>
-
-                            <span asp-validation-for="ActivityType" class="text-danger">
-                            </span>
-                        </div>
+                        @* Nel sito si gestiscono solo eventi *@
+                        <input type="hidden" name="ActivityType" value="Evento" />
 
                         <div class="mb-3">
                             <label asp-for="StartDateTime" class="form-label">

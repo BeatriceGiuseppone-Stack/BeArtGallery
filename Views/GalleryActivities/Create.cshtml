@@ -24,7 +24,7 @@
                     </div>
 
                     <h1 class="gx-form-title">
-                        Crea visita o evento
+                        Crea evento
                     </h1>
 
                     <p class="gx-page-intro mb-4">
@@ -43,7 +43,7 @@
                             </label>
 
                             @* Titolo e descrizione *@
-                            <input asp-for="Title" class="form-control" placeholder="Es. Visita guidata - Van Gogh e il Post-Impressionismo" />
+                            <input asp-for="Title" class="form-control" placeholder="Es. Inaugurazione della mostra «Orizzonti sospesi»" />
 
                             <span asp-validation-for="Title" class="text-danger">
                             </span>
@@ -61,23 +61,8 @@
                             </span>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="ActivityType" class="form-label">
-                                Tipo di attività
-                            </label>
-
-                            @* Tipo: visita o evento *@
-                            <select asp-for="ActivityType" asp-items="Html.GetEnumSelectList<ActivityType>()" class="form-select">
-
-                                <option value="">
-                                    Seleziona il tipo
-                                </option>
-
-                            </select>
-
-                            <span asp-validation-for="ActivityType" class="text-danger">
-                            </span>
-                        </div>
+                        @* Nel sito si creano solo eventi *@
+                        <input type="hidden" name="ActivityType" value="Evento" />
 
                         <div class="mb-3">
                             <label asp-for="StartDateTime" class="form-label">

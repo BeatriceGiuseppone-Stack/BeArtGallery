@@ -1,6 +1,7 @@
 ﻿namespace BeArtGallery.Models.Enums
 {
-    // Tipo di attività: visita guidata o evento
+    // Tipo di attività. Nel sito si creano solo eventi:
+    // il valore Visita resta per i dati già salvati
     public enum ActivityType
     {
         Visita = 1,

@@ -65,8 +65,8 @@ namespace BeArtGallery.Tests
 
             var activity = new GalleryActivity
             {
-                Title = "Visita di prova",
-                ActivityType = ActivityType.Visita,
+                Title = "Evento di prova",
+                ActivityType = ActivityType.Evento,
                 StartDateTime = startDateTime,
                 DurationMinutes = 60,
                 MaxParticipants = maxParticipants,

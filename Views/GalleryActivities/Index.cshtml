@@ -39,8 +39,8 @@
             </h1>
 
             <p class="gx-page-intro">
-                Visite guidate alla collezione, incontri con gli artisti e
-                inaugurazioni. Scegli un appuntamento e prenota il tuo posto.
+                Inaugurazioni, incontri con gli artisti e presentazioni delle opere.
+                 Scegli un appuntamento e prenota il tuo posto.
             </p>
 
         </div>
@@ -192,14 +192,7 @@
 
                         <div class="gx-event-tags">
 
-                            @if (item.ActivityType == ActivityType.Visita)
-                            {
-                                <span class="gx-tag">Visita guidata</span>
-                            }
-                            else
-                            {
-                                <span class="gx-tag">Evento</span>
-                            }
+                            <span class="gx-tag">Evento</span>
 
                             @if (isCancelled)
                             {

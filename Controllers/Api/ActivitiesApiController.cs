@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BeArtGallery.Controllers.Api
 {
     /// <summary>
-    /// API pubblica per leggere le visite e gli eventi della galleria
+    /// API pubblica per leggere gli eventi della galleria
     /// </summary>
     [ApiController]
     [Route("api/activities")]
@@ -33,7 +33,7 @@ namespace BeArtGallery.Controllers.Api
         /// <summary>
         /// Elenca le attività attive e non annullate
         /// </summary>
-        /// <param name="type">Filtro facoltativo: Visita o Evento.</param>
+        /// <param name="type">Filtro facoltativo per tipo di attività.</param>
         /// <param name="includePast">Se true include anche le attività già iniziate.</param>
         /// <param name="cancellationToken">Token di annullamento della richiesta.</param>
         /// <response code="200">Elenco ordinato per data di inizio.</response>
@@ -61,7 +61,7 @@ namespace BeArtGallery.Controllers.Api
                 query = query.Where(a => a.StartDateTime > now);
             }
 
-            // Filtro per tipo (Visita o Evento)
+            // Filtro per tipo di attività
             if (type.HasValue)
             {
                 query = query.Where(a => a.ActivityType == type.Value);
