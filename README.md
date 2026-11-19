@@ -85,6 +85,26 @@ dotnet run --project BeArtGallery.csproj
 
 Gli account sono solo di prova e funzionano esclusivamente in locale. I dati demo si attivano/disattivano in `appsettings.Development.json` (`DemoData:Enabled`); il catalogo demo viene inserito solo se il database non contiene ancora artisti.
 
+### Provare il check-in in locale
+
+Il QR della prenotazione contiene l'indirizzo completo della pagina di check-in, generato a partire dall'indirizzo del sito: in locale è quindi `https://localhost:<porta>/BookingCheckIn/Scan?token=<codice>`. Uno smartphone che inquadra il QR non può raggiungere `localhost`, che per il telefono indica il telefono stesso e non il PC su cui gira l'applicazione. Una volta pubblicato il sito su un dominio, lo stesso QR si apre direttamente dalla fotocamera.
+
+Finché il sito è in locale, il check-in si prova aprendo l'indirizzo **direttamente nel browser del PC**:
+
+1. Come **Visitatore**, prenotare un evento e aprire *Le mie prenotazioni*, dove compare il QR.
+2. Leggere l'indirizzo contenuto nel QR, ad esempio inquadrandolo con la fotocamera del telefono che lo mostra come testo, senza aprirlo. In alternativa, ricavare il codice dal database (SQL Server Object Explorer di Visual Studio):
+
+   ```sql
+   SELECT b.Id, a.Title, b.QrToken
+   FROM Bookings b
+   JOIN GalleryActivities a ON a.Id = b.GalleryActivityId
+   WHERE b.Status = 1 AND b.CheckedInAt IS NULL;
+   ```
+
+3. Accedere come **Staff** (o Admin) e aprire nel browser del PC `https://localhost:<porta>/BookingCheckIn/Scan?token=<codice>`, poi confermare l'ingresso.
+
+Il check-in è possibile solo per prenotazioni confermate e una sola volta per QR; dopo il check-in il visitatore può lasciare un feedback.
+
 ---
 
 ## API REST
@@ -94,7 +114,7 @@ La documentazione interattiva è disponibile, in ambiente Development, su:
 - **Swagger UI**: `https://localhost:<porta>/swagger`
 - **Documento OpenAPI**: `https://localhost:<porta>/openapi/v1.json`
 
-Il documento OpenAPI è generato dalla struttura degli endpoint e arricchito dai commenti XML presenti nel codice.
+La specifica OpenAPI viene prodotta a partire dagli endpoint e include le descrizioni scritte nei commenti XML del codice.
 
 | Metodo | Endpoint | Accesso | Descrizione |
 |---|---|---|---|
