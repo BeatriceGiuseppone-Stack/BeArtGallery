@@ -17,11 +17,11 @@ La piattaforma digitalizza cinque processi della galleria:
 ## Architettura
 
 ```
-┌──────────────────────┐   HTTP (HTML)    ┌────────────────────────────────┐   EF Core / SQL   ┌──────────────────┐
+┌──────────────────────┐   HTTPS (HTML)   ┌────────────────────────────────┐   EF Core / SQL   ┌──────────────────┐
 │  Browser             │ ───────────────► │  ASP.NET Core 10 (C#)          │ ────────────────► │  SQL Server      │
 │  Razor + CSS + JS    │                  │  • Controller MVC (pagine)     │                   │  (LocalDB)       │
 │  fetch() / Chart.js  │ ◄─────────────── │  • Controller API REST (JSON)  │ ◄──────────────── │  database        │
-└──────────────────────┘   HTTP (JSON)    │  • Servizi di dominio          │                   │  relazionale     │
+└──────────────────────┘   HTTPS (JSON)   │  • Servizi di dominio          │                   │  relazionale     │
                                           │  • ASP.NET Identity (ruoli)    │                   └──────────────────┘
                                           └────────────────────────────────┘
 ```
@@ -62,18 +62,22 @@ La piattaforma digitalizza cinque processi della galleria:
 ## Avvio del progetto
 
 1. Clonare il repository (oppure scaricarlo da *Code → Download ZIP*) e aprire `BeArtGallery.slnx` con Visual Studio.
-2. Avviare il progetto **BeArtGallery** (F5).
+2. Verificare che nella barra degli strumenti sia selezionato il profilo di avvio **https** (è quello predefinito) e avviare il progetto **BeArtGallery** (F5). Se Visual Studio lo propone, accettare il certificato di sviluppo HTTPS.
+
+Al primo avvio vengono scaricati i pacchetti NuGet; è necessaria una connessione a Internet, che serve anche per caricare la libreria dei grafici (Chart.js) nella dashboard.
 
 Al primo avvio l'applicazione:
 - crea il database `BeArtGallery` su LocalDB e applica tutte le migrazioni;
 - crea i ruoli Visitatore, Staff e Admin;
 - in ambiente *Development* inserisce i **dati dimostrativi** (artisti, opere, eventi, prenotazioni, feedback) e gli account di prova.
 
-In alternativa da riga di comando:
+In alternativa da riga di comando, usando il profilo HTTPS:
 
 ```bash
-dotnet run --project BeArtGallery.csproj
+dotnet run --project BeArtGallery.csproj --launch-profile https
 ```
+
+Il sito risponde su `https://localhost:7238`; le richieste in HTTP (`http://localhost:5182`) vengono reindirizzate automaticamente su HTTPS. Al primo avvio può essere necessario considerare attendibile il certificato di sviluppo con `dotnet dev-certs https --trust`.
 
 ### Account dimostrativi
 
